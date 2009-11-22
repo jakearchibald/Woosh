@@ -41,18 +41,62 @@
 		_onComplete: function() {},
 		_run: function() {
 			var i = this._loopCount,
+				returnVal,
+				testFunc = this._testFunc,
 				start = new Date();
 		
 			while (i--) {
-				this._returnVal = this._testFunc();
+				returnVal = this._testFunc();
 			}
 			
 			this._result = this._result || ( new Date() - start );
+			this._returnVal = returnVal;
 			this._onComplete();
 		}
 	};
 	
 	window.woosh.Test = Test;
+})();
+
+(function() {
+	var AsyncTest = function(loopCount, testFunc) {
+		if ( !(this instanceof AsyncTest) ) {
+			return new AsyncTest(loopCount, testFunc);
+		}
+		
+		woosh.Test.apply(this, arguments);
+		this._super = woosh.Test.prototype;
+	}
+	
+	var asyncTestProto = AsyncTest.prototype = new woosh.Test();
+	asyncTestProto._isWaiting = true;
+	
+	asyncTestProto.endTest = function(returnVal) {
+		this._isWaiting = false;
+		this._returnVal = returnVal;
+		this._onEndTest();
+	}
+	
+	asyncTestProto._run = function() {
+		var i = this._loopCount,
+			testFunc = this._testFunc,
+			test = this,
+			start = new Date();
+		
+		this._onEndTest = function() {
+			if (--i) {
+				test._testFunc();
+			} else {
+				test._result = test._result || ( new Date() - start );
+				test._onComplete();
+			}
+		}
+		test._testFunc();
+	}
+	
+	asyncTestProto._onEndTest = function() {}
+	
+	window.woosh.AsyncTest = AsyncTest;
 })();
 
 (function() {
