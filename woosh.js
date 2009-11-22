@@ -26,6 +26,10 @@
 
 (function() {
 	var Test = function(loopCount, testFunc) {
+		if ( !(this instanceof Test) ) {
+			return new Test(loopCount, testFunc);
+		}
+		
 		this._loopCount = loopCount;
 		this._testFunc  = testFunc;
 	}
@@ -40,10 +44,10 @@
 				start = new Date();
 		
 			while (i--) {
-				this._testFunc();
+				this._returnVal = this._testFunc();
 			}
 			
-			this._duration = start - new Date();
+			this._result = this._result || ( new Date() - start );
 			this._onComplete();
 		}
 	};
@@ -79,22 +83,4 @@
 	
 	window.woosh.addTests  = addTests;
 	window.woosh._testSets = testSets;
-})();
-
-// run tests
-(function() {
-	
-	function runTest(test) {
-		var i = test._loopCount,
-			start = new Date();
-		
-		while (i--) {
-			test._testFunc();
-		}
-		
-		test._duration = start - new Date();
-		test._onComplete();
-	}
-	
-	window.woosh._runTest = run;
 })();
