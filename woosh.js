@@ -17,6 +17,27 @@
 })();
 
 (function(){
+	var utils = {
+		addListener: function(item, name, callback) {
+			if (item.addEventListener) {
+				item.addEventListener(name, callback, false);
+			} else if (item.attachEvent) {
+				item.attachEvent('on' + name, callback);
+			}
+		},
+		removeListener: function(item, name, callback) {
+			if (item.removeEventListener) {
+				item.removeEventListener(name, callback, false);
+			} else if (item.detachEvent) {
+				item.detachEvent('on' + name, callback);
+			}
+		}
+	}
+	
+	window.woosh.utils = utils;
+})();
+
+(function(){
 	function loadLibrary(libraryName) {
 		// document write script element?
 	}
@@ -36,20 +57,28 @@
 	Test.prototype = {
 		_units: 'ms',
 		_lowestIsBest: true,
+		_error: null,
+		_result: null,
 		
 		// called when test is complete - is overridden by test runner
 		_onComplete: function() {},
 		_run: function() {
-			var i = this._loopCount,
-				returnVal,
-				testFunc = this._testFunc,
-				start = new Date();
-		
-			while (i--) {
-				returnVal = this._testFunc();
-			}
+			try {
+				var i = this._loopCount,
+					returnVal,
+					testFunc = this._testFunc,
+					duration,
+					start = new Date();
 			
-			this._result = this._result || ( new Date() - start );
+				while (i--) {
+					returnVal = this._testFunc();
+				}
+				
+				duration = new Date() - start;
+				this._result = this._result || duration;
+			} catch (e) {
+				this._error = e;
+			}
 			this._returnVal = returnVal;
 			this._onComplete();
 		}
@@ -75,27 +104,57 @@
 		this._isWaiting = false;
 		this._returnVal = returnVal;
 		this._onEndTest();
-	}
+	};
 	
-	asyncTestProto._run = function() {
-		var i = this._loopCount,
-			testFunc = this._testFunc,
-			test = this,
-			start = new Date();
+	(function(){
+		var oldErrorListener, timeout;
 		
-		this._onEndTest = function() {
-			if (--i) {
+		function complete(test) {
+			window.onerror = test._oldErrorListener;
+			test._onEndTest = function() {};
+			test._onComplete();
+		};
+		
+		asyncTestProto._run = function() {
+			try {
+				var i = this._loopCount,
+					testFunc = this._testFunc,
+					test = this,
+					start;
+				
+				this._oldErrorListener = window.onerror;
+				
+				// not using addEventListener / attachEvent, we get more information (msg) this way:
+				window.onerror = function(msg) {
+					if (test._oldErrorListener) {
+						test._oldErrorListener.apply(this, arguments);
+					}
+					test._error = new Error(msg);
+					complete(test);
+				}
+				
+				this._onEndTest = function() {
+					if (--i) {
+						test._testFunc();
+					} else {
+						test._result = test._result || ( new Date() - start );
+						complete(test);
+					}
+				}
+				
+				start = new Date();
 				test._testFunc();
-			} else {
-				test._result = test._result || ( new Date() - start );
-				test._onComplete();
+			} catch (e) {
+				this._error = e;
+				complete(test);
 			}
-		}
-		test._testFunc();
-	}
+		};
+	})();
 	
-	asyncTestProto._onEndTest = function() {}
+	// overidden by woosh.AsyncTest#_run
+	asyncTestProto._onEndTest = function() {};
 	
+	// export
 	window.woosh.AsyncTest = AsyncTest;
 })();
 
