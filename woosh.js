@@ -98,7 +98,10 @@
 				key   = decodeURIComponent( thisPair[0] );
 				value = decodeURIComponent( thisPair[1] );
 				
-				if ( result[key] ) {
+				if (!key) {
+					continue;
+				}
+				else if ( result[key] ) {
 					result[key].push(value);
 				}
 				else {
@@ -518,4 +521,10 @@
 	function Conductor() {
 		
 	}
+})();
+
+
+(function() {
+	// set this frame / window up
+	//var queryString = 
 })();

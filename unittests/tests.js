@@ -6,7 +6,7 @@ test('Exists', 1, function() {
 
 module('woosh._utils');
 
-test('urlEncode', 2, function() {
+test('urlEncode', 3, function() {
 	equals(typeof woosh._utils.urlEncode, 'function', 'woosh._utils.urlEncode is function');
 	
 	var obj = {
@@ -14,9 +14,10 @@ test('urlEncode', 2, function() {
 		foo: ['bar', 'bunz']
 	}
 	equals(woosh._utils.urlEncode(obj), 'hello=world&foo=bar&foo=bunz', 'Basic encode');
+	equals(woosh._utils.urlEncode({}), '', 'Empty object encode');
 });
 
-test('urlDecode', 2, function() {
+test('urlDecode', 3, function() {
 	equals(typeof woosh._utils.urlDecode, 'function', 'woosh._utils.urlDecode is function');
 	
 	var obj = {
@@ -24,6 +25,7 @@ test('urlDecode', 2, function() {
 		foo: ['bar', 'bunz']
 	}
 	same(woosh._utils.urlDecode('hello=world&foo=bar&foo=bunz'), obj, 'Basic decode');
+	same(woosh._utils.urlDecode(''), {}, 'Empty string decode');
 });
 
 module('woosh.Test');
@@ -270,7 +272,7 @@ test('woosh._TestSet', 6, function() {
 
 module('woosh._TestFrame');
 
-/*test('creating woosh._TestFrames', 0, function() {
+test('creating woosh._TestFrames', 0, function() {
 	stop();
 	
 	// add fake libraries
@@ -309,4 +311,4 @@ module('woosh._TestFrame');
 	var testFrame1 = new woosh._TestFrame('testLib1', testFrameReady);
 	var testFrame2 = new woosh._TestFrame('testLib2', testFrameReady);
 	
-});*/
+});
