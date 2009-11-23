@@ -31,24 +31,85 @@
 })();
 
 (function(){
+	/**
+	@name woosh._utils
+	@namespace
+	@private
+	@description Some basic util functions
+	*/
 	var utils = {
-		addListener: function(item, name, callback) {
-			if (item.addEventListener) {
-				item.addEventListener(name, callback, false);
-			} else if (item.attachEvent) {
-				item.attachEvent('on' + name, callback);
+		/**
+		@name woosh._utils.urlEncode
+		@function
+		@description Converts an object into a query string
+		
+		@returns {Object}
+		
+		@example
+			woosh._utils.urlEncode({
+				hello: 'world',
+				foo: ['bar', 'bunz']
+			});
+			
+			// returns 'hello=world&foo=bar&foo=bunz'
+		*/
+		urlEncode: function (obj) {
+			var parts = [],
+				partsLen = 0,
+				val, i, len;
+		
+			for (var key in obj) {
+				val = obj[key];
+				
+				if (typeof val == 'string') {
+					val = [val];
+				}
+				for(i = 0, len = val.length; i < len; i++) {
+					parts[partsLen++] = key + '=' + encodeURIComponent( val[i] );
+				}
 			}
+			
+			return parts.join('&');
 		},
-		removeListener: function(item, name, callback) {
-			if (item.removeEventListener) {
-				item.removeEventListener(name, callback, false);
-			} else if (item.detachEvent) {
-				item.detachEvent('on' + name, callback);
+		/**
+		@name woosh._utils.urlDecode
+		@function
+		@description Converts a urlencoded string into an object of arrays
+		
+		@returns {Object}
+		
+		@example
+			woosh._utils.urlDecode('hello=world&foo=bar&foo=bunz');
+			
+			// returns:
+			// {
+			//    hello: ['world'],
+			//    foo: ['bar', 'bunz']
+			// }
+		*/
+		urlDecode: function (text) {
+			var result = {},
+				keyValues = text.split(/[&;]/);
+		
+			var thisPair, key, value;
+		
+			for(var i = 0, len = keyValues.length; i < len; i++) {
+				thisPair = keyValues[i].split('=');
+				key   = decodeURIComponent( thisPair[0] );
+				value = decodeURIComponent( thisPair[1] );
+				
+				if ( result[key] ) {
+					result[key].push(value);
+				}
+				else {
+					result[key] = [value];
+				}
 			}
+			return result;
 		}
 	}
 	
-	window.woosh.utils = utils;
+	window.woosh._utils = utils;
 })();
 
 (function(){
@@ -96,14 +157,13 @@
 		// errors are held
 		_error: null,
 		
-		// called when test is complete - is overridden by test runner
+		// called when test is complete
 		_onComplete: function() {},
 		// start the test running, _onComplete is fired when all itterations have ran
 		_run: function() {
 			try {
 				var i = this._loopCount,
 					returnVal,
-					testFunc = this._testFunc,
 					duration,
 					start = new Date();
 			
@@ -252,25 +312,112 @@
 })();
 
 (function() {
-	var testSets = [];
+	/**
+	@name woosh._testSet
+	@type {woosh._TestSet}
+	@description The testSet for this frame to test
+	*/
+
+	/**
+	@name woosh._TestSet
+	@constructor
+	@private
+	@description A set of tests to run
 	
-	function TestSet(libraryName, tests) {
-		this.libraryName = libraryName;
+	@param {Object} tests Obj of functions / woosh.Test instances
+		Keys beginning $ have special meaning.
+		
+	*/
+	
+	function TestSet(tests) {
+		/**
+		@name woosh._TestSet#tests
+		@type {Object}
+		@description Tests keyed by name
+		*/
 		this.tests = {};
+		/**
+		@name woosh._TestSet#testNames
+		@type {String[]}
+		@description Array of test names
+		*/
+		this.testNames = [];
+		/**
+		@name woosh._TestSet#_prevTestName
+		@private
+		@type {String}
+		@description Name of the previously run test
+		*/
+		this._prevTestName = undefined;
 		
 		// populate this.tests, converting functions into woosh.Test instances
 		for (var testName in tests) {
-			if ( tests.hasOwnProperty(testName) && testName.charAt(0) != '$' ) {
-				if (typeof tests[testName] == 'function') {
-					this.tests[testName] = new Test(1, tests[testName]);
-				} else if (tests[testName] instanceof woosh.Test) {
-					this.tests[testName] = tests[testName];
+			if ( tests.hasOwnProperty(testName) ) {
+				if (testName.charAt(0) == '$') {
+					switch ( testName.slice(1) ) {
+						case 'preTest':
+							this.preTest = tests[testName];
+							break;
+					}
+				}
+				else {
+					this.tests[testName] = (typeof tests[testName] == 'function') ?
+						new woosh.Test(1, tests[testName]) :
+						tests[testName];
+						
+					this.testNames.push(testName);
 				}
 			}
 		}
-		
-		testSets.push(this);
 	}
+	
+	TestSet.prototype = {
+		/**
+		@name woosh._TestSet#preTest
+		@function
+		@description Called before each test.
+			Overridden by constructor 'tests' param, used to
+			teardown / prepare of next test.
+			
+		@param {String} lastTestName Name of last test.
+			Will be undefined for first test.
+			
+		@param {String} nextTestName Name of next test.
+		*/
+		preTest: function(lastTestName, nextTestName) {},
+		/**
+		@name woosh._TestSet#onTestComplete
+		@function
+		@description Called when a test completes.
+			Test name is passed as the 1st param.
+			Test is passed in as the 2nd param.
+		*/
+		onTestComplete: function(testName, test) {},
+		/**
+		@name woosh._TestSet#run
+		@function
+		@description Run a particular test.
+			{@link woosh._TestSet#preTest} will be called before the test.
+			
+		@param {String} testName Name of test to run.
+			
+		*/
+		run: function(testName) {
+			var test = this.tests[testName],
+				testSet = this;
+
+			test._onComplete = function() {
+				testSet._prevTestName = testName;
+				// signal the test is complete
+				testSet.onTestComplete(testName, test);
+				// remove callback
+				test._onComplete = function() {};
+			}
+			
+			this.preTest(this._prevTestName, testName);
+			test._run();
+		}
+	};
 	
 	/**
 	@name woosh.addTests
@@ -282,10 +429,19 @@
 	
 	@param {Object} Object of tests to add for this framework.
 		Tests can either be functions, or instances of {@link woosh.Test} /
-		{@link woosh.AsyncTest}
+		{@link woosh.AsyncTest}.
+		
+		Keys beginning "$" are considered special:
+		
+		'$preTest': This will be called before each test,
+					2 params will be passed in, the name of
+					the previous test and the name of the next.
 		
 	@example
 		woosh.addTests(woosh.libs.glowSrc, {
+			'$preTest': function(prevTest, nextTest) {
+				resetTestHtml();
+			},
 			'mySimpleTest': function() {
 				// do some stuff
 				return // a value (this will be checked against the results of other tests)
@@ -301,14 +457,65 @@
 				
 				// return the result (this will be checked against the results of other tests)
 				this.endTest(returnVal);
-			}),
+			})
 		});
 	*/
 	function addTests(libraryName, tests) {
-		new TestSet(libraryName, tests);
+		// todo, only do this for the test we want to run
+		if (woosh._testSet) {
+			throw new Error('A testSet has already been defined for this page');
+		}
+		woosh._testSet = new TestSet(tests);
 		return woosh;
 	}
 	
-	window.woosh.addTests  = addTests;
-	window.woosh._testSets = testSets;
+	window.woosh.addTests = addTests;
+	window.woosh._TestSet = TestSet;
+})();
+
+(function() {
+	/**
+	@name woosh._TestFrame
+	@constructor
+	@private
+	@description An iframe for testing a particular library
+	
+	@param {String} libraryName Library to include for these tests.
+		String must be a property name within {@link woosh.libs}
+		
+	@param {Function} onReady A function to call when the TestFrame is ready to use
+		
+	*/
+	/**
+	@name woosh._TestFrame#testSet
+	@type {woosh._TestSet}
+	@description The testSet created in this frame
+	*/
+	/**
+	@name woosh._TestFrame#window
+	@type {Window}
+	@description The window object of the frame
+	*/
+	function TestFrame(libraryName, onReady) {
+		/*var iframe = document.createElement('iframe');
+		iframe.className = 'wooshCreated';*/
+	}
+	
+	window.woosh._TestFrame = TestFrame;
+})();
+
+(function() {
+	/**
+	@name woosh._Conductor
+	@constructor
+	@private
+	@description A set of tests to run
+	
+	@param {Object} tests Obj of functions / woosh.Test instances
+		Keys beginning $ have special meaning.
+		
+	*/
+	function Conductor() {
+		
+	}
 })();

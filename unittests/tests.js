@@ -4,6 +4,28 @@ test('Exists', 1, function() {
 	equals(typeof woosh, 'object', 'woosh exists');
 });
 
+module('woosh._utils');
+
+test('urlEncode', 2, function() {
+	equals(typeof woosh._utils.urlEncode, 'function', 'woosh._utils.urlEncode is function');
+	
+	var obj = {
+		hello: 'world',
+		foo: ['bar', 'bunz']
+	}
+	equals(woosh._utils.urlEncode(obj), 'hello=world&foo=bar&foo=bunz', 'Basic encode');
+});
+
+test('urlDecode', 2, function() {
+	equals(typeof woosh._utils.urlDecode, 'function', 'woosh._utils.urlDecode is function');
+	
+	var obj = {
+		hello: ['world'],
+		foo: ['bar', 'bunz']
+	}
+	same(woosh._utils.urlDecode('hello=world&foo=bar&foo=bunz'), obj, 'Basic decode');
+});
+
 module('woosh.Test');
 
 test('Creating instances', 5, function() {
@@ -182,14 +204,109 @@ test('Handling errors in an async test', 6, function() {
 	test._run();
 });
 
-/*module('woosh.addTests');
+module('woosh._TestSet');
 
-test('woosh.addTests initial call', 8, function() {
-	woosh.libs.fakeLib = ['unittests/assets/fakelib.js'];
+test('woosh._TestSet', 6, function() {
+	stop(2000);
 	
-	woosh.addTests('glow', {
-		test1: function() {
-			document.getElements
-		}
+	equals(typeof woosh._TestSet, 'function', 'woosh._TestSet is function');
+	
+	var log = [];
+	
+	var testSet = new woosh._TestSet({
+		'$preTest': function(prevTest, nextTest) {
+			log.push('$preTest prev: ' + prevTest);
+			log.push('$preTest next: ' + nextTest);
+		},
+		'functionTest': function() {
+			log.push('functionTest');
+			return 'hello';
+		},
+		'TestTest': woosh.Test(4, function() {
+			log.push('TestTest');
+			return 'world';
+		}),
+		'AsyncTestTest': woosh.AsyncTest(3, function() {
+			var test = this;
+			setTimeout(function() {
+				log.push('AsyncTestTest');
+				test.endTest('fooBar');
+			}, 50);
+		})
 	});
+	
+	var i = 0;
+	
+	testSet.onTestComplete = function(testName, test) {
+		i++;
+		log.push('onTestComplete: ' + testName);
+		ok(test instanceof woosh.Test, 'test param is instanceof woosh.Test');
+		
+		if (i == testSet.testNames.length) {
+			same(log, [
+				'$preTest prev: undefined',
+				'$preTest next: functionTest',
+				'functionTest',
+				'onTestComplete: functionTest',
+				'$preTest prev: functionTest',
+				'$preTest next: TestTest',
+				'TestTest','TestTest','TestTest','TestTest',
+				'onTestComplete: TestTest',
+				'$preTest prev: TestTest',
+				'$preTest next: AsyncTestTest',
+				'AsyncTestTest', 'AsyncTestTest', 'AsyncTestTest',
+				'onTestComplete: AsyncTestTest',
+			], 'Functions all called in correct order');
+			start();
+		} else {
+			testSet.run( testSet.testNames[i] );
+		}		
+	};
+	
+	same(testSet.testNames, ['functionTest', 'TestTest', 'AsyncTestTest'], 'woosh._TestSet#testNames set');
+	
+	testSet.run( testSet.testNames[i] );
+});
+
+module('woosh._TestFrame');
+
+/*test('creating woosh._TestFrames', 0, function() {
+	stop();
+	
+	// add fake libraries
+	woosh.libs.fakeLib1 = ['unittests/assets/fakelib1/1.js', 'unittests/assets/fakelib1/2.js', 'unittests/assets/fakelib1/3.css'];
+	woosh.libs.fakeLib2 = ['unittests/assets/fakelib2/1.js', 'unittests/assets/fakelib2/2.js', 'unittests/assets/fakelib2/3.css'];
+	
+	equals(typeof woosh._TestFrame, 'function', 'woosh._TestFrame is function');
+	
+	var framesReady = 0;
+	function testFrameReady() {
+		ok(true, 'Frame Ready');
+		framesReady++;
+		if (framesReady == 2) {
+			allFramesReady();
+		}
+	}
+	
+	function allFramesReady() {
+		equals(typeof testFrame1.window, 'object', 'testFrame1 has window');
+		equals(typeof testFrame1.window.fakeLib1, 'object', 'fakeLib1 created in testFrame1');
+		equals(typeof testFrame1.window.fakeLib2, 'undefined', 'fakeLib2 not created in testFrame1');
+		ok(testFrame1.window.fakeLib1.file2Loaded, 'fakeLib1 file2Loaded in testFrame1');
+		equals(testFrame1.window.document.getElementById('fakeLib1').offsetWidth, 300, 'fakeLib1 CSS loaded in testFrame1');
+		equals(typeof testFrame1.testSet, 'object', 'testFrame1.testSet defined');
+		
+		equals(typeof testFrame2.window, 'object', 'testFrame2 has window');
+		equals(typeof testFrame2.window.fakeLib2, 'object', 'fakeLib2 created in testFrame2');
+		equals(typeof testFrame2.window.fakeLib1, 'undefined', 'fakeLib1 not created in testFrame2');
+		ok(testFrame2.window.fakeLib2.file2Loaded, 'fakeLib2 file2Loaded in testFrame2');
+		equals(testFrame2.window.document.getElementById('fakeLib2').offsetWidth, 300, 'fakeLib2 CSS loaded in testFrame2');
+		equals(typeof testFrame2.testSet, 'object', 'testFrame2.testSet defined');
+		
+		start();
+	}
+	
+	var testFrame1 = new woosh._TestFrame('testLib1', testFrameReady);
+	var testFrame2 = new woosh._TestFrame('testLib2', testFrameReady);
+	
 });*/
