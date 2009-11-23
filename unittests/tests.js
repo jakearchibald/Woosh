@@ -65,6 +65,41 @@ test('Handling errors in a sync test', 5, function() {
 	ok(test._error instanceof Error, '_error is Error');
 });
 
+test('Overriding results and units', 10, function() {
+
+	var test1 = new woosh.Test(1, function() {
+		equals(typeof this.result, 'function', 'woosh.Test#result is function');
+		this.result(123);
+		return 'Hello';
+	});
+	
+	var test2 = new woosh.Test(1, function() {
+		this.result(456, 'cm');
+		return 'Hello';
+	});
+	
+	var test3 = new woosh.Test(1, function() {
+		this.result(789, 'fps', true);
+		return 'Hello';
+	});
+	
+	test1._run();
+	test2._run();
+	test3._run();
+	
+	equals(test1._result, 123, 'test1._result');
+	equals(test1._unit, 'ms', 'test1._unit');
+	equals(test1._highestIsBest, false, 'test1._highestIsBest');
+	
+	equals(test2._result, 456, 'test2._result');
+	equals(test2._unit, 'cm', 'test2._unit');
+	equals(test2._highestIsBest, false, 'test2._highestIsBest');
+	
+	equals(test3._result, 789, 'test3._result');
+	equals(test3._unit, 'fps', 'test3._unit');
+	equals(test3._highestIsBest, true, 'test3._highestIsBest');
+});
+
 module('woosh.AsyncTest');
 
 test('Creating instances', 6, function() {

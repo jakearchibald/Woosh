@@ -88,7 +88,7 @@
 	
 	Test.prototype = {
 		// what kind of unit should the results be measured in
-		_units: 'ms',
+		_unit: 'ms',
 		// what is the result?
 		_result: undefined,
 		// are high results good?
@@ -118,6 +118,34 @@
 			}
 			this._returnVal = returnVal;
 			this._onComplete();
+		},
+		/**
+		@name woosh.Test#result
+		@function
+		@description Change the result of the test.
+			By default, the result is the time the test took to run in milliseconds,
+			however, you may want your test to measure something else like
+			frames-per-second. You can achieve that using this method.
+		
+		@param {Number} result The result value as a number
+		@param {String} [unit='ms'] The unit for the result
+		@param {Boolean} [highestIsBest=false] Treat high numbers as better than low numbers?
+
+		@returns {woosh.Test}
+		
+		@example
+			woosh.Test(loopCount, function() {				
+				// set the result manually to a different set of units
+				this.result(123, 'fps', true);
+				
+				return // a value (this will be checked against the results of other tests)
+			})
+		*/
+		result: function(result, unit, highestIsBest) {
+			this._result = result - 0;
+			this._unit = unit || this._unit;
+			this._highestIsBest = !!highestIsBest;
+			return this;
 		}
 	};
 	
