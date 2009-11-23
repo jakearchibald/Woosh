@@ -43,7 +43,7 @@ test('Running a sync test', 6, function() {
 	ok(test._result >= 0, '_result is a positive number (or 0)');
 });
 
-test('Handling errors in a sync test', 6, function() {
+test('Handling errors in a sync test', 5, function() {
 	var undefined,
 		onCompleteFiredCount = 0,
 		testRunCount = 0;
@@ -61,8 +61,7 @@ test('Handling errors in a sync test', 6, function() {
 	equals(testRunCount, 1, '_testFunc was called only once since it errored');
 	equals(onCompleteFiredCount, 1, '_onComplete was called correct number of times');
 	equals(test._returnVal, undefined, '_returnVal is undefined');
-	equals(test._result, null, '_result is null');
-	ok(test._result >= 0, '_result is a positive number (or 0)');
+	equals(test._result, undefined, '_result is undefined');
 	ok(test._error instanceof Error, '_error is Error');
 });
 
@@ -95,7 +94,7 @@ test('Running an async test', 8, function() {
 		setTimeout(function() {
 			setTimeoutCallbackRunCount++;
 			test.endTest('Hello');
-		}, 60);
+		}, 50);
 	});
 	
 	test._onComplete = function() {
@@ -106,7 +105,6 @@ test('Running an async test', 8, function() {
 		equals(onCompleteFiredCount, 1, '_onComplete was called correct number of times');
 		equals(test._returnVal, 'Hello', '_returnVal set via endTest');
 		equals(typeof test._result, 'number', '_result is number (' + test._result + ')');
-		// Firefox seem to run setTimeouts too fast, which is why I'm using 500 rather than 600 here
 		ok(test._result >= 500, '_result indicates setTimeout callbacks have been waited for');
 		start();
 	}
@@ -141,7 +139,7 @@ test('Handling errors in an async test', 6, function() {
 		equals(setTimeoutCallbackRunCount, 1, 'setTimeout callback was called only once since it errored');
 		equals(onCompleteFiredCount, 1, '_onComplete was called correct number of times');
 		equals(test._returnVal, undefined, '_returnVal is undefined');
-		equals(test._result, null, '_result is null');
+		equals(test._result, undefined, '_result is undefined');
 		ok(test._error instanceof Error, '_error is Error');
 		start();
 	}
