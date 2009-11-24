@@ -32,6 +32,24 @@
 
 (function(){
 	/**
+	@name woosh._root
+	@type {String}
+	@private
+	@description Path to woosh repo root
+	*/
+	var scripts = document.getElementsByTagName('script'),
+		lastScript = scripts[scripts.length - 1];
+		
+	// eval any contents of the script
+	try {
+		eval(lastScript.innerHTML);
+	} catch(e) {}
+	
+	window.woosh._root = lastScript.src.replace('woosh.js', '');
+})();
+
+(function(){
+	/**
 	@name woosh._utils
 	@namespace
 	@private
@@ -109,18 +127,24 @@
 				}
 			}
 			return result;
+		},
+		loadLibrary: function(libraryName) {
+			var files = woosh.libs[libraryName];
+			if (files) {
+				for (var i = 0, len = files.length; i < len; i++) {
+					if (files[i].slice(-3) == '.js') {
+						document.write('<script type="text/javascript" src="' + woosh._root + files[i] + '"></scr' + 'ipt>');
+					}
+					else if (files[i].slice(-4) == '.css') {
+						//document.write('<link rel="stylesheet" type="text/css" src="' + woosh._root + files[i] + '">');
+						document.write('<style type="text/css">@import "' + woosh._root + files[i] + '";</style>')
+					}
+				}
+			}
 		}
 	}
 	
 	window.woosh._utils = utils;
-})();
-
-(function(){
-	function loadLibrary(libraryName) {
-		// document write script element?
-	}
-	
-	window.woosh._loadLibrary = loadLibrary;
 })();
 
 (function() {
@@ -464,11 +488,13 @@
 		});
 	*/
 	function addTests(libraryName, tests) {
-		// todo, only do this for the test we want to run
-		if (woosh._testSet) {
-			throw new Error('A testSet has already been defined for this page');
+		// only create the test set if we're testing this library in this frame
+		if (libraryName == woosh._libraryToTest) {
+			if (woosh._testSet) {
+				throw new Error('A testSet has already been defined for this page');
+			}
+			woosh._testSet = new TestSet(tests);
 		}
-		woosh._testSet = new TestSet(tests);
 		return woosh;
 	}
 	
@@ -476,7 +502,7 @@
 	window.woosh._TestSet = TestSet;
 })();
 
-(function() {
+(function() {	
 	/**
 	@name woosh._TestFrame
 	@constructor
@@ -487,21 +513,38 @@
 		String must be a property name within {@link woosh.libs}
 		
 	@param {Function} onReady A function to call when the TestFrame is ready to use
+		'this' in onReady will be the TestFrame
 		
 	*/
-	/**
-	@name woosh._TestFrame#testSet
-	@type {woosh._TestSet}
-	@description The testSet created in this frame
-	*/
-	/**
-	@name woosh._TestFrame#window
-	@type {Window}
-	@description The window object of the frame
-	*/
+	
+	
 	function TestFrame(libraryName, onReady) {
-		/*var iframe = document.createElement('iframe');
-		iframe.className = 'wooshCreated';*/
+		var iframe = document.createElement('iframe'),
+			testFrame = this,
+			queryString = woosh._utils.urlEncode({
+				lib: libraryName
+			});
+			
+		iframe.className = 'wooshCreated';
+		
+		iframe.onload = function() {
+			/**
+			@name woosh._TestFrame#window
+			@type {Window}
+			@description The window object of the frame
+			*/
+			testFrame.window = iframe.contentWindow;
+			/**
+			@name woosh._TestFrame#testSet
+			@type {woosh._TestSet}
+			@description The testSet created in this frame
+			*/
+			testFrame.testSet = testFrame.window.woosh._testSet;
+			onReady.call(testFrame);
+		}
+		
+		iframe.src = window.location.href.replace(window.location.search, '') + '?notest&' + queryString;
+		document.body.appendChild(iframe);
 	}
 	
 	window.woosh._TestFrame = TestFrame;
@@ -523,8 +566,18 @@
 	}
 })();
 
-
 (function() {
 	// set this frame / window up
-	//var queryString = 
+	var query = woosh._utils.urlDecode( window.location.search.slice(1) );
+	// we need to load a particular library
+	if ( query.lib ) {
+		woosh._utils.loadLibrary( query.lib[0] );
+		/**
+		@name woosh._libraryToTest
+		@private
+		@type {String}
+		@description Name of the library being tested in this frame
+		*/
+		woosh._libraryToTest = query.lib[0];
+	}
 })();

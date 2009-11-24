@@ -1,0 +1,1 @@
+fakeLib1.file2Loaded = true;
