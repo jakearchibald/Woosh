@@ -1,4 +1,5 @@
 // Ideas:
+// Restricting tests to certain libraries / tests
 // Graphing with error margins
 // Save previous result
 
@@ -156,7 +157,8 @@
 	@param {number} loopCount Number of times to run the test
 		Tests that run longer have less margin for error.
 	
-	@param {Function} test The test to run
+	@param {Function} test The test to run.
+		The instance of {@link woosh.Test} will be the first param
 		
 	@example
 		woosh.Test(1000, function() {
@@ -195,7 +197,7 @@
 					start = new Date();
 			
 				while (i--) {
-					returnVal = this._testFunc();
+					returnVal = this._testFunc(this);
 				}
 				
 				duration = new Date() - start;
@@ -251,7 +253,8 @@
 	@param {number} loopCount Number of times to run the test
 		Tests that run longer have less margin for error.
 	
-	@param {Function} test The test to run
+	@param {Function} test The test to run.
+		The instance of {@link woosh.AsyncTest} will be the first param
 		
 	@example
 		woosh.AsyncTest(1000, function() {
@@ -315,7 +318,7 @@
 				
 				this._onEndTest = function() {
 					if (--i) {
-						test._testFunc();
+						test._testFunc(test);
 					} else {
 						test._result = test._result || ( new Date() - start );
 						complete(test);
@@ -323,7 +326,7 @@
 				}
 				
 				start = new Date();
-				test._testFunc();
+				test._testFunc(test);
 			} catch (e) {
 				this._error = e;
 				complete(test);
@@ -339,12 +342,6 @@
 })();
 
 (function() {
-	/**
-	@name woosh._testSet
-	@type {woosh._TestSet}
-	@description The testSet for this frame to test
-	*/
-
 	/**
 	@name woosh._TestSet
 	@constructor
@@ -456,7 +453,8 @@
 	
 	@param {Object} Object of tests to add for this framework.
 		Tests can either be functions, or instances of {@link woosh.Test} /
-		{@link woosh.AsyncTest}.
+		{@link woosh.AsyncTest}. The instance of the test will be passed
+		in as the first param of the function.
 		
 		Keys beginning "$" are considered special:
 		
@@ -473,33 +471,58 @@
 				// do some stuff
 				return // a value (this will be checked against the results of other tests)
 			},
-			'myComplexTest': woosh.Test(loopCount, function() {				
+			'myComplexTest': woosh.Test(loopCount, function(test) {				
 				// set the result manually to a different set of units
-				this.result(123, 'fps', true);
+				test.result(123, 'fps', true);
 				
 				return // a value (this will be checked against the results of other tests)
 			}),
-			'myAsyncTest': woosh.AsyncTest(loopCount, function() {				
+			'myAsyncTest': woosh.AsyncTest(loopCount, function(test) {				
 				// do something async
 				
 				// return the result (this will be checked against the results of other tests)
-				this.endTest(returnVal);
+				test.endTest(returnVal);
 			})
 		});
 	*/
+	
 	function addTests(libraryName, tests) {
-		// only create the test set if we're testing this library in this frame
-		if (libraryName == woosh._libraryToTest) {
-			if (woosh._testSet) {
-				throw new Error('A testSet has already been defined for this page');
+		if (woosh._pageMode == 'conducting') {
+			if (libsAdded[libraryName]) {
+				throw new Error('A test for "' + libraryName + '" has already been added.');
 			}
-			woosh._testSet = new TestSet(tests);
+			libsToConduct.push(libraryName);
+			libsAdded[libraryName] = true;
+		}
+		else if (woosh._pageMode == 'testing') {
+			// only create the test set if we're testing this library in this frame
+			if (libraryName == woosh._libraryToTest) {
+				if (woosh._testSet) {
+					throw new Error('A testSet has already been defined for this page');
+				}
+				/**
+				@name woosh._testSet
+				@type {woosh._TestSet}
+				@description The testSet for this frame to test
+				*/
+				woosh._testSet = new TestSet(tests);
+			}
 		}
 		return woosh;
 	}
+	/**
+	@name woosh._libsToConduct
+	@type {String[]}
+	@description Library names that should be conducted when
+		{@link woosh._pageMode} is 'conducting'
+	*/
+	var libsToConduct = [],
+		libsAdded = {};
+	
 	
 	window.woosh.addTests = addTests;
 	window.woosh._TestSet = TestSet;
+	window.woosh._libsToConduct = libsToConduct;
 })();
 
 (function() {	
@@ -562,18 +585,107 @@
 	@name woosh._Conductor
 	@constructor
 	@private
-	@description A set of tests to run
+	@description Runs {@link woosh._TestSet}s in a series of {@link woosh._TestFrame}s.
 	
-	@param {Object} tests Obj of functions / woosh.Test instances
-		Keys beginning $ have special meaning.
+	@param {String[]} libraryNames Names of libraries to be tested.
+	
+	@param {Function} onReady A function to call when the Conductor is ready to use.
 		
 	*/
-	function Conductor() {
+	function Conductor(libraryNames, onReady) {
+		var numOfFramesWaiting = libraryNames.length,
+			conductor = this;
 		
+		/**
+		@name woosh._Conductor#libraryNames
+		@private
+		@type {String[]}
+		@description Library names being tested
+		*/
+		this.libraryNames = libraryNames;
+		
+		/**
+		@name woosh._Conductor#_testFrames
+		@private
+		@type {woosh._TestFrame[]}
+		@description Test frames used by the conductor
+		*/
+		this._testFrames = [];
+		
+		// call onReady when all frames have loaded
+		function testFrameReady() {
+			if (!conductor._testNames) {
+				/**
+				@name woosh._Conductor#testNames
+				@type {String[]}
+				@description Names of tests to run
+				*/
+				conductor.testNames = conductor.testSet.testNames;
+			}
+			if (--numOfFramesWaiting) {
+				onReady.call(conductor);
+			}
+		}
+		
+		for (var i = 0, len = libraryNames.length; i < len; i++) {
+			this.testFrames.push(
+				new woosh._TestFrame(libraryNames[i], testFrameReady)
+			);
+		}
 	}
+	
+	Conductor.prototype = {
+		/**
+		@name woosh._Conductor#start
+		@function
+		@description Start running tests
+		*/
+		start: function() {},
+		/**
+		@name woosh._Conductor#onStart
+		@function
+		@description Called when testing start
+		*/
+		onStart: function() {},
+		/**
+		@name woosh._Conductor#onStart
+		@function
+		@description Called when testing start
+		*/
+		onStart: function() {},
+		/**
+		@name woosh._Conductor#onTestResult
+		@function
+		@description Called when the same test name is completed in each {@link woosh._TestFrame}
+		
+		@param {String} testName The name of the test completed
+		
+		@param {Object} tests Object of completed tests with name testName
+			The key is the name of the library the test ran against
+		*/
+		onTestResult: function(testName, tests) {},
+		/**
+		@name woosh._Conductor#onComplete
+		@function
+		@description Called when all queued tests have completed
+		*/
+		onComplete: function() {}
+	};
+	
+	window.woosh._Conductor = Conductor;
 })();
 
 (function() {
+	/**
+	@name woosh._pageMode
+	@type {String}
+	@private
+	@description The mode the page is running in.
+		'conducting':  Will create frames for libraries to be tested
+		   'testing':  Will load a library onto the page and create a TestSet
+	*/
+	woosh._pageMode = 'conducting';
+	
 	// load stylesheet
 	woosh._utils.loadAssets('assets/style.css');
 	
@@ -581,6 +693,7 @@
 	var query = woosh._utils.urlDecode( window.location.search.slice(1) );
 	// we need to load a particular library
 	if ( query.lib ) {
+		woosh._pageMode = 'testing';
 		woosh._utils.loadAssets.apply( this, woosh.libs[ query.lib[0] ] );
 		/**
 		@name woosh._libraryToTest

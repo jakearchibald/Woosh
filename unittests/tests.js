@@ -44,11 +44,14 @@ test('Creating instances', 5, function() {
 	equals(test2._testFunc, func, '_testFunc set');
 });
 
-test('Running a sync test', 6, function() {
+test('Running a sync test', 7, function() {
 	var testRunCount = 0,
 		onCompleteFiredCount = 0;
 	
-	var test = new woosh.Test(1000000, function() {
+	var test = new woosh.Test(1000000, function(testParam) {
+		if (!testRunCount) {
+			equals(testParam, test, 'Test is passed in as parameter');
+		}
 		testRunCount++;
 		return 'Hello';
 	});
@@ -141,14 +144,17 @@ test('Creating instances', 6, function() {
 	equals(test2._testFunc, func, '_testFunc set');
 });
 
-test('Running an async test', 8, function() {
+test('Running an async test', 9, function() {
 	stop();
 	
 	var testRunCount = 0,
 		setTimeoutCallbackRunCount = 0,
 		onCompleteFiredCount = 0;
 	
-	var test = new woosh.AsyncTest(10, function() {
+	var test = new woosh.AsyncTest(10, function(testParam) {
+		if (!testRunCount) {
+			equals(testParam, test, 'Test is passed in as parameter');
+		}
 		testRunCount++;
 		setTimeout(function() {
 			setTimeoutCallbackRunCount++;
@@ -306,5 +312,30 @@ test('creating woosh._TestFrames', 15, function() {
 	
 	var testFrame1 = new woosh._TestFrame('fakeLib1', testFrameReady);
 	var testFrame2 = new woosh._TestFrame('fakeLib2', testFrameReady);
-	
 });
+
+/*module('woosh._Conductor');
+
+test('creating a woosh._Conductor', 0, function() {
+	stop(2000);
+	
+	equals(typeof woosh._Conductor, 'function', 'woosh._Conductor is function');
+	var log = [];
+	
+	var conductor = new woosh._Conductor(['fakeLib1', 'fakeLib2'], function() {
+		conductor.onStart = function() {
+			log.push('onStart');
+		}
+		conductor.onTestResult = function(testName, tests) {
+			log.push('onTestResult: ' + testName);
+		}
+		conductor.onComplete = function() {
+			log.push('onComplete');
+			start();
+		}
+		
+		conductor.start();
+	});
+	
+	equals(typeof conductor.start, 'function', 'woosh._Conductor#start is function');
+})*/
