@@ -287,7 +287,6 @@ test('creating woosh._TestFrames', 15, function() {
 	}
 	
 	function allFramesReady() {
-		//alert('goooo');
 		equals(typeof testFrame1.window, 'object', 'testFrame1 has window');
 		equals(typeof testFrame1.window.fakeLib1, 'object', 'fakeLib1 created in testFrame1');
 		equals(typeof testFrame1.window.fakeLib2, 'undefined', 'fakeLib2 not created in testFrame1');

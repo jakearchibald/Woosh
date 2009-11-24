@@ -4,5 +4,5 @@ woosh.addTests('fakeLib2', {
 	},
 	'test2': function() {
 		return 'hello'
-	},
+	}
 });

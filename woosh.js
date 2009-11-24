@@ -527,7 +527,7 @@
 			
 		iframe.className = 'wooshCreated';
 		
-		iframe.onload = function() {
+		function iframeonload() {
 			/**
 			@name woosh._TestFrame#window
 			@type {Window}
@@ -542,6 +542,13 @@
 			testFrame.testSet = testFrame.window.woosh._testSet;
 			onReady.call(testFrame);
 		}
+		
+		if (iframe.attachEvent) {
+			iframe.attachEvent('onload', iframeonload);
+		} else {
+			iframe.onload = iframeonload;
+		}
+		
 		
 		iframe.src = window.location.href.replace(window.location.search, '') + '?notest&' + queryString;
 		document.body.appendChild(iframe);
