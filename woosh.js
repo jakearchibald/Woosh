@@ -25,7 +25,10 @@
 		Paths must be relative to whoosh.js.
 	*/
 	var libs = {
-		'glow170': ['libs/glow170.js']
+		'dojo': ['libs/dojo.js'],
+		'jQuery132': ['libs/jq-132.js'],
+		'moo121': ['libs/moo-121.js'],
+		'proto1603': ['libs/proto-1603.js']
 	}
 	
 	window.woosh.libs = libs;
@@ -907,9 +910,13 @@
 		_addResult: function(test) {
 			var resultText;
 			
-			if (test) {
+			if (test && test._error) {
+				resultText = 'Error';
+			}
+			else if (test) {
 				resultText = test._result + test._unit;
-			} else {
+			}
+			else {
 				resultText = 'No test found';
 			}
 			
@@ -930,7 +937,8 @@
 				nextRow = this._nextResultCell.parentNode.nextSibling;
 				if (nextRow) {
 					nextCell = nextRow.childNodes[1];
-				} else {
+				}
+				else {
 					nextCell = undefined;
 				}
 			}
@@ -969,5 +977,19 @@
 		@description Name of the library being tested in this frame
 		*/
 		woosh._libraryToTest = query.lib[0];
+	} else {
+		/**
+		@name woosh._conductor
+		@type {woosh._Conductor}
+		@private
+		@description The conductor for this page
+		*/
+		window.onload = function() {
+			woosh._conductor = new woosh._Conductor(woosh._libsToConduct, function() {
+				var table = new woosh._views.Table(woosh._conductor);
+				document.getElementById('tableOutput').appendChild(table.element);
+				//woosh._conductor.start();
+			});
+		};
 	}
 })();
