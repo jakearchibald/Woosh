@@ -590,7 +590,6 @@
 	@param {String[]} libraryNames Names of libraries to be tested.
 	
 	@param {Function} onReady A function to call when the Conductor is ready to use.
-		
 	*/
 	function Conductor(libraryNames, onReady) {
 		var numOfFramesWaiting = libraryNames.length,
@@ -652,20 +651,26 @@
 			var testIndex = -1,
 				currentTestName,
 				conductor = this;
-				
+			
+			// called when all tests of a given name are complete
 			function testPerFrameComplete(results) {
-				conductor.onTestResult(currentTestName, results);
-				runNextTestPerFrame()
+				conductor.onTestComplete(currentTestName, results);
+				runNextTestPerFrame();
+			}
+			
+			// called when a test completes (once per library)
+			function testComplete(libraryName, test) {
+				conductor.onTestResult(currentTestName, libraryName, test);
 			}
 			
 			function runNextTestPerFrame() {
 				currentTestName = conductor.testNames[ ++testIndex ];	
 				
 				if (currentTestName) {
-					conductor._runTestPerFrame(currentTestName, testPerFrameComplete);
+					conductor._runTestPerFrame(currentTestName, testComplete, testPerFrameComplete);
 				} else {
 					// we're done!
-					conductor.onComplete.call(conductor);
+					conductor.onAllTestsComplete.call(conductor);
 				}
 			}
 			
@@ -679,9 +684,13 @@
 		
 		@param {String} testName Name of the test
 		
+		@param {Function} onTestComplete Callback when a test completes
+			Library name as first param, complete Test object as 2nd param.
+		
 		@param {Function} onDone Callback when complete
+			Object of complete Test objects as first param, keyed by test name
 		*/
-		_runTestPerFrame: function(testName, onDone) {
+		_runTestPerFrame: function(testName, onTestComplete, onDone) {
 			var libIndex = -1,
 				currentLibName,
 				currentFrame,
@@ -697,6 +706,7 @@
 					// remove listener
 					test._onComplete = function() {};
 				}
+				onTestComplete.call(conductor, currentLibName, test);
 				runNextTest();
 			}
 			
@@ -731,25 +741,152 @@
 		*/
 		onStart: function() {},
 		/**
-		@name woosh._Conductor#onTestResult
+		@name woosh._Conductor#onTestComplete
 		@function
 		@description Called when the same test name is completed in each {@link woosh._TestFrame}
 		
 		@param {String} testName The name of the test completed
 		
 		@param {Object} tests Object of completed tests with name testName
-			The key is the name of the library the test ran against
+			The key is the name of the library the test ran against, the value
+			is a completed {@link woosh.Test}, or undefined if the test didn't exist
+			for a particular library
 		*/
-		onTestResult: function(testName, tests) {},
+		onTestComplete: function(testName, tests) {},
 		/**
-		@name woosh._Conductor#onComplete
+		@name woosh._Conductor#onTestResult
+		@function
+		@description Called when a test completes for a particular library
+		
+		@param {String} testName The name of the test completed
+		
+		@param {String} libraryName The name of the library the test was completed for
+		
+		@param {Object} tests Object of completed tests with name testName
+			The key is the name of the library the test ran against, the value
+			is a completed {@link woosh.Test}, or undefined if the test didn't exist
+			for a particular library
+		*/
+		onTestResult: function(testName, libraryName, tests) {},
+		/**
+		@name woosh._Conductor#onAllTestsComplete
 		@function
 		@description Called when all queued tests have completed
 		*/
-		onComplete: function() {}
+		onAllTestsComplete: function() {}
 	};
 	
 	window.woosh._Conductor = Conductor;
+})();
+
+(function() {
+	/**
+	@name woosh._views
+	@namespace
+	@private
+	@description Constructors for visual output of test results
+	*/
+	woosh._views = {};
+})();
+
+(function() {
+	var tableHeading = '<th></th>',
+		tableCell = '<td></td>';
+	
+	// builds the skeleton of a results table
+	function createResultsTable(libsLen, testsLen) {
+		var tmpDiv = document.createElement('div'),
+			tableStr = '<table class="wooshTable"><thead>',
+			resultRowStr;
+		
+		// add headers for library names to go in	
+		tableStr += '<tr>' + tableCell + ( new Array(libsLen+1).join(tableHeading) ) + '</tr>';
+		tableStr += '</thead><tbody>';
+		// add result rows
+		resultRowStr = '<tr>' + tableHeading + new Array(libsLen+1).join(tableCell) + '</tr>';
+		tableStr += new Array(testsLen+1).join(resultRowStr);
+		tableStr += '</tbody></table>';
+		
+		tmpDiv.innerHTML = tableStr;
+		
+		return tmpDiv.firstChild;
+	}
+	
+	/**
+	@name woosh._views.Table
+	@constructor
+	@private
+	@description Create a dynamically updating table to display results
+	
+	@param {woosh._Conductor} conductor Test conductor to get results from
+	*/
+	function Table(conductor) {
+		/**
+		@name woosh._views.Table#conductor
+		@type {woosh._Conductor}
+		@description The instance conducting the test
+		*/
+		this.conductor = conductor;
+		
+		/**
+		@name woosh._views.Table#element
+		@type {HTMLElement}
+		@description Table element that can be appended to the document
+		*/
+		this.element = createResultsTable(conductor.libraryNames.length, conductor.testNames.length);
+		
+		/**
+		@name woosh._views.Table#_testRows
+		@type {Object}
+		@description Object of table rows keyed on test name
+		*/
+		this._testRows = {}
+		
+		this._initAndIndex();
+		this._attachListeners();
+	}
+	
+	Table.prototype = {
+		/**
+		@name woosh._views.Table#initAndIndex
+		@function
+		@private
+		@description Populate the headings and index row element on {@link woosh._views.Table#_testRows}
+		*/
+		_initAndIndex: function() {
+			var libRowCells = this.element.firstChild.firstChild.childNodes,
+				testRows = this.element.childNodes[1].childNodes,
+				testNames = this.conductor.testNames,
+				libraryNames = this.conductor.libraryNames;
+			
+			// headings
+			for (var i = 0, len = libraryNames.length; i < len; i++) {
+				libRowCells[i + 1].appendChild( document.createTextNode( libraryNames[i] ) );
+			}
+			// rows
+			for (var i = 0, len = testNames.length; i < len; i++) {
+				this._testRows[ testNames[i] ] = testRows[i];
+				testRows[i].firstChild.appendChild( document.createTextNode( testNames[i] ) );
+			}
+			
+		},
+		/**
+		@name woosh._views.Table#_attachListeners
+		@function
+		@private
+		@description Hook up with the conductor
+		*/
+		_attachListeners: function() {
+			var oldOnTestResult = this.conductor.onTestResult,
+				_addResults;
+				
+			this.conductor.onTestResult = function() {
+				// TODO
+			}
+		}
+	}
+	
+	woosh._views.Table = Table;
 })();
 
 (function() {

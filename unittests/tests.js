@@ -330,8 +330,11 @@ test('creating a woosh._Conductor with 1 lib', 12, function() {
 			ok(true, 'conductor onStart called');
 			log.push('onStart');
 		}
-		conductor.onTestResult = function(testName, tests) {
-			log.push('onTestResult: ' + testName);
+		conductor.onTestResult = function(testName, libraryName, test) {
+			log.push('onTestResult: ' + testName + ', ' + libraryName);
+		}
+		conductor.onTestComplete = function(testName, tests) {
+			log.push('onTestComplete: ' + testName);
 			switch (testName) {
 				case 'blockingFunc':
 					equals(tests.fakeLib1._returnVal, 'fakeLib1.blockingFunc', 'Correct return val on fakeLib1.blockingFunc');
@@ -351,16 +354,20 @@ test('creating a woosh._Conductor with 1 lib', 12, function() {
 					break;
 			}
 		}
-		conductor.onComplete = function() {
-			log.push('onComplete');
+		conductor.onAllTestsComplete = function() {
+			log.push('onAllTestsComplete');
 			
 			same(log, [
 				'onStart',
-				'onTestResult: blockingFunc',
-				'onTestResult: asyncFunc',
-				'onTestResult: customResultTest',
-				'onTestResult: onlyInFakeLib1',
-				'onComplete'
+				'onTestResult: blockingFunc, fakeLib1',
+				'onTestComplete: blockingFunc',
+				'onTestResult: asyncFunc, fakeLib1',
+				'onTestComplete: asyncFunc',
+				'onTestResult: customResultTest, fakeLib1',
+				'onTestComplete: customResultTest',
+				'onTestResult: onlyInFakeLib1, fakeLib1',
+				'onTestComplete: onlyInFakeLib1',
+				'onAllTestsComplete'
 			], 'Events happened in correct order')
 			
 			start();
@@ -370,7 +377,7 @@ test('creating a woosh._Conductor with 1 lib', 12, function() {
 	});
 	
 	equals(typeof conductor.start, 'function', 'woosh._Conductor#start is function');
-})
+});
 
 test('creating a woosh._Conductor with 2 libs', 19, function() {
 	stop(5000);
@@ -387,8 +394,11 @@ test('creating a woosh._Conductor with 2 libs', 19, function() {
 			ok(true, 'conductor onStart called');
 			log.push('onStart');
 		}
-		conductor.onTestResult = function(testName, tests) {
-			log.push('onTestResult: ' + testName);
+		conductor.onTestResult = function(testName, libraryName, test) {
+			log.push('onTestResult: ' + testName + ', ' + libraryName);
+		}
+		conductor.onTestComplete = function(testName, tests) {
+			log.push('onTestComplete: ' + testName);
 			switch (testName) {
 				case 'blockingFunc':
 					equals(tests.fakeLib1._returnVal, 'fakeLib1.blockingFunc', 'Correct return val on fakeLib1.blockingFunc');
@@ -414,16 +424,24 @@ test('creating a woosh._Conductor with 2 libs', 19, function() {
 					break;
 			}
 		}
-		conductor.onComplete = function() {
-			log.push('onComplete');
+		conductor.onAllTestsComplete = function() {
+			log.push('onAllTestsComplete');
 			
 			same(log, [
 				'onStart',
-				'onTestResult: blockingFunc',
-				'onTestResult: asyncFunc',
-				'onTestResult: customResultTest',
-				'onTestResult: onlyInFakeLib1',
-				'onComplete'
+				'onTestResult: blockingFunc, fakeLib1',
+				'onTestResult: blockingFunc, fakeLib2',
+				'onTestComplete: blockingFunc',
+				'onTestResult: asyncFunc, fakeLib1',
+				'onTestResult: asyncFunc, fakeLib2',
+				'onTestComplete: asyncFunc',
+				'onTestResult: customResultTest, fakeLib1',
+				'onTestResult: customResultTest, fakeLib2',
+				'onTestComplete: customResultTest',
+				'onTestResult: onlyInFakeLib1, fakeLib1',
+				'onTestResult: onlyInFakeLib1, fakeLib2',
+				'onTestComplete: onlyInFakeLib1',
+				'onAllTestsComplete'
 			], 'Events happened in correct order')
 			
 			start();
@@ -433,4 +451,19 @@ test('creating a woosh._Conductor with 2 libs', 19, function() {
 	});
 	
 	equals(typeof conductor.start, 'function', 'woosh._Conductor#start is function');
-})
+});
+/*
+module('woosh._views');
+
+test('woosh._views.Table output', 19, function() {
+	stop(5000);
+
+	equals(typeof woosh._views.Table, 'function', 'woosh._views.Table is function');
+	
+	var conductor = new woosh._Conductor(['fakeLib1', 'fakeLib2'], function() {
+		var table = new woosh._views.Table(conductor);
+		document.getElementById('tableOutput').appendChild(table.element);
+		conductor.start();
+		start();
+	});
+})*/

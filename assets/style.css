@@ -1,4 +1,6 @@
 iframe.wooshCreated {
 	width: 0;
 	height: 0;
+	position: absolute;
+	top: -1000px;
 }
