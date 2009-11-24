@@ -577,7 +577,7 @@
 		
 		
 		iframe.src = window.location.href.replace(window.location.search, '') + '?notest&' + queryString;
-		document.body.appendChild(iframe);
+		document.getElementById('wooshOutput').appendChild(iframe);
 	}
 	
 	window.woosh._TestFrame = TestFrame;
@@ -805,7 +805,7 @@
 			resultRowStr;
 		
 		// add headers for library names to go in	
-		tableStr += '<tr>' + tableCell + ( new Array(libsLen+1).join(tableHeading) ) + '</tr>';
+		tableStr += '<tr><th>Tests</th>' + ( new Array(libsLen+1).join(tableHeading) ) + '</tr>';
 		tableStr += '</thead><tbody>';
 		// add result rows
 		resultRowStr = '<tr>' + tableHeading + new Array(libsLen+1).join(tableCell) + '</tr>';
@@ -952,6 +952,40 @@
 
 (function() {
 	/**
+	@name woosh._buildOutputInterface
+	@function
+	@private
+	@description Builds the output interface to display to the user
+	*/
+	var wooshOutput;
+	
+	function buildOutputInterface() {
+		wooshOutput = document.getElementById('wooshOutput');
+		
+		if (!wooshOutput) {
+			return;
+		}
+		wooshOutput.innerHTML = '<div id="wooshBanner"><h1>' + document.title + '</h1></div><div id="wooshCommands"></div><div id="wooshViewOutput"><div>';
+		
+		var a = document.createElement('a');
+		a.href = '#';
+		a.id = 'startLink';
+		a.className = 'wooshButton';
+		a.innerHTML = 'Start';
+		a.onclick = function() {
+			woosh._conductor.start();
+			this.style.visibility = 'hidden';
+			return false;
+		}
+		
+		document.getElementById('wooshCommands').appendChild(a);
+	}
+	
+	woosh._buildOutputInterface = buildOutputInterface;
+})();
+
+(function() {
+	/**
 	@name woosh._pageMode
 	@type {String}
 	@private
@@ -960,14 +994,13 @@
 		   'testing':  Will load a library onto the page and create a TestSet
 	*/
 	woosh._pageMode = 'conducting';
-	
-	// load stylesheet
-	woosh._utils.loadAssets('assets/style.css');
-	
+
 	// set this frame / window up
 	var query = woosh._utils.urlDecode( window.location.search.slice(1) );
-	// we need to load a particular library
+	
 	if ( query.lib ) {
+		// Ok, we're running tests against a library
+		// we need to load a particular library
 		woosh._pageMode = 'testing';
 		woosh._utils.loadAssets.apply( this, woosh.libs[ query.lib[0] ] );
 		/**
@@ -977,18 +1010,33 @@
 		@description Name of the library being tested in this frame
 		*/
 		woosh._libraryToTest = query.lib[0];
-	} else {
-		/**
-		@name woosh._conductor
-		@type {woosh._Conductor}
-		@private
-		@description The conductor for this page
-		*/
+	}
+	else if (window.QUnit) {
+		// we're in a unit test, don't do anything until we're asked
+		return;
+	}
+	else {
+		// We're running tests in iframes and displaying the results
+		// load our CSS
+		woosh._utils.loadAssets('assets/style.css');
+		var oldOnload = window.onload || function() {};
+		
 		window.onload = function() {
+			oldOnload.call(this, arguments);
+			
+			// build the interface
+			woosh._buildOutputInterface();
+			
+			/**
+			@name woosh._conductor
+			@type {woosh._Conductor}
+			@private
+			@description The conductor for this page
+			*/
+			// create our tests
 			woosh._conductor = new woosh._Conductor(woosh._libsToConduct, function() {
 				var table = new woosh._views.Table(woosh._conductor);
-				document.getElementById('tableOutput').appendChild(table.element);
-				//woosh._conductor.start();
+				document.getElementById('wooshViewOutput').appendChild(table.element);
 			});
 		};
 	}
