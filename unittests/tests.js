@@ -22,9 +22,9 @@ test('urlDecode', 3, function() {
 	
 	var obj = {
 		hello: ['world'],
-		foo: ['bar', 'bunz']
+		foo: ['bar', 'Bunz']
 	}
-	same(woosh._utils.urlDecode('hello=world&foo=bar&foo=bunz'), obj, 'Basic decode');
+	same(woosh._utils.urlDecode('hello=world&foo=bar&foo=Bunz'), obj, 'Basic decode');
 	same(woosh._utils.urlDecode(''), {}, 'Empty string decode');
 });
 
