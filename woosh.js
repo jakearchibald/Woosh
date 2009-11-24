@@ -595,42 +595,48 @@
 	function Conductor(libraryNames, onReady) {
 		var numOfFramesWaiting = libraryNames.length,
 			conductor = this;
-		
+			
 		/**
 		@name woosh._Conductor#libraryNames
-		@private
 		@type {String[]}
 		@description Library names being tested
 		*/
 		this.libraryNames = libraryNames;
 		
 		/**
+		@name woosh._Conductor#_currentTestIndex
+		@private
+		@type {Number}
+		@description Index number for the current test.
+			Is -1 before tests have started.
+		*/
+		this._currentTestIndex = -1;
+		
+		/**
 		@name woosh._Conductor#_testFrames
 		@private
-		@type {woosh._TestFrame[]}
-		@description Test frames used by the conductor
+		@type {Object}
+		@description Object of {@link woosh._TestFrame}s
+			The key is the name of the library being tested in the frame.
 		*/
-		this._testFrames = [];
+		this._testFrames = {};
 		
 		// call onReady when all frames have loaded
 		function testFrameReady() {
-			if (!conductor._testNames) {
+			if ( !--numOfFramesWaiting ) {
 				/**
 				@name woosh._Conductor#testNames
 				@type {String[]}
 				@description Names of tests to run
 				*/
-				conductor.testNames = conductor.testSet.testNames;
-			}
-			if (--numOfFramesWaiting) {
+				// get test names from first library's tests
+				conductor.testNames = conductor._testFrames[ libraryNames[0] ].testSet.testNames;
 				onReady.call(conductor);
 			}
 		}
 		
 		for (var i = 0, len = libraryNames.length; i < len; i++) {
-			this.testFrames.push(
-				new woosh._TestFrame(libraryNames[i], testFrameReady)
-			);
+			this._testFrames[ libraryNames[i] ] = new woosh._TestFrame(libraryNames[i], testFrameReady);
 		}
 	}
 	
@@ -640,13 +646,84 @@
 		@function
 		@description Start running tests
 		*/
-		start: function() {},
+		start: function() {
+			this.onStart();
+			
+			var testIndex = -1,
+				currentTestName,
+				conductor = this;
+				
+			function testPerFrameComplete(results) {
+				conductor.onTestResult(currentTestName, results);
+				runNextTestPerFrame()
+			}
+			
+			function runNextTestPerFrame() {
+				currentTestName = conductor.testNames[ ++testIndex ];	
+				
+				if (currentTestName) {
+					conductor._runTestPerFrame(currentTestName, testPerFrameComplete);
+				} else {
+					// we're done!
+					conductor.onComplete.call(conductor);
+				}
+			}
+			
+			runNextTestPerFrame();
+		},
 		/**
-		@name woosh._Conductor#onStart
+		@name woosh._Conductor#_runTestPerFrame
 		@function
-		@description Called when testing start
+		@private
+		@description Run a test of a given name in each {@link woosh._TestFrame}
+		
+		@param {String} testName Name of the test
+		
+		@param {Function} onDone Callback when complete
 		*/
-		onStart: function() {},
+		_runTestPerFrame: function(testName, onDone) {
+			var libIndex = -1,
+				currentLibName,
+				currentFrame,
+				test,
+				conductor = this,
+				results = {};
+			
+			function testComplete() {
+				// add to results
+				results[currentLibName] = test;
+				
+				if (test) {
+					// remove listener
+					test._onComplete = function() {};
+				}
+				runNextTest();
+			}
+			
+			function runNextTest() {
+				// get the frame for the next library
+				currentLibName = conductor.libraryNames[ ++libIndex ];
+				currentFrame = conductor._testFrames[currentLibName];
+				
+				// if there's none, then we're done!
+				if (currentFrame) {
+					// else let's get the test
+					test = currentFrame.testSet.tests[testName];
+					
+					if (test) {
+						test._onComplete = testComplete;
+						test._run();
+					} else {
+						// maybe this test is missing for this library? Move on
+						testComplete();
+					}
+				} else {
+					onDone.call(conductor, results);
+				}
+			}
+			
+			runNextTest();
+		},
 		/**
 		@name woosh._Conductor#onStart
 		@function

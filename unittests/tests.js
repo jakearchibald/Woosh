@@ -314,23 +314,55 @@ test('creating woosh._TestFrames', 15, function() {
 	var testFrame2 = new woosh._TestFrame('fakeLib2', testFrameReady);
 });
 
-/*module('woosh._Conductor');
+module('woosh._Conductor');
 
-test('creating a woosh._Conductor', 0, function() {
-	stop(2000);
+test('creating a woosh._Conductor with 1 lib', 12, function() {
+	stop(5000);
 	
 	equals(typeof woosh._Conductor, 'function', 'woosh._Conductor is function');
 	var log = [];
 	
-	var conductor = new woosh._Conductor(['fakeLib1', 'fakeLib2'], function() {
+	var conductor = new woosh._Conductor(['fakeLib1'], function() {
+		ok(true, 'conductor onReady called');
+		equals(typeof conductor._testFrames.fakeLib1.testSet, 'object', 'fakeLib1.testSet is function');
+		
 		conductor.onStart = function() {
+			ok(true, 'conductor onStart called');
 			log.push('onStart');
 		}
 		conductor.onTestResult = function(testName, tests) {
 			log.push('onTestResult: ' + testName);
+			switch (testName) {
+				case 'blockingFunc':
+					equals(tests.fakeLib1._returnVal, 'fakeLib1.blockingFunc', 'Correct return val on fakeLib1.blockingFunc');
+					break;
+				case 'asyncFunc':
+					equals(tests.fakeLib1._returnVal, 'fakeLib1.asyncFunc', 'Correct return val on fakeLib1.asyncFunc');
+					break;
+				case 'customResultTest':
+					equals(tests.fakeLib1._returnVal, 'fakeLib1 customResultTest', 'Correct return val on fakeLib1 customResultTest');
+					
+					equals(tests.fakeLib1._result, 123, 'Correct result on fakeLib1 customResultTest');
+					
+					equals(tests.fakeLib1._unit, 'fps', 'Correct unit on fakeLib1 customResultTest');
+					break;
+				case 'onlyInFakeLib1':
+					equals(tests.fakeLib1._returnVal, 'fakeLib1 onlyInFakeLib1', 'Correct return val on fakeLib1 onlyInFakeLib1');
+					break;
+			}
 		}
 		conductor.onComplete = function() {
 			log.push('onComplete');
+			
+			same(log, [
+				'onStart',
+				'onTestResult: blockingFunc',
+				'onTestResult: asyncFunc',
+				'onTestResult: customResultTest',
+				'onTestResult: onlyInFakeLib1',
+				'onComplete'
+			], 'Events happened in correct order')
+			
 			start();
 		}
 		
@@ -338,4 +370,67 @@ test('creating a woosh._Conductor', 0, function() {
 	});
 	
 	equals(typeof conductor.start, 'function', 'woosh._Conductor#start is function');
-})*/
+})
+
+test('creating a woosh._Conductor with 2 libs', 19, function() {
+	stop(5000);
+	
+	equals(typeof woosh._Conductor, 'function', 'woosh._Conductor is function');
+	var log = [];
+	
+	var conductor = new woosh._Conductor(['fakeLib1', 'fakeLib2'], function() {
+		ok(true, 'conductor onReady called');
+		equals(typeof conductor._testFrames.fakeLib1.testSet, 'object', 'fakeLib1.testSet is function');
+		equals(typeof conductor._testFrames.fakeLib2.testSet, 'object', 'fakeLib2.testSet is function');
+		
+		conductor.onStart = function() {
+			ok(true, 'conductor onStart called');
+			log.push('onStart');
+		}
+		conductor.onTestResult = function(testName, tests) {
+			log.push('onTestResult: ' + testName);
+			switch (testName) {
+				case 'blockingFunc':
+					equals(tests.fakeLib1._returnVal, 'fakeLib1.blockingFunc', 'Correct return val on fakeLib1.blockingFunc');
+					equals(tests.fakeLib2._returnVal, 'fakeLib2.blockingFunc', 'Correct return val on fakeLib2.blockingFunc');
+					break;
+				case 'asyncFunc':
+					equals(tests.fakeLib1._returnVal, 'fakeLib1.asyncFunc', 'Correct return val on fakeLib1.asyncFunc');
+					equals(tests.fakeLib2._returnVal, 'fakeLib2.asyncFunc', 'Correct return val on fakeLib2.asyncFunc');
+					break;
+				case 'customResultTest':
+					equals(tests.fakeLib1._returnVal, 'fakeLib1 customResultTest', 'Correct return val on fakeLib1 customResultTest');
+					equals(tests.fakeLib2._returnVal, 'fakeLib2 customResultTest', 'Correct return val on fakeLib2 customResultTest');
+					
+					equals(tests.fakeLib1._result, 123, 'Correct result on fakeLib1 customResultTest');
+					equals(tests.fakeLib2._result, 456, 'Correct result on fakeLib2 customResultTest');
+					
+					equals(tests.fakeLib1._unit, 'fps', 'Correct unit on fakeLib1 customResultTest');
+					equals(tests.fakeLib2._unit, 'fps', 'Correct unit on fakeLib2 customResultTest');
+					break;
+				case 'onlyInFakeLib1':
+					equals(tests.fakeLib1._returnVal, 'fakeLib1 onlyInFakeLib1', 'Correct return val on fakeLib1 onlyInFakeLib1');
+					equals(tests.fakeLib2, undefined, 'Result for fakeLib2 undefined');
+					break;
+			}
+		}
+		conductor.onComplete = function() {
+			log.push('onComplete');
+			
+			same(log, [
+				'onStart',
+				'onTestResult: blockingFunc',
+				'onTestResult: asyncFunc',
+				'onTestResult: customResultTest',
+				'onTestResult: onlyInFakeLib1',
+				'onComplete'
+			], 'Events happened in correct order')
+			
+			start();
+		}
+		
+		conductor.start();
+	});
+	
+	equals(typeof conductor.start, 'function', 'woosh._Conductor#start is function');
+})
