@@ -128,8 +128,8 @@
 			}
 			return result;
 		},
-		loadLibrary: function(libraryName) {
-			var files = woosh.libs[libraryName];
+		loadAssets: function(/* files */) {
+			var files = arguments;
 			if (files) {
 				for (var i = 0, len = files.length; i < len; i++) {
 					if (files[i].slice(-3) == '.js') {
@@ -574,11 +574,14 @@
 })();
 
 (function() {
+	// load stylesheet
+	woosh._utils.loadAssets('assets/style.css');
+	
 	// set this frame / window up
 	var query = woosh._utils.urlDecode( window.location.search.slice(1) );
 	// we need to load a particular library
 	if ( query.lib ) {
-		woosh._utils.loadLibrary( query.lib[0] );
+		woosh._utils.loadAssets.apply( this, woosh.libs[ query.lib[0] ] );
 		/**
 		@name woosh._libraryToTest
 		@private
