@@ -452,18 +452,19 @@ test('creating a woosh._Conductor with 2 libs', 19, function() {
 	
 	equals(typeof conductor.start, 'function', 'woosh._Conductor#start is function');
 });
-/*
+
 module('woosh._views');
 
-test('woosh._views.Table output', 19, function() {
+test('woosh._views.Table output', 2, function() {
 	stop(5000);
 
 	equals(typeof woosh._views.Table, 'function', 'woosh._views.Table is function');
 	
 	var conductor = new woosh._Conductor(['fakeLib1', 'fakeLib2'], function() {
 		var table = new woosh._views.Table(conductor);
+		equals(table.element.nodeName, 'TABLE', 'woosh._views.Table#element is a table');
 		document.getElementById('tableOutput').appendChild(table.element);
 		conductor.start();
 		start();
 	});
-})*/
+})

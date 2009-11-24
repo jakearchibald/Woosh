@@ -707,7 +707,9 @@
 					test._onComplete = function() {};
 				}
 				onTestComplete.call(conductor, currentLibName, test);
-				runNextTest();
+				setTimeout(function() {
+					runNextTest();
+				}, 30);
 			}
 			
 			function runNextTest() {
@@ -840,7 +842,14 @@
 		@type {Object}
 		@description Object of table rows keyed on test name
 		*/
-		this._testRows = {}
+		this._testRows = {};
+		
+		/**
+		@name woosh._views.Table#_nextResultCell
+		@type {HTMLElement}
+		@description The next cell to write to
+		*/
+		this._nextResultCell = undefined;
 		
 		this._initAndIndex();
 		this._attachListeners();
@@ -868,7 +877,8 @@
 				this._testRows[ testNames[i] ] = testRows[i];
 				testRows[i].firstChild.appendChild( document.createTextNode( testNames[i] ) );
 			}
-			
+			// get first cell to write to
+			this._nextResultCell = testRows[0].childNodes[1];
 		},
 		/**
 		@name woosh._views.Table#_attachListeners
@@ -878,11 +888,54 @@
 		*/
 		_attachListeners: function() {
 			var oldOnTestResult = this.conductor.onTestResult,
-				_addResults;
+				_addResults,
+				table = this;
 				
-			this.conductor.onTestResult = function() {
-				// TODO
+			this.conductor.onTestResult = function(testName, libraryName, test) {
+				oldOnTestResult.apply(this, arguments);
+				table._addResult(test);
 			}
+		},
+		/**
+		@name woosh._views.Table#_addResult
+		@function
+		@private
+		@description Add a result to the table in the position of the cursor
+		
+		@param {woosh.Test} 
+		*/
+		_addResult: function(test) {
+			var resultText;
+			
+			if (test) {
+				resultText = test._result + test._unit;
+			} else {
+				resultText = 'No test found';
+			}
+			
+			this._nextResultCell.appendChild( document.createTextNode(resultText) );
+			this._advanceResultCell();
+		},
+		/**
+		@name woosh._views.Table#_advanceResultCell
+		@function
+		@private
+		@description Advance {@link woosh._views.Table#_nextResultCell} 
+		*/
+		_advanceResultCell: function() {
+			var nextCell = this._nextResultCell.nextSibling,
+				nextRow;
+				
+			if (!nextCell) {
+				nextRow = this._nextResultCell.parentNode.nextSibling;
+				if (nextRow) {
+					nextCell = nextRow.childNodes[1];
+				} else {
+					nextCell = undefined;
+				}
+			}
+			
+			this._nextResultCell = nextCell;
 		}
 	}
 	
