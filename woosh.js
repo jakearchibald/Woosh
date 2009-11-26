@@ -730,8 +730,8 @@
 					test = currentFrame.testSet.tests[testName];
 					
 					if (test) {
-						test._onComplete = testComplete;
-						test._run();
+						currentFrame.testSet.onTestComplete = testComplete;
+						currentFrame.testSet.run(testName);
 					} else {
 						// maybe this test is missing for this library? Move on
 						testComplete();
