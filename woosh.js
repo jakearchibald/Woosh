@@ -25,10 +25,14 @@
 		Paths must be relative to whoosh.js.
 	*/
 	var libs = {
-		'dojo': ['libs/dojo.js'],
-		'jQuery132': ['libs/jq-132.js'],
-		'moo121': ['libs/moo-121.js'],
-		'proto1603': ['libs/proto-1603.js']
+		'dojo-132': ['libs/dojo-132.js'],
+		'jq-132': ['libs/jq-132.js'],
+		'moo-122': ['libs/moo-122.js'],
+		'proto-1603': ['libs/proto-1603.js'],
+		'yui-270': ['libs/yui-270.js'],
+		'yui-300': ['libs/yui-300.js'],
+		'puredom': ['libs/puredom.js'],
+		'glow-170': ['libs/glow-170/core/core.debug.js', 'libs/glow-170/widgets/widgets.debug.js', 'libs/glow-170/widgets/widgets.debug.css']
 	}
 	
 	window.woosh.libs = libs;

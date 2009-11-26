@@ -1,15 +1,15 @@
-woosh.addTests('moo121', {
+woosh.addTests('moo-122', {
 	
 	"make": function(){
 		for(var i = 0; i<250; i++){
 			
 			new Element('ul', { id:'setid'+i, 'class':'fromcode'})
-				.inject(document.body)
 				.adopt(
 					new Element('li', { html:'one' }),
 					new Element('li', { html:'two' }),
 					new Element('li', { html:'three' })
 				)
+				.inject(document.body)
 			;
 		}
 		return $$('ul.fromcode').length;
@@ -99,7 +99,8 @@ woosh.addTests('moo121', {
 	},
 	
 	"sethtml": function(){
-		return $$('div').set('html', "<p>new content</p>").length;
+		$$('div').set('html', "<p>new content</p>");
+		return $$("div").length;
 	},
 	
 	"sethtml-alt": function(){

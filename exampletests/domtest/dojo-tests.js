@@ -1,4 +1,4 @@
-woosh.addTests('dojo', {
+woosh.addTests('dojo-132', {
 	
 	"make" : function(){
 		for(var i = 0; i<250; i++){
@@ -28,8 +28,9 @@ woosh.addTests('dojo', {
 	},
 	
 	"bindattr" : function(){
+		var someFn = function(){};
 		return dojo.query("ul > li").forEach(function(n){
-			var c = dojo.connect(n, "onmouseover", function(){ });
+			var c = dojo.connect(n, "onmouseover", someFn);
 			dojo.attr(n, "rel", "touched");
 			dojo.disconnect(c);
 		}).length;
@@ -87,7 +88,8 @@ woosh.addTests('dojo', {
 	},
 	
 	"sethtml": function(){
-		return dojo.query("div").addContent("<p>new content</p>", "only").length;
+		dojo.query("div").addContent("<p>new content</p>", "only")
+		return dojo.query("div").length;
 	},
 	
 	"sethtml-alt" : function(){
@@ -103,8 +105,7 @@ woosh.addTests('dojo', {
 	},
 	
 	"insertafter" : function(){
-		dojo.query(".fromcode a").addContent("<p>After Link</p>", "after");
-		return dojo.query(".fromcode a + p").length;
+		return dojo.query(".fromcode a").addContent("<p>After Link</p>", "after").length;
 	},
 	
 	destroy: function(){ 
@@ -115,4 +116,5 @@ woosh.addTests('dojo', {
 		dojo.empty(dojo.body());
 		return dojo.query("body *").length; 
 	}
+	
 });
