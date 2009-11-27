@@ -3,6 +3,7 @@
 // Graphing with error margins
 // Save previous result
 
+// Namespace
 (function(){
 	/**
 	@name woosh
@@ -14,6 +15,7 @@
 	window.woosh = woosh;
 })();
 
+// woosh.libs
 (function(){
 	/**
 	@name woosh.libs
@@ -38,6 +40,7 @@
 	window.woosh.libs = libs;
 })();
 
+// woosh._root
 (function(){
 	/**
 	@name woosh._root
@@ -56,6 +59,7 @@
 	window.woosh._root = lastScript.src.replace('woosh.js', '');
 })();
 
+// woosh._utils
 (function(){
 	/**
 	@name woosh._utils
@@ -155,6 +159,7 @@
 	window.woosh._utils = utils;
 })();
 
+// woosh.Test
 (function() {
 	/**
 	@name woosh.Test
@@ -172,7 +177,7 @@
 			// do stuff
 		});
 	*/
-	var Test = function(loopCount, testFunc) {
+	function Test(loopCount, testFunc) {
 		if ( !(this instanceof Test) ) {
 			return new Test(loopCount, testFunc);
 		}
@@ -252,6 +257,7 @@
 	window.woosh.Test = Test;
 })();
 
+// woosh.AsyncTest
 (function() {
 	/**
 	@name woosh.AsyncTest
@@ -352,33 +358,34 @@
 	window.woosh.AsyncTest = AsyncTest;
 })();
 
+// woosh._LibraryTests & woosh.addTests
 (function() {
 	/**
-	@name woosh._TestSet
+	@name woosh._LibraryTests
 	@constructor
 	@private
-	@description A set of tests to run
+	@description A set of tests to run against a library
 	
 	@param {Object} tests Obj of functions / woosh.Test instances
 		Keys beginning $ have special meaning.
 		
 	*/
 	
-	function TestSet(tests) {
+	function LibraryTests(tests) {
 		/**
-		@name woosh._TestSet#tests
+		@name woosh._LibraryTests#tests
 		@type {Object}
 		@description Tests keyed by name
 		*/
 		this.tests = {};
 		/**
-		@name woosh._TestSet#testNames
+		@name woosh._LibraryTests#testNames
 		@type {String[]}
 		@description Array of test names
 		*/
 		this.testNames = [];
 		/**
-		@name woosh._TestSet#_prevTestName
+		@name woosh._LibraryTests#_prevTestName
 		@private
 		@type {String}
 		@description Name of the previously run test
@@ -406,9 +413,9 @@
 		}
 	}
 	
-	TestSet.prototype = {
+	LibraryTests.prototype = {
 		/**
-		@name woosh._TestSet#preTest
+		@name woosh._LibraryTests#preTest
 		@function
 		@description Called before each test.
 			Overridden by constructor 'tests' param, used to
@@ -421,7 +428,7 @@
 		*/
 		preTest: function(lastTestName, nextTestName) {},
 		/**
-		@name woosh._TestSet#onTestComplete
+		@name woosh._LibraryTests#onTestComplete
 		@function
 		@description Called when a test completes.
 			Test name is passed as the 1st param.
@@ -429,22 +436,22 @@
 		*/
 		onTestComplete: function(testName, test) {},
 		/**
-		@name woosh._TestSet#run
+		@name woosh._LibraryTests#run
 		@function
 		@description Run a particular test.
-			{@link woosh._TestSet#preTest} will be called before the test.
+			{@link woosh._LibraryTests#preTest} will be called before the test.
 			
 		@param {String} testName Name of test to run.
 			
 		*/
 		run: function(testName) {
 			var test = this.tests[testName],
-				testSet = this;
+				libraryTests = this;
 
 			test._onComplete = function() {
-				testSet._prevTestName = testName;
+				libraryTests._prevTestName = testName;
 				// signal the test is complete
-				testSet.onTestComplete(testName, test);
+				libraryTests.onTestComplete(testName, test);
 				// remove callback
 				test._onComplete = function() {};
 			}
@@ -509,15 +516,15 @@
 		else if (woosh._pageMode == 'testing') {
 			// only create the test set if we're testing this library in this frame
 			if (libraryName == woosh._libraryToTest) {
-				if (woosh._testSet) {
-					throw new Error('A testSet has already been defined for this page');
+				if (woosh._libraryTests) {
+					throw new Error('Library tests already been defined for this page');
 				}
 				/**
-				@name woosh._testSet
-				@type {woosh._TestSet}
-				@description The testSet for this frame to test
+				@name woosh._libraryTests
+				@type {woosh._LibraryTests}
+				@description The library tests for this frame to test
 				*/
-				woosh._testSet = new TestSet(tests);
+				woosh._libraryTests = new LibraryTests(tests);
 			}
 		}
 		return woosh;
@@ -533,10 +540,11 @@
 	
 	
 	window.woosh.addTests = addTests;
-	window.woosh._TestSet = TestSet;
+	window.woosh._LibraryTests = LibraryTests;
 	window.woosh._libsToConduct = libsToConduct;
 })();
 
+// woosh._TestFrame
 (function() {	
 	/**
 	@name woosh._TestFrame
@@ -570,11 +578,11 @@
 			*/
 			testFrame.window = iframe.contentWindow;
 			/**
-			@name woosh._TestFrame#testSet
-			@type {woosh._TestSet}
-			@description The testSet created in this frame
+			@name woosh._TestFrame#libraryTests
+			@type {woosh._LibraryTests}
+			@description The library tests created in this frame
 			*/
-			testFrame.testSet = testFrame.window.woosh._testSet;
+			testFrame.libraryTests = testFrame.window.woosh._libraryTests;
 			onReady.call(testFrame);
 		}
 		
@@ -585,19 +593,20 @@
 		}
 		
 		
-		iframe.src = window.location.href.replace(window.location.search, '') + '?notest&' + queryString;
+		iframe.src = window.location.href.replace(window.location.search, '').replace(/#.*$/, '') + '?notest&' + queryString;
 		document.getElementById('wooshOutput').appendChild(iframe);
 	}
 	
 	window.woosh._TestFrame = TestFrame;
 })();
 
+// woosh._Conductor
 (function() {
 	/**
 	@name woosh._Conductor
 	@constructor
 	@private
-	@description Runs {@link woosh._TestSet}s in a series of {@link woosh._TestFrame}s.
+	@description Runs {@link woosh._LibraryTests} in a series of {@link woosh._TestFrame}s.
 	
 	@param {String[]} libraryNames Names of libraries to be tested.
 	
@@ -641,7 +650,7 @@
 				@description Names of tests to run
 				*/
 				// get test names from first library's tests
-				conductor.testNames = conductor._testFrames[ libraryNames[0] ].testSet.testNames;
+				conductor.testNames = conductor._testFrames[ libraryNames[0] ].libraryTests.testNames;
 				onReady.call(conductor);
 			}
 		}
@@ -732,11 +741,11 @@
 				// if there's none, then we're done!
 				if (currentFrame) {
 					// else let's get the test
-					test = currentFrame.testSet.tests[testName];
+					test = currentFrame.libraryTests.tests[testName];
 					
 					if (test) {
-						currentFrame.testSet.onTestComplete = testComplete;
-						currentFrame.testSet.run(testName);
+						currentFrame.libraryTests.onTestComplete = testComplete;
+						currentFrame.libraryTests.run(testName);
 					} else {
 						// maybe this test is missing for this library? Move on
 						testComplete();
@@ -791,6 +800,7 @@
 	window.woosh._Conductor = Conductor;
 })();
 
+// woosh._views
 (function() {
 	/**
 	@name woosh._views
@@ -801,9 +811,16 @@
 	woosh._views = {};
 })();
 
+// woosh._views.Table
 (function() {
 	var tableHeading = '<th></th>',
-		tableCell = '<td></td>';
+		tableCell = '<td></td>',
+		ratingColours = [
+			[255, 0, 0],
+			[255, 255, 0],
+			[0, 255, 0]
+		],
+		warningColour = [255, 255, 0];
 	
 	// builds the skeleton of a results table
 	function createResultsTable(libsLen, testsLen) {
@@ -916,6 +933,7 @@
 		@description Hook up with the conductor
 		*/
 		_attachListeners: function() {
+			// TODO: replace this with a better event listening system
 			var oldOnTestResult = this.conductor.onTestResult,
 				_addResults,
 				table = this;
@@ -923,6 +941,10 @@
 			this.conductor.onTestResult = function(libraryName, testName, test) {
 				oldOnTestResult.apply(this, arguments);
 				table._addResult(libraryName, testName, test);
+			}
+			
+			this.conductor.onTestComplete = function(testName, tests) {
+				table._checkResults(testName, tests);
 			}
 		},
 		/**
@@ -945,6 +967,7 @@
 			
 			if (test && test._error) {
 				resultText = 'Error';
+				resultCell.className += ' error';
 				infoNode = document.createElement('div');
 				infoNode.appendChild( document.createTextNode(test._error.message) )
 			}
@@ -953,7 +976,7 @@
 				infoDefs = {
 					'Loop Count': test._loopCount,
 					'Return Value': test._returnVal
-				};				
+				};
 				infoNode = document.createElement('dl');
 				for (var key in infoDefs) {
 					dt = document.createElement('dt');
@@ -965,6 +988,7 @@
 				}
 			}
 			else {
+				resultCell.className += ' noTest';
 				resultText = 'No test found';
 			}
 			
@@ -974,12 +998,86 @@
 				infoNode.className = 'info';
 				resultCell.appendChild(infoNode);
 			}
+		},
+		/**
+		@name woosh._views.Table#_checkResults
+		@function
+		@private
+		@description Checks a set of results for a particular test, updates the table with warnings etc
+		 
+		@param {string} testName 
+		@param {Object} tests Object of tests where the key is the library name 
+		*/
+		_checkResults: function(testName, tests) {
+			// TODO: refactor this lot and make the test conductor produce it
+			var firstItteration = true,
+				firstLoopCount, loopsEqual = true,
+				firstReturnVal, returnValsEqual = true,
+				firstUnit, unitsEqual = true,
+				results = [],
+				resultsLen = 0,
+				maxResult,
+				minResult,
+				midResult,
+				highIsBest,
+				test,
+				cellColours = ratingColours,
+				resultRow = this._testRows[testName],
+				testNameCell = resultRow.firstChild,
+				infoNode,
+				warningMsg = '';
+			
+			for (var libraryName in tests) {
+				test = tests[libraryName];
+				if (!test) {
+					continue;
+				}
+				
+				if (firstItteration) {
+					highestIsBest = test._highestIsBest;
+					firstLoopCount = test._loopCount;
+					firstReturnVal = test._returnVal;
+					firstUnit = test._unit;
+					firstItteration = false;
+				}
+				if (test._result && !test._error) {
+					// remember the result
+					results[resultsLen++] = test._result;
+					// check the values are the same as first
+					if (!firstItteration) {
+						loopsEqual = loopsEqual && (firstLoopCount == test._loopCount);
+						returnValsEqual = returnValsEqual && (firstReturnVal == test._returnVal);
+						unitsEqual = unitsEqual && (firstUnit == test._unit);
+					}
+				}
+			}
+			
+			maxResult = Math.max.apply(Math, results);
+			minResult = Math.min.apply(Math, results);
+			
+			// TODO: reverse rating colours if the highest should be best
+			
+			if (loopsEqual && returnValsEqual && unitsEqual) {
+				for (var libraryName in tests) {
+					// apply colourings
+				}
+			}
+			else {
+				!loopsEqual && 		(warningMsg += ' Tests have differing loop counts.');
+				!returnValsEqual && (warningMsg += ' Tests have differing return values.');
+				!unitsEqual && 		(warningMsg += ' Test results are of different units.');
+				infoNode = document.createElement('div');
+				infoNode.className = 'info';
+				infoNode.appendChild( document.createTextNode(warningMsg) );
+				testNameCell.appendChild(infoNode);
+			}
 		}
 	}
 	
 	woosh._views.Table = Table;
 })();
 
+// woosh._buildOutputInterface
 (function() {
 	/**
 	@name woosh._buildOutputInterface
@@ -1014,6 +1112,7 @@
 	woosh._buildOutputInterface = buildOutputInterface;
 })();
 
+// page setup
 (function() {
 	/**
 	@name woosh._pageMode
@@ -1021,7 +1120,7 @@
 	@private
 	@description The mode the page is running in.
 		'conducting':  Will create frames for libraries to be tested
-		   'testing':  Will load a library onto the page and create a TestSet
+		   'testing':  Will load a library onto the page and create a LibraryTests object
 	*/
 	woosh._pageMode = 'conducting';
 

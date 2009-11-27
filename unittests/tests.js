@@ -212,16 +212,16 @@ test('Handling errors in an async test', 6, function() {
 	test._run();
 });
 
-module('woosh._TestSet');
+module('woosh._LibraryTests');
 
-test('woosh._TestSet', 6, function() {
+test('woosh._LibraryTests', 6, function() {
 	stop();
 	
-	equals(typeof woosh._TestSet, 'function', 'woosh._TestSet is function');
+	equals(typeof woosh._LibraryTests, 'function', 'woosh._LibraryTests is function');
 	
 	var log = [];
 	
-	var testSet = new woosh._TestSet({
+	var libraryTests = new woosh._LibraryTests({
 		'$preTest': function(prevTest, nextTest) {
 			log.push('$preTest prev: ' + prevTest);
 			log.push('$preTest next: ' + nextTest);
@@ -245,12 +245,12 @@ test('woosh._TestSet', 6, function() {
 	
 	var i = 0;
 	
-	testSet.onTestComplete = function(testName, test) {
+	libraryTests.onTestComplete = function(testName, test) {
 		i++;
 		log.push('onTestComplete: ' + testName);
 		ok(test instanceof woosh.Test, 'test param is instanceof woosh.Test');
 		
-		if (i == testSet.testNames.length) {
+		if (i == libraryTests.testNames.length) {
 			same(log, [
 				'$preTest prev: undefined',
 				'$preTest next: functionTest',
@@ -267,13 +267,13 @@ test('woosh._TestSet', 6, function() {
 			], 'Functions all called in correct order');
 			start();
 		} else {
-			testSet.run( testSet.testNames[i] );
+			libraryTests.run( libraryTests.testNames[i] );
 		}		
 	};
 	
-	same(testSet.testNames, ['functionTest', 'TestTest', 'AsyncTestTest'], 'woosh._TestSet#testNames set');
+	same(libraryTests.testNames, ['functionTest', 'TestTest', 'AsyncTestTest'], 'woosh._LibraryTests#testNames set');
 	
-	testSet.run( testSet.testNames[i] );
+	libraryTests.run( libraryTests.testNames[i] );
 });
 
 module('woosh._TestFrame');
@@ -298,14 +298,14 @@ test('creating woosh._TestFrames', 15, function() {
 		equals(typeof testFrame1.window.fakeLib2, 'undefined', 'fakeLib2 not created in testFrame1');
 		ok(testFrame1.window.fakeLib1.file2Loaded, 'fakeLib1 file2Loaded in testFrame1');
 		equals(testFrame1.window.document.getElementById('fakeLib1Elm').offsetWidth, 300, 'fakeLib1 CSS loaded in testFrame1');
-		equals(typeof testFrame1.testSet, 'object', 'testFrame1.testSet defined');
+		equals(typeof testFrame1.libraryTests, 'object', 'testFrame1.libraryTests defined');
 		
 		equals(typeof testFrame2.window, 'object', 'testFrame2 has window');
 		equals(typeof testFrame2.window.fakeLib2, 'object', 'fakeLib2 created in testFrame2');
 		equals(typeof testFrame2.window.fakeLib1, 'undefined', 'fakeLib1 not created in testFrame2');
 		ok(testFrame2.window.fakeLib2.file2Loaded, 'fakeLib2 file2Loaded in testFrame2');
 		equals(testFrame2.window.document.getElementById('fakeLib2Elm').offsetWidth, 300, 'fakeLib2 CSS loaded in testFrame2');
-		equals(typeof testFrame2.testSet, 'object', 'testFrame2.testSet defined');
+		equals(typeof testFrame2.libraryTests, 'object', 'testFrame2.libraryTests defined');
 		
 		start();
 	}
@@ -324,13 +324,13 @@ test('creating a woosh._Conductor with 1 lib', 12, function() {
 	
 	var conductor = new woosh._Conductor(['fakeLib1'], function() {
 		ok(true, 'conductor onReady called');
-		equals(typeof conductor._testFrames.fakeLib1.testSet, 'object', 'fakeLib1.testSet is function');
+		equals(typeof conductor._testFrames.fakeLib1.libraryTests, 'object', 'fakeLib1.libraryTests is function');
 		
 		conductor.onStart = function() {
 			ok(true, 'conductor onStart called');
 			log.push('onStart');
 		}
-		conductor.onTestResult = function(testName, libraryName, test) {
+		conductor.onTestResult = function(libraryName, testName, test) {
 			log.push('onTestResult: ' + testName + ', ' + libraryName);
 		}
 		conductor.onTestComplete = function(testName, tests) {
@@ -387,14 +387,14 @@ test('creating a woosh._Conductor with 2 libs', 19, function() {
 	
 	var conductor = new woosh._Conductor(['fakeLib1', 'fakeLib2'], function() {
 		ok(true, 'conductor onReady called');
-		equals(typeof conductor._testFrames.fakeLib1.testSet, 'object', 'fakeLib1.testSet is function');
-		equals(typeof conductor._testFrames.fakeLib2.testSet, 'object', 'fakeLib2.testSet is function');
+		equals(typeof conductor._testFrames.fakeLib1.libraryTests, 'object', 'fakeLib1.libraryTests is function');
+		equals(typeof conductor._testFrames.fakeLib2.libraryTests, 'object', 'fakeLib2.libraryTests is function');
 		
 		conductor.onStart = function() {
 			ok(true, 'conductor onStart called');
 			log.push('onStart');
 		}
-		conductor.onTestResult = function(testName, libraryName, test) {
+		conductor.onTestResult = function(libraryName, testName, test) {
 			log.push('onTestResult: ' + testName + ', ' + libraryName);
 		}
 		conductor.onTestComplete = function(testName, tests) {
