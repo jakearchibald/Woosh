@@ -471,10 +471,11 @@
 		
 		'$preTest': This will be called before each test,
 					2 params will be passed in, the name of
-					the previous test and the name of the next.
+					the previous test and the name of the next. If your test
+					is looping, $preTest will still only run once.
 		
 	@example
-		woosh.addTests(woosh.libs.glowSrc, {
+		woosh.addTests("glow-170", {
 			'$preTest': function(prevTest, nextTest) {
 				resetTestHtml();
 			},
