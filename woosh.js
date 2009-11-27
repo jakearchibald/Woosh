@@ -671,7 +671,7 @@
 			
 			// called when a test completes (once per library)
 			function testComplete(libraryName, test) {
-				conductor.onTestResult(currentTestName, libraryName, test);
+				conductor.onTestResult(libraryName, currentTestName, test);
 			}
 			
 			function runNextTestPerFrame() {
@@ -720,7 +720,7 @@
 				onTestComplete.call(conductor, currentLibName, test);
 				setTimeout(function() {
 					runNextTest();
-				}, 30);
+				}, 300);
 			}
 			
 			function runNextTest() {
@@ -771,16 +771,14 @@
 		@function
 		@description Called when a test completes for a particular library
 		
-		@param {String} testName The name of the test completed
-		
 		@param {String} libraryName The name of the library the test was completed for
 		
-		@param {Object} tests Object of completed tests with name testName
-			The key is the name of the library the test ran against, the value
-			is a completed {@link woosh.Test}, or undefined if the test didn't exist
-			for a particular library
+		@param {String} testName The name of the test completed
+		
+		@param {woosh.Test} test Completed test
+			Will be udefined if the test was missing
 		*/
-		onTestResult: function(testName, libraryName, tests) {},
+		onTestResult: function(libraryName, testName, test) {},
 		/**
 		@name woosh._Conductor#onAllTestsComplete
 		@function
@@ -856,6 +854,13 @@
 		this._testRows = {};
 		
 		/**
+		@name woosh._views.Table#_libColIndex
+		@type {Object}
+		@description Column index for a library, keyed on library name
+		*/
+		this._libColIndex = {};
+		
+		/**
 		@name woosh._views.Table#_nextResultCell
 		@type {HTMLElement}
 		@description The next cell to write to
@@ -881,7 +886,8 @@
 			
 			// headings
 			for (var i = 0, len = libraryNames.length; i < len; i++) {
-				libRowCells[i + 1].appendChild( document.createTextNode( libraryNames[i] ) );
+				this._libColIndex[ libraryNames[i] ] = i+1;
+				libRowCells[i+1].appendChild( document.createTextNode( libraryNames[i] ) );
 			}
 			// rows
 			for (var i = 0, len = testNames.length; i < len; i++) {
@@ -913,9 +919,9 @@
 				_addResults,
 				table = this;
 				
-			this.conductor.onTestResult = function(testName, libraryName, test) {
+			this.conductor.onTestResult = function(libraryName, testName, test) {
 				oldOnTestResult.apply(this, arguments);
-				table._addResult(test);
+				table._addResult(libraryName, testName, test);
 			}
 		},
 		/**
@@ -924,14 +930,17 @@
 		@private
 		@description Add a result to the table in the position of the cursor
 		
-		@param {woosh.Test} 
+		@param {string} libraryName 
+		@param {string} testName 
+		@param {woosh.Test} test 
 		*/
-		_addResult: function(test) {
+		_addResult: function(libraryName, testName, test) {
 			var resultText,
 				infoNode,
 				infoDefs = {},
 				dt, dd,
-				resultCell = this._nextResultCell;
+				resultRow = this._testRows[testName],
+				resultCell = resultRow.childNodes[ this._libColIndex[libraryName] ];
 			
 			if (test && test._error) {
 				resultText = 'Error';
@@ -964,29 +973,6 @@
 				infoNode.className = 'info';
 				resultCell.appendChild(infoNode);
 			}
-			this._advanceResultCell();
-		},
-		/**
-		@name woosh._views.Table#_advanceResultCell
-		@function
-		@private
-		@description Advance {@link woosh._views.Table#_nextResultCell} 
-		*/
-		_advanceResultCell: function() {
-			var nextCell = this._nextResultCell.nextSibling,
-				nextRow;
-				
-			if (!nextCell) {
-				nextRow = this._nextResultCell.parentNode.nextSibling;
-				if (nextRow) {
-					nextCell = nextRow.childNodes[1];
-				}
-				else {
-					nextCell = undefined;
-				}
-			}
-			
-			this._nextResultCell = nextCell;
 		}
 	}
 	
