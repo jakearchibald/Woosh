@@ -192,6 +192,10 @@
 		_highestIsBest: false,
 		// errors are held
 		_error: null,
+		// the function containing the test actions
+		_testFunc: null,
+		// times to loop testFunc
+		_loopCount: null,
 		
 		// called when test is complete
 		_onComplete: function() {},
@@ -883,6 +887,17 @@
 			for (var i = 0, len = testNames.length; i < len; i++) {
 				this._testRows[ testNames[i] ] = testRows[i];
 				testRows[i].firstChild.appendChild( document.createTextNode( testNames[i] ) );
+				// TODO: delegate this event
+				// Click the table heading to make the info toggle
+				testRows[i].firstChild.onclick = function() {
+					var tableRow = this.parentNode;
+					if (tableRow.className == 'fullInfo') {
+						tableRow.className = '';
+					}
+					else {
+						tableRow.className = 'fullInfo';
+					}
+				}
 			}
 			// get first cell to write to
 			this._nextResultCell = testRows[0].childNodes[1];
@@ -912,19 +927,43 @@
 		@param {woosh.Test} 
 		*/
 		_addResult: function(test) {
-			var resultText;
+			var resultText,
+				infoNode,
+				infoDefs = {},
+				dt, dd,
+				resultCell = this._nextResultCell;
 			
 			if (test && test._error) {
 				resultText = 'Error';
+				infoNode = document.createElement('div');
+				infoNode.appendChild( document.createTextNode(test._error.message) )
 			}
 			else if (test) {
 				resultText = test._result + test._unit;
+				infoDefs = {
+					'Loop Count': test._loopCount,
+					'Return Value': test._returnVal
+				};				
+				infoNode = document.createElement('dl');
+				for (var key in infoDefs) {
+					dt = document.createElement('dt');
+					dd = document.createElement('dd');
+					dt.appendChild( document.createTextNode(key) );
+					dd.appendChild( document.createTextNode( infoDefs[key] ) );
+					infoNode.appendChild(dt);
+					infoNode.appendChild(dd);
+				}
 			}
 			else {
 				resultText = 'No test found';
 			}
 			
-			this._nextResultCell.appendChild( document.createTextNode(resultText) );
+			resultCell.appendChild( document.createTextNode(resultText) );
+			
+			if (infoNode) {
+				infoNode.className = 'info';
+				resultCell.appendChild(infoNode);
+			}
 			this._advanceResultCell();
 		},
 		/**

@@ -58,6 +58,7 @@ body, html {
 	border: 3px solid #fff;
 	padding: 7px 10px;
 	text-align: left;
+	vertical-align: top;
 }
 .wooshTable thead th {
 	background: #d0c8c8;
@@ -68,4 +69,27 @@ body, html {
 	color: #528ce0;
 	font-size: 0.9em;
 	font-family: arial, sans-serif;
+	cursor: pointer;
+}
+.wooshTable tbody th:hover {
+	background: #fff;
+}
+.info {
+	display: none;
+}
+.fullInfo .info {
+	display: block;
+}
+.info dt, .info dd {
+	display: -moz-inline-box;
+	display: inline-block;
+	width: 20%;
+	min-width: 100px;
+	margin: 0; padding: 0;
+}
+.info dt:after {
+	content: ':';
+}
+.info dd {
+	width: 80%;
 }
