@@ -153,6 +153,18 @@
 					}
 				}
 			}
+		},
+		/**
+		@name woosh._utils.constructorName
+		@description Gets the constructor name for a function
+		
+		@param {Object} obj Object to get the constructor name for
+		
+		@returns {string} Constructor name
+		*/
+		constructorName: function(obj) {
+			return obj.constructor.name ||
+				(obj.constructor.toString().search(/^function ([^(]+)/) || [,''])[1];
 		}
 	}
 	

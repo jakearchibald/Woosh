@@ -28,6 +28,20 @@ test('urlDecode', 3, function() {
 	same(woosh._utils.urlDecode(''), {}, 'Empty string decode');
 });
 
+test('constructorName', 3, function() {
+	equals(typeof woosh._utils.constructorName, 'function', 'constructorName exists');
+
+	function TestClass(){};
+	function TestSubclass(){};
+	TestSubclass.prototype = new TestClass();
+	
+	var myTestClass = new TestClass;
+	var myTestSubclass = new TestSubclass;
+	
+	equals(woosh._utils.constructorName(myTestClass), 'TestClass', 'Detect TestClass');
+	equals(woosh._utils.constructorName(myTestSubclass), 'TestSubclass', 'Detect TestSubclass');
+});
+
 module('woosh.Test');
 
 test('Creating instances', 5, function() {
