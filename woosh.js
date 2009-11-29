@@ -437,23 +437,18 @@
 		*/
 		preTest: function(lastTestName, nextTestName) {},
 		/**
-		@name woosh._LibraryTests#onTestComplete
-		@function
-		@description Called when a test completes.
-			Test name is passed as the 1st param.
-			Test is passed in as the 2nd param.
-		*/
-		onTestComplete: function(testName, test) {},
-		/**
 		@name woosh._LibraryTests#run
 		@function
 		@description Run a particular test.
 			{@link woosh._LibraryTests#preTest} will be called before the test.
 			
 		@param {String} testName Name of test to run.
+		@param {Function} onTestComplete Function to run when test complete
+			Test name is passed as the 1st param.
+			Test is passed in as the 2nd param.
 			
 		*/
-		run: function(testName) {
+		run: function(testName, onTestComplete) {
 			var test = this.tests[testName],
 				libraryTests = this;
 			
@@ -461,9 +456,7 @@
 			test._run(function() {
 				libraryTests._prevTestName = testName;
 				// signal the test is complete
-				libraryTests.onTestComplete(testName, test);
-				// remove callback
-				test._onComplete = function() {};
+				onTestComplete(testName, test);
 			});
 		}
 	};
@@ -749,10 +742,8 @@
 				if (currentFrame) {
 					// else let's get the test
 					test = currentFrame.libraryTests.tests[testName];
-					
 					if (test) {
-						currentFrame.libraryTests.onTestComplete = testComplete;
-						currentFrame.libraryTests.run(testName);
+						currentFrame.libraryTests.run(testName, testComplete);
 					} else {
 						// maybe this test is missing for this library? Move on
 						testComplete();

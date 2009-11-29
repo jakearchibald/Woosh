@@ -250,13 +250,14 @@ test('woosh._LibraryTests', 6, function() {
 		})
 	});
 	
-	var i = 0;
+	var i = 0; 
 	
-	libraryTests.onTestComplete = function(testName, test) {
+	same(libraryTests.testNames, ['functionTest', 'TestTest', 'AsyncTestTest'], 'woosh._LibraryTests#testNames set');
+	
+	libraryTests.run(libraryTests.testNames[i], function(testName, test) {
 		i++;
 		log.push('onTestComplete: ' + testName);
 		ok(test instanceof woosh.Test, 'test param is instanceof woosh.Test');
-		
 		if (i == libraryTests.testNames.length) {
 			same(log, [
 				'$preTest prev: undefined',
@@ -274,13 +275,9 @@ test('woosh._LibraryTests', 6, function() {
 			], 'Functions all called in correct order');
 			start();
 		} else {
-			libraryTests.run( libraryTests.testNames[i] );
+			libraryTests.run( libraryTests.testNames[i], arguments.callee );
 		}		
-	};
-	
-	same(libraryTests.testNames, ['functionTest', 'TestTest', 'AsyncTestTest'], 'woosh._LibraryTests#testNames set');
-	
-	libraryTests.run( libraryTests.testNames[i] );
+	});
 });
 
 module('woosh._TestFrame');
