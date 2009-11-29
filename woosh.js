@@ -213,11 +213,8 @@
 		_testFunc: null,
 		// times to loop testFunc
 		_loopCount: null,
-		
-		// called when test is complete
-		_onComplete: function() {},
-		// start the test running, _onComplete is fired when all itterations have ran
-		_run: function() {
+		// start the test running, onComplete (optional) called when all itterations have ran
+		_run: function(onComplete) {
 			try {
 				var i = this._loopCount,
 					returnVal,
@@ -234,7 +231,7 @@
 				this._error = e;
 			}
 			this._returnVal = returnVal;
-			this._onComplete();
+			onComplete && onComplete();
 		},
 		/**
 		@name woosh.Test#result
@@ -318,16 +315,16 @@
 	};
 	
 	(function(){
-		var oldErrorListener, timeout;
+		var oldErrorListener;
 		
-		function complete(test) {
+		function complete(test, onComplete) {
 			window.onerror = test._oldErrorListener;
 			test._onEndTest = function() {};
-			test._onComplete();
+			onComplete();
 		};
 		
-		// run the test in an async way. _onComplete is called when test is complete
-		asyncTestProto._run = function() {
+		// run the test in an async way. onComplete is called when test is complete
+		asyncTestProto._run = function(onComplete) {
 			try {
 				var i = this._loopCount,
 					testFunc = this._testFunc,
@@ -342,7 +339,7 @@
 						test._oldErrorListener.apply(this, arguments);
 					}
 					test._error = new Error(msg);
-					complete(test);
+					complete(test, onComplete);
 				}
 				
 				this._onEndTest = function() {
@@ -350,7 +347,7 @@
 						test._testFunc(test);
 					} else {
 						test._result = test._result || ( new Date() - start );
-						complete(test);
+						complete(test, onComplete);
 					}
 				}
 				
@@ -358,7 +355,7 @@
 				test._testFunc(test);
 			} catch (e) {
 				this._error = e;
-				complete(test);
+				complete(test, onComplete);
 			}
 		};
 	})();
@@ -459,17 +456,15 @@
 		run: function(testName) {
 			var test = this.tests[testName],
 				libraryTests = this;
-
-			test._onComplete = function() {
+			
+			this.preTest(this._prevTestName, testName);
+			test._run(function() {
 				libraryTests._prevTestName = testName;
 				// signal the test is complete
 				libraryTests.onTestComplete(testName, test);
 				// remove callback
 				test._onComplete = function() {};
-			}
-			
-			this.preTest(this._prevTestName, testName);
-			test._run();
+			});
 		}
 	};
 	

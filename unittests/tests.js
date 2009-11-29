@@ -70,13 +70,12 @@ test('Running a sync test', 7, function() {
 		return 'Hello';
 	});
 	
-	test._onComplete = function() {
-		onCompleteFiredCount++
-	}
-	
 	equals(typeof test._run, 'function', 'woosh.Test#_run exists');
 	
-	test._run();
+	test._run(function() {
+		onCompleteFiredCount++
+	});
+	
 	equals(testRunCount, 1000000, '_testFunc was called correct number of times');
 	equals(onCompleteFiredCount, 1, '_onComplete was called correct number of times');
 	equals(test._returnVal, 'Hello', '_returnVal set');
@@ -94,11 +93,9 @@ test('Handling errors in a sync test', 5, function() {
 		return undefined();
 	});
 	
-	test._onComplete = function() {
+	test._run(function() {
 		onCompleteFiredCount++;
-	}
-	
-	test._run();
+	});
 	equals(testRunCount, 1, '_testFunc was called only once since it errored');
 	equals(onCompleteFiredCount, 1, '_onComplete was called correct number of times');
 	equals(test._returnVal, undefined, '_returnVal is undefined');
@@ -176,7 +173,10 @@ test('Running an async test', 9, function() {
 		}, 50);
 	});
 	
-	test._onComplete = function() {
+	equals(typeof test._run, 'function', 'woosh.AsyncTest#_run exists');
+	equals(typeof test.endTest, 'function', 'woosh.AsyncTest#endTest exists');
+	
+	test._run(function() {
 		onCompleteFiredCount++;
 		
 		equals(testRunCount, 10, '_testFunc was called correct number of times');
@@ -186,12 +186,7 @@ test('Running an async test', 9, function() {
 		equals(typeof test._result, 'number', '_result is number (' + test._result + ')');
 		ok(test._result >= 500, '_result indicates setTimeout callbacks have been waited for');
 		start();
-	}
-	
-	equals(typeof test._run, 'function', 'woosh.AsyncTest#_run exists');
-	equals(typeof test.endTest, 'function', 'woosh.AsyncTest#endTest exists');
-	
-	test._run();
+	});
 });
 
 test('Handling errors in an async test', 6, function() {
@@ -211,7 +206,7 @@ test('Handling errors in an async test', 6, function() {
 		}, 60);
 	});
 	
-	test._onComplete = function() {
+	test._run(function() {
 		onCompleteFiredCount++;
 		
 		equals(testRunCount, 1, '_testFunc was called only once since it errored');
@@ -221,9 +216,7 @@ test('Handling errors in an async test', 6, function() {
 		equals(test._result, undefined, '_result is undefined');
 		ok(test._error instanceof Error, '_error is Error');
 		start();
-	}
-	
-	test._run();
+	});
 });
 
 module('woosh._LibraryTests');
