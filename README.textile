@@ -2,6 +2,8 @@ h1. Woosh
 
 Woosh is a speed testing framework that lets you easily compare the speed of your code to others', or compare different version of your own code.
 
+I'm trying to improve on TaskSpeed (you'll notice similarities) by making it easier to create tests, removing the need for PHP, allowing async tests and tests which measure in units other than time.
+
 I haven't hammered down to API fully yet, so things may change in future commits.
 
 h2. Creating a speed test
