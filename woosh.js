@@ -1223,7 +1223,8 @@
 				resultPercent,
 				cellBg,
 				cellText,
-				placeInGradient;
+				placeInGradient,
+				resultDifference;
 
 			for (var libraryName in tests) {
 				test = tests[libraryName];
@@ -1231,7 +1232,14 @@
 					continue;
 				}
 				testCell = resultRow.childNodes[ this._libColIndex[libraryName] ];
-				resultPercent = ( (test._result - testSetRunner.minResult) / testSetRunner.maxResult );
+				
+				resultDifference = testSetRunner.maxResult - testSetRunner.minResult;
+				
+				if (resultDifference === 0) {
+					resultPercent = 0;
+				} else {
+					resultPercent = ( (test._result - testSetRunner.minResult) / (testSetRunner.maxResult - testSetRunner.minResult) );
+				}
 				
 				// flip the result if low results are good
 				if (!testSetRunner.highestIsBest) {
