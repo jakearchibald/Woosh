@@ -163,8 +163,51 @@
 		@returns {string} Constructor name
 		*/
 		constructorName: function(obj) {
-			return obj.constructor.name ||
-				(obj.constructor.toString().search(/^function ([^(]+)/) || [,''])[1];
+			if (obj.constructor.name) {
+				return obj.constructor.name;
+			} else {
+				var constructorStr = obj.constructor.toString();
+				return constructorStr.slice( constructorStr.indexOf('function ') + 9, constructorStr.indexOf('(') );
+			}
+		},
+		/**
+		@name woosh._utils.extend
+		@function
+		@description Copies the prototype of one object to another.
+			The 'subclass' can also access the 'base class' via subclass.base
+			
+		@param {Function} sub Class which inherits properties.
+		@param {Function} base Class to inherit from.
+		@param {Object} additionalProperties An object of properties and methods to add to the subclass.
+		*/
+		extend: function(sub, base, additionalProperties) {
+			var f = function () {}, p;
+			f.prototype = base.prototype;
+			p = new f();
+			sub.prototype = p;
+			p.constructor = sub;
+			sub.base = base;
+			if (additionalProperties) {
+				woosh._utils.apply(sub.prototype, additionalProperties);
+			}
+		},
+		/**
+		@name woosh._utils.apply
+		@function
+		@description Copies properties from one object to another
+
+		@param {Object} destination Destination object
+		@param {Object} source Properties of this object will be copied onto the destination
+
+		@returns {Object}
+		*/
+		apply: function(destination, source) {
+			for (var i in source) {
+				if ( source.hasOwnProperty(i) ) {
+					destination[i] = source[i];
+				}
+			}
+			return destination;
 		}
 	}
 	
@@ -200,7 +243,7 @@
 	
 	var undefined;
 	
-	Test.prototype = {
+	woosh._utils.extend(Test, {}, {
 		// what kind of unit should the results be measured in
 		_unit: 'ms',
 		// what is the result?
@@ -261,7 +304,7 @@
 			this._highestIsBest = !!highestIsBest;
 			return this;
 		}
-	};
+	});
 	
 	window.woosh.Test = Test;
 })();
@@ -289,7 +332,7 @@
 			this.endTest(returnVal);
 		});
 	*/
-	var AsyncTest = function(loopCount, testFunc) {
+	function AsyncTest(loopCount, testFunc) {
 		if ( !(this instanceof AsyncTest) ) {
 			return new AsyncTest(loopCount, testFunc);
 		}
@@ -298,8 +341,9 @@
 		this._super = woosh.Test.prototype;
 	}
 	
-	var asyncTestProto = AsyncTest.prototype = new woosh.Test();
-	
+	woosh._utils.extend(AsyncTest, woosh.Test);
+	var asyncTestProto = AsyncTest.prototype;
+
 	/**
 	@name woosh.AsyncTest#endTest
 	@function
@@ -559,7 +603,6 @@
 		'this' in onReady will be the TestFrame
 		
 	*/
-	
 	
 	function TestFrame(libraryName, onReady) {
 		var iframe = document.createElement('iframe'),

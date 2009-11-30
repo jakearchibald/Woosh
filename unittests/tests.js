@@ -28,18 +28,75 @@ test('urlDecode', 3, function() {
 	same(woosh._utils.urlDecode(''), {}, 'Empty string decode');
 });
 
-test('constructorName', 3, function() {
+test("apply", 2, function() {
+	equals(typeof woosh._utils.apply, 'function', "apply is function");
+	same(woosh._utils.apply({foo: "hello", bar: "world"}, {bar: "everyone"}), {foo: "hello", bar: "everyone"}, "Properties copied");
+});
+
+test("extend", 12, function() {
+ 
+	equals(typeof woosh._utils.extend, 'function', "extend is function");
+ 
+	var BaseClass = function() {
+		this.a = "From Base";
+		this.b = "From Base";
+	}
+	BaseClass.prototype = {
+		c: function() {
+			return "From Base";
+		},
+		d: function() {
+			return "From Base";
+		}
+	};
+	var SubClass = function() {
+		BaseClass.call(this);
+		this.b = "From Sub";
+		this.e = "From Sub";
+	}
+	woosh._utils.extend(SubClass, BaseClass, {
+		d: function() {
+			return "From Sub";
+		},
+		f: function() {
+			return "From Sub";
+		}
+	});
+ 
+	var myBase = new BaseClass();
+	var mySub = new SubClass();
+ 
+	equals(myBase.a, "From Base", "Base a prop");
+	equals(myBase.b, "From Base", "Base b prop");
+	equals(myBase.c(), "From Base", "Base c function");
+	equals(myBase.d(), "From Base", "Base d function");
+	equals(mySub.a, "From Base", "Sub a prop (inherited)");
+	equals(mySub.b, "From Sub", "Sub b prop (overwritten)");
+	equals(mySub.c(), "From Base", "Sub c function (inherited)");
+	equals(mySub.d(), "From Sub", "Sub d function (overwritten)");
+	equals(mySub.e, "From Sub", "Sub e prop (new)");
+	equals(mySub.f(), "From Sub", "Sub f function (new)");
+	equals(SubClass.base, BaseClass, "sub.base property set");
+});
+
+test('constructorName', 5, function() {
 	equals(typeof woosh._utils.constructorName, 'function', 'constructorName exists');
 
 	function TestClass(){};
 	function TestSubclass(){};
-	TestSubclass.prototype = new TestClass();
+	woosh._utils.extend(TestSubclass, TestClass);
 	
 	var myTestClass = new TestClass;
 	var myTestSubclass = new TestSubclass;
 	
 	equals(woosh._utils.constructorName(myTestClass), 'TestClass', 'Detect TestClass');
 	equals(woosh._utils.constructorName(myTestSubclass), 'TestSubclass', 'Detect TestSubclass');
+	
+	var myTest = woosh.Test(1, function() {});
+	var myAsyncTest = woosh.AsyncTest(1, function() {});
+	
+	equals(woosh._utils.constructorName(myTest), 'Test', 'Detect Test');
+	equals(woosh._utils.constructorName(myAsyncTest), 'AsyncTest', 'Detect AsyncTest');
 });
 
 module('woosh.Test');
