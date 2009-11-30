@@ -1,8 +1,7 @@
 woosh.addTests('dojo-132', {
-	'body': new woosh.AsyncTest(1, function(test) {
-		test.endTest(20);
+	'body': function(test) {
 		return dojo.query('body').length;
-	}),
+	},
 	'div': function() {
 		return dojo.query('div').length;
 	},

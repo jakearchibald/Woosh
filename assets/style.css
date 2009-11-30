@@ -74,24 +74,37 @@ body, html {
 	.wooshTable tbody th:hover {
 		background: #fff;
 	}
-	.info {
-		display: none;
+	.wooshTable td.error {
+		color: #F3F1F1;
+		background: #41464D;
 	}
-	.fullInfo .info {
+	.wooshTable td.noTest {
+		color: #888;
+		background: #ddd;
+	}
+	.wooshTable th.mismatch {
+		background: #ffec80;
+		color: #786a08;
+	}
+	.wooshTable .info {
+		display: none;
+		font-weight: normal;
+	}
+	.wooshTable .fullInfo .info {
 		display: block;
 	}
-	.info {
+	.wooshTable .info {
 		margin:0; padding:0;
 		margin-top: 1em;
 	}
-	.info dt, .info dd {
+	.wooshTable .info dt, .info dd {
 		float: left;
 		margin: 0; padding: 0;
 	}
-	.info dt:after {
+	.wooshTable .info dt:after {
 		content: ':';
 	}
-	.info dt {
+	.wooshTable .info dt {
 		width: 100px;
 		clear: both;
 	}
