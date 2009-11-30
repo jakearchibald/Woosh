@@ -878,6 +878,17 @@
 		this._testSetRunner = undefined;
 		
 		/**
+		@name woosh._Conductor#_listeners
+		@type {Array[]}
+		@description Array of arrays:
+			[
+				[listenerObj, thisVal],
+				[listenerObj, thisVal]...
+			]
+		*/
+		this._listeners = [];
+		
+		/**
 		@name woosh._Conductor#_currentTestIndex
 		@private
 		@type {Number}
@@ -929,7 +940,7 @@
 		@description Start running tests
 		*/
 		start: function() {
-			this.onStart();
+			this._fire('start');
 			
 			var testIndex = -1,
 				currentTestName,
@@ -937,13 +948,13 @@
 			
 			// called when all tests of a given name are complete
 			function testSetComplete() {
-				conductor.onTestSetComplete(currentTestName, conductor._testSetRunner);
+				conductor._fire( 'testSetComplete', [currentTestName, conductor._testSetRunner] );
 				runNextTestPerFrame();
 			}
 			
 			// called when a test completes (once per library)
 			function testComplete(libraryName, test) {
-				conductor.onTestComplete(libraryName, currentTestName, test);
+				conductor._fire( 'testComplete', [libraryName, currentTestName, test] );
 			}
 			
 			function runNextTestPerFrame() {
@@ -953,47 +964,57 @@
 					conductor._testSetRunner.run(currentTestName, testComplete, testSetComplete);
 				} else {
 					// we're done!
-					conductor.onAllTestsComplete.call(conductor);
+					conductor._fire('allTestsComplete');
 				}
 			}
 			
 			runNextTestPerFrame();
 		},
 		/**
-		@name woosh._Conductor#onStart
+		@name woosh._Conductor#addListener
 		@function
-		@description Called when testing start
+		@description Add an object to listen for conductor events. Conductor fires the following:
+			listener.start()
+				- When the conductor starts
+			
+			listener.testSetComplete(testName, testSetRunner)
+				- Called when the same test name is completed in each {@link woosh._TestFrame}
+				- testName is the name of the test
+				- testSetRunner is the {@link woosh._TestSetRunner} used to run the tests
+				
+			listener.testComplete(libraryName, testName, test)
+				- Called when a test completes for a particular library
+				- libraryName is the name of the library the test was completed for
+				- testName is the name of the test
+				- test is the completed test object. Will be udefined if the test was missing.
+				
+			listener.allTestsComplete()
+				- Called when all queued tests have completed
+		
+		@param {object} listener Object to fire events on
+		@param {object} thisVal What 'this' should equal in the callbacks
 		*/
-		onStart: function() {},
+		addListener: function(listener, thisVal) {
+			thisVal = thisVal || this;
+			this._listeners.push( [listener, thisVal] );
+		},
 		/**
-		@name woosh._Conductor#onTestComplete
+		@name woosh._Conductor#_fire
 		@function
-		@description Called when the same test name is completed in each {@link woosh._TestFrame}
+		@private
+		@description Fires an event
 		
-		@param {String} testName The name of the test completed
-		
-		@param {Object} testSetRunner The {@link woosh._TestSetRunner} used to run the tests
+		@param {string} name Event name
+		@param {object[]} args Arguments to pass into the callback
 		*/
-		onTestSetComplete: function(testName, testSetRunner) {},
-		/**
-		@name woosh._Conductor#onTestResult
-		@function
-		@description Called when a test completes for a particular library
-		
-		@param {String} libraryName The name of the library the test was completed for
-		
-		@param {String} testName The name of the test completed
-		
-		@param {woosh.Test} test Completed test
-			Will be udefined if the test was missing
-		*/
-		onTestComplete: function(libraryName, testName, test) {},
-		/**
-		@name woosh._Conductor#onAllTestsComplete
-		@function
-		@description Called when all queued tests have completed
-		*/
-		onAllTestsComplete: function() {}
+		_fire: function(name, args) {
+			args = args || [];
+			var func;
+			for (var i = 0, len = this._listeners.length; i<len; i++) {
+				func = this._listeners[i][0][name];
+				func && func.apply(this._listeners[i][1], args);
+			}
+		}
 	};
 	
 	window.woosh._Conductor = Conductor;
@@ -1089,7 +1110,7 @@
 		this._nextResultCell = undefined;
 		
 		this._initAndIndex();
-		this._attachListeners();
+		conductor.addListener(this._listener, this);
 	}
 	
 	Table.prototype = {
@@ -1130,24 +1151,17 @@
 			this._nextResultCell = testRows[0].childNodes[1];
 		},
 		/**
-		@name woosh._views.Table#_attachListeners
-		@function
+		@name woosh._views.Table#_listener
+		@type {Object}
 		@private
-		@description Hook up with the conductor
+		@description Listener to the conductor
 		*/
-		_attachListeners: function() {
-			// TODO: replace this with a better event listening system
-			var oldOnTestComplete = this.conductor.onTestComplete,
-				_addResults,
-				table = this;
-				
-			this.conductor.onTestComplete = function(libraryName, testName, test) {
-				oldOnTestComplete.apply(this, arguments);
-				table._addResult(libraryName, testName, test);
-			}
-			
-			this.conductor.onTestSetComplete = function(testName, testSetRunner) {
-				table._checkResults(testName, testSetRunner);
+		_listener: {
+			testComplete: function(libraryName, testName, test) {
+				this._addResult(libraryName, testName, test);
+			},
+			testSetComplete: function(testName, testSetRunner) {
+				this._checkResults(testName, testSetRunner);
 			}
 		},
 		/**
