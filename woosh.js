@@ -1175,7 +1175,12 @@
 				infoNode.appendChild( document.createTextNode(test._error.message) )
 			}
 			else if (test) {
-				resultText = test._result + test._unit;
+				// divide the result by number of loops for ms tests
+				if (test._unit == 'ms') {
+					resultText = Math.round((test._result / test._loopCount) * 10000) / 10000 + test._unit;
+				} else {
+					resultText = test._result + test._unit;
+				}
 				infoDefs = {
 					'Loop Count': test._loopCount,
 					'Return Value': test._returnVal,
