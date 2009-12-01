@@ -299,6 +299,49 @@ test('Handling errors in an async test', 6, function() {
 	});
 });
 
+module('woosh.TestResult');
+
+test('woosh.TestResult serializing & unserializing', 12, function() {
+	var testResult = new woosh.TestResult();
+	testResult.result = 123;
+	testResult.unit   = 'fps';
+	testResult.type   = 'Test';
+	testResult.error  = new Error('All went wrong');
+	testResult.loopCount = 100;
+	testResult.returnVal = 60;
+	testResult.highestIsBest = false;
+	var serial = testResult.serialize();
+	
+	var anotherTestResult = new woosh.TestResult().unserialize(serial);
+	
+	equals(anotherTestResult.result, 123, 'result');
+	equals(anotherTestResult.unit, 'fps', 'unit');
+	equals(anotherTestResult.type, 'Test', 'type');
+	equals(anotherTestResult.error.message, 'All went wrong', 'error.message');
+	equals(anotherTestResult.loopCount, 100, 'loopCount');
+	equals(typeof anotherTestResult.returnVal, 'number', 'returnVal type');
+	equals(anotherTestResult.returnVal, 60, 'returnVal');
+	equals(anotherTestResult.highestIsBest, false, 'highestIsBest');
+	
+	testResult = new woosh.TestResult();
+	testResult.returnVal = 'Hello';
+	serial = testResult.serialize();
+	
+	anotherTestResult = new woosh.TestResult().unserialize(serial);
+	
+	equals(typeof anotherTestResult.returnVal, 'string', 'returnVal type');
+	equals(anotherTestResult.returnVal, 'Hello', 'returnVal');
+	
+	testResult = new woosh.TestResult();
+	testResult.returnVal = undefined;
+	serial = testResult.serialize();
+	
+	anotherTestResult = new woosh.TestResult().unserialize(serial);
+	
+	equals(typeof anotherTestResult.returnVal, 'undefined', 'returnVal type');
+	equals(anotherTestResult.returnVal, undefined, 'returnVal');
+});
+
 module('woosh._LibraryTests');
 
 test('woosh._LibraryTests', 6, function() {
