@@ -539,10 +539,34 @@
 	// export
 	woosh.TestResult = TestResult;
 })();
-// woosh._LibraryTests & woosh.addTests
+// woosh.TestResults
 (function() {
 	/**
-	@name woosh._LibraryTests
+	@name woosh.TestResults
+	@constructor
+	@description A collection of TestResult objects
+		Items can be accessed via array notation
+	*/
+	function TestResults() {}
+	
+	woosh._utils.extend(TestResults, Object, {
+		push: function(testResult) {
+			
+		},
+		serialise: function() {
+			return this;
+		},
+		unserialise: function() {
+			
+		}
+	});
+	
+	woosh.TestResults = TestResults;
+})();
+// woosh._LibraryTest & woosh.addTests
+(function() {
+	/**
+	@name woosh._LibraryTest
 	@constructor
 	@private
 	@description A set of tests to run against a library
@@ -551,22 +575,21 @@
 		Keys beginning $ have special meaning.
 		
 	*/
-	
-	function LibraryTests(tests) {
+	function LibraryTest(tests) {
 		/**
-		@name woosh._LibraryTests#tests
+		@name woosh._LibraryTest#tests
 		@type {Object}
 		@description Tests keyed by name
 		*/
 		this.tests = {};
 		/**
-		@name woosh._LibraryTests#testNames
+		@name woosh._LibraryTest#testNames
 		@type {String[]}
 		@description Array of test names
 		*/
 		this.testNames = [];
 		/**
-		@name woosh._LibraryTests#_prevTestName
+		@name woosh._LibraryTest#_prevTestName
 		@private
 		@type {String}
 		@description Name of the previously run test
@@ -594,9 +617,9 @@
 		}
 	}
 	
-	LibraryTests.prototype = {
+	LibraryTest.prototype = {
 		/**
-		@name woosh._LibraryTests#preTest
+		@name woosh._LibraryTest#preTest
 		@function
 		@description Called before each test.
 			Overridden by constructor 'tests' param, used to
@@ -609,10 +632,10 @@
 		*/
 		preTest: function(lastTestName, nextTestName) {},
 		/**
-		@name woosh._LibraryTests#run
+		@name woosh._LibraryTest#run
 		@function
 		@description Run a particular test.
-			{@link woosh._LibraryTests#preTest} will be called before the test.
+			{@link woosh._LibraryTest#preTest} will be called before the test.
 			
 		@param {String} testName Name of test to run.
 		@param {Function} onTestComplete Function to run when test complete
@@ -622,7 +645,7 @@
 		*/
 		run: function(testName, onTestComplete) {
 			var test = this.tests[testName],
-				libraryTests = this;
+				libraryTest = this;
 			
 			if (!test) {
 				onTestComplete(testName);
@@ -631,7 +654,7 @@
 			
 			this.preTest(this._prevTestName, testName);
 			test._run(function(result) {
-				libraryTests._prevTestName = testName;
+				libraryTest._prevTestName = testName;
 				// signal the test is complete
 				onTestComplete(testName, result);
 			});
@@ -693,15 +716,15 @@
 		else if (woosh._pageMode == 'testing') {
 			// only create the test set if we're testing this library in this frame
 			if (libraryName == woosh._libraryToTest) {
-				if (woosh._libraryTests) {
+				if (woosh._libraryTest) {
 					throw new Error('Library tests already been defined for this page');
 				}
 				/**
-				@name woosh._libraryTests
-				@type {woosh._LibraryTests}
+				@name woosh._libraryTest
+				@type {woosh._LibraryTest}
 				@description The library tests for this frame to test
 				*/
-				woosh._libraryTests = new LibraryTests(tests);
+				woosh._libraryTest = new LibraryTest(tests);
 			}
 		}
 		return woosh;
@@ -717,7 +740,7 @@
 	
 	
 	window.woosh.addTests = addTests;
-	window.woosh._LibraryTests = LibraryTests;
+	window.woosh._LibraryTest = LibraryTest;
 	window.woosh._libsToConduct = libsToConduct;
 })();
 
@@ -731,27 +754,27 @@
 	@private
 	@description Helper to run and analyse a set of tests of the same name (but against different libraries)
 	
-	@param {Object} libraryTests Obj of woosh._LibraryTests instances keyed by library name
+	@param {Object} libraryTest Obj of woosh._LibraryTest instances keyed by library name
 		
 	*/
-	function TestSetRunner(libraryTests) {
-		this.libraryTests = libraryTests;
+	function TestSetRunner(libraryTest) {
+		this.libraryTest = libraryTest;
 		this.libraryNames = [];
 		var i = 0;
 		
 		// gather library names
-		for (var key in libraryTests) {
+		for (var key in libraryTest) {
 			this.libraryNames[i++] = key;
 		}
 	}
 	
 	woosh._utils.extend(TestSetRunner, {}, {
 		/**
-		@name woosh._TestSetRunner#libraryTests
+		@name woosh._TestSetRunner#libraryTest
 		@type {Object}
-		@description Obj of woosh._LibraryTests instances keyed by library name
+		@description Obj of woosh._LibraryTest instances keyed by library name
 		*/
-		libraryTests: {},
+		libraryTest: {},
 		/**
 		@name woosh._TestSetRunner#libraryNames
 		@type {string[]}
@@ -829,7 +852,7 @@
 		run: function(testName, onTestComplete, onComplete) {
 			var libIndex = -1,
 				currentLibName,
-				currentLibraryTests,
+				currentLibraryTest,
 				testResults = [],
 				testSetRunner = this;
 			
@@ -849,11 +872,11 @@
 			function runNextTest() {
 				// get the frame for the next library
 				currentLibName = testSetRunner.libraryNames[ ++libIndex ];
-				currentLibraryTests = testSetRunner.libraryTests[currentLibName];
+				currentLibraryTest = testSetRunner.libraryTest[currentLibName];
 				
 				// if there's none, then we're done!
-				if (currentLibraryTests) {
-					currentLibraryTests.run(testName, testComplete);
+				if (currentLibraryTest) {
+					currentLibraryTest.run(testName, testComplete);
 				} else {
 					testSetRunner._analyseResults(testResults);
 					onComplete.call(testSetRunner);
@@ -952,11 +975,11 @@
 			*/
 			testFrame.window = iframe.contentWindow;
 			/**
-			@name woosh._TestFrame#libraryTests
-			@type {woosh._LibraryTests}
+			@name woosh._TestFrame#libraryTest
+			@type {woosh._LibraryTest}
 			@description The library tests created in this frame
 			*/
-			testFrame.libraryTests = testFrame.window.woosh._libraryTests;
+			testFrame.libraryTest = testFrame.window.woosh._libraryTest;
 			onReady.call(testFrame);
 		}
 		
@@ -980,7 +1003,7 @@
 	@name woosh._Conductor
 	@constructor
 	@private
-	@description Runs {@link woosh._LibraryTests} in a series of {@link woosh._TestFrame}s.
+	@description Runs {@link woosh._LibraryTest} in a series of {@link woosh._TestFrame}s.
 	
 	@param {String[]} libraryNames Names of libraries to be tested.
 	
@@ -1042,15 +1065,15 @@
 				@description Names of tests to run
 				*/
 				// get test names from first library's tests
-				conductor.testNames = conductor._testFrames[ libraryNames[0] ].libraryTests.testNames;
+				conductor.testNames = conductor._testFrames[ libraryNames[0] ].libraryTest.testNames;
 				
-				var libraryTests = {};
+				var libraryTest = {};
 				// create the testset
 				for (var i = 0, len = libraryNames.length; i<len; i++) {
-					libraryTests[ libraryNames[i] ] = conductor._testFrames[ libraryNames[i] ].libraryTests;
+					libraryTest[ libraryNames[i] ] = conductor._testFrames[ libraryNames[i] ].libraryTest;
 				}
 				
-				conductor._testSetRunner = new woosh._TestSetRunner(libraryTests);
+				conductor._testSetRunner = new woosh._TestSetRunner(libraryTest);
 				onReady.call(conductor);
 			}
 		}
@@ -1488,7 +1511,7 @@
 	@private
 	@description The mode the page is running in.
 		'conducting':  Will create frames for libraries to be tested
-		   'testing':  Will load a library onto the page and create a LibraryTests object
+		   'testing':  Will load a library onto the page and create a LibraryTest object
 	*/
 	woosh._pageMode = 'conducting';
 

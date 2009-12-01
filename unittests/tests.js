@@ -342,16 +342,16 @@ test('woosh.TestResult serializing & unserializing', 12, function() {
 	equals(anotherTestResult.returnVal, undefined, 'returnVal');
 });
 
-module('woosh._LibraryTests');
+module('woosh._LibraryTest');
 
-test('woosh._LibraryTests', 6, function() {
+test('woosh._LibraryTest', 6, function() {
 	stop();
 	
-	equals(typeof woosh._LibraryTests, 'function', 'woosh._LibraryTests is function');
+	equals(typeof woosh._LibraryTest, 'function', 'woosh._LibraryTest is function');
 	
 	var log = [];
 	
-	var libraryTests = new woosh._LibraryTests({
+	var libraryTest = new woosh._LibraryTest({
 		'$preTest': function(prevTest, nextTest) {
 			log.push('$preTest prev: ' + prevTest);
 			log.push('$preTest next: ' + nextTest);
@@ -375,13 +375,13 @@ test('woosh._LibraryTests', 6, function() {
 	
 	var i = 0; 
 	
-	same(libraryTests.testNames, ['functionTest', 'TestTest', 'AsyncTestTest'], 'woosh._LibraryTests#testNames set');
+	same(libraryTest.testNames, ['functionTest', 'TestTest', 'AsyncTestTest'], 'woosh._LibraryTest#testNames set');
 	
-	libraryTests.run(libraryTests.testNames[i], function(testName, testResult) {
+	libraryTest.run(libraryTest.testNames[i], function(testName, testResult) {
 		i++;
 		log.push('onTestComplete: ' + testName);
 		equals(woosh._utils.constructorName(testResult), 'TestResult', 'testResult param is instanceof woosh.TestResult');
-		if (i == libraryTests.testNames.length) {
+		if (i == libraryTest.testNames.length) {
 			same(log, [
 				'$preTest prev: undefined',
 				'$preTest next: functionTest',
@@ -398,7 +398,7 @@ test('woosh._LibraryTests', 6, function() {
 			], 'Functions all called in correct order');
 			start();
 		} else {
-			libraryTests.run( libraryTests.testNames[i], arguments.callee );
+			libraryTest.run( libraryTest.testNames[i], arguments.callee );
 		}		
 	});
 });
@@ -425,14 +425,14 @@ test('creating woosh._TestFrames', 15, function() {
 		equals(typeof testFrame1.window.fakeLib2, 'undefined', 'fakeLib2 not created in testFrame1');
 		ok(testFrame1.window.fakeLib1.file2Loaded, 'fakeLib1 file2Loaded in testFrame1');
 		equals(testFrame1.window.document.getElementById('fakeLib1Elm').offsetWidth, 300, 'fakeLib1 CSS loaded in testFrame1');
-		equals(typeof testFrame1.libraryTests, 'object', 'testFrame1.libraryTests defined');
+		equals(typeof testFrame1.libraryTest, 'object', 'testFrame1.libraryTest defined');
 		
 		equals(typeof testFrame2.window, 'object', 'testFrame2 has window');
 		equals(typeof testFrame2.window.fakeLib2, 'object', 'fakeLib2 created in testFrame2');
 		equals(typeof testFrame2.window.fakeLib1, 'undefined', 'fakeLib1 not created in testFrame2');
 		ok(testFrame2.window.fakeLib2.file2Loaded, 'fakeLib2 file2Loaded in testFrame2');
 		equals(testFrame2.window.document.getElementById('fakeLib2Elm').offsetWidth, 300, 'fakeLib2 CSS loaded in testFrame2');
-		equals(typeof testFrame2.libraryTests, 'object', 'testFrame2.libraryTests defined');
+		equals(typeof testFrame2.libraryTest, 'object', 'testFrame2.libraryTest defined');
 		
 		start();
 	}
@@ -451,7 +451,7 @@ test('creating all equal woosh._TestSetRunner', 15, function() {
 	var nullLib1TestRan = false,
 		nullLib2TestRan = false;
 	
-	var nullLib1LibrarySet = new woosh._LibraryTests({
+	var nullLib1LibrarySet = new woosh._LibraryTest({
 		'test1': new woosh.Test(1, function(test) {
 			nullLib1TestRan = true;
 			test.result(5, 'fps', true);
@@ -459,7 +459,7 @@ test('creating all equal woosh._TestSetRunner', 15, function() {
 		})
 	});
 	
-	var nullLib2LibrarySet = new woosh._LibraryTests({
+	var nullLib2LibrarySet = new woosh._LibraryTest({
 		'test1': new woosh.Test(1, function(test) {
 			nullLib2TestRan = true;
 			test.result(1, 'fps', true);
@@ -501,7 +501,7 @@ test('creating a woosh._Conductor with 1 lib', 12, function() {
 	
 	var conductor = new woosh._Conductor(['fakeLib1'], function() {
 		ok(true, 'conductor onReady called');
-		equals(typeof conductor._testFrames.fakeLib1.libraryTests, 'object', 'fakeLib1.libraryTests is function');
+		equals(typeof conductor._testFrames.fakeLib1.libraryTest, 'object', 'fakeLib1.libraryTest is function');
 		conductor.addListener({
 			start: function() {
 				ok(true, 'conductor onStart called');
@@ -563,8 +563,8 @@ test('creating a woosh._Conductor with 2 libs', 19, function() {
 	
 	var conductor = new woosh._Conductor(['fakeLib1', 'fakeLib2'], function() {
 		ok(true, 'conductor onReady called');
-		equals(typeof conductor._testFrames.fakeLib1.libraryTests, 'object', 'fakeLib1.libraryTests is function');
-		equals(typeof conductor._testFrames.fakeLib2.libraryTests, 'object', 'fakeLib2.libraryTests is function');
+		equals(typeof conductor._testFrames.fakeLib1.libraryTest, 'object', 'fakeLib1.libraryTest is function');
+		equals(typeof conductor._testFrames.fakeLib2.libraryTest, 'object', 'fakeLib2.libraryTest is function');
 		
 		conductor.addListener({
 			start: function() {
