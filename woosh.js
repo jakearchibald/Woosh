@@ -14,7 +14,6 @@
 	
 	window.woosh = woosh;
 })();
-
 // woosh.libs
 (function(){
 	/**
@@ -39,7 +38,6 @@
 	
 	window.woosh.libs = libs;
 })();
-
 // woosh._root
 (function(){
 	/**
@@ -58,7 +56,6 @@
 	
 	window.woosh._root = lastScript.src.replace('woosh.js', '');
 })();
-
 // woosh._utils
 (function(){
 	/**
@@ -218,7 +215,6 @@
 	
 	window.woosh._utils = utils;
 })();
-
 // woosh.Test
 (function() {
 	/**
@@ -628,30 +624,16 @@
 	@private
 	@description A set of tests to run against a library
 	
+	@param {string} libraryName Name of the library
+	
 	@param {Object} tests Obj of functions / woosh.Test instances
 		Keys beginning $ have special meaning.
 		
 	*/
-	function LibraryTest(tests) {
-		/**
-		@name woosh._LibraryTest#tests
-		@type {Object}
-		@description Tests keyed by name
-		*/
+	function LibraryTest(libraryName, tests) {
 		this.tests = {};
-		/**
-		@name woosh._LibraryTest#testNames
-		@type {String[]}
-		@description Array of test names
-		*/
 		this.testNames = [];
-		/**
-		@name woosh._LibraryTest#_prevTestName
-		@private
-		@type {String}
-		@description Name of the previously run test
-		*/
-		this._prevTestName = undefined;
+		this.testResultSet = new woosh.TestResultSet(libraryName);
 		
 		// populate this.tests, converting functions into woosh.Test instances
 		for (var testName in tests) {
@@ -675,6 +657,31 @@
 	}
 	
 	LibraryTest.prototype = {
+		/**
+		@name woosh._LibraryTest#tests
+		@type {Object}
+		@description Tests keyed by name
+		*/
+		tests: {},
+		/**
+		@name woosh._LibraryTest#testNames
+		@type {String[]}
+		@description Array of test names
+		*/
+		testNames: [],
+		/**
+		@name woosh._LibraryTest#testResultSet
+		@type {woosh.TestResultSet}
+		@description Resultset for these tests
+		*/
+		testResultSet: null,
+		/**
+		@name woosh._LibraryTest#_prevTestName
+		@private
+		@type {String}
+		@description Name of the previously run test
+		*/
+		_prevTestName: undefined,
 		/**
 		@name woosh._LibraryTest#preTest
 		@function
@@ -712,6 +719,8 @@
 			this.preTest(this._prevTestName, testName);
 			test._run(function(result) {
 				libraryTest._prevTestName = testName;
+				// add to resultset
+				libraryTest.testResultSet.testResults[testName] = result;
 				// signal the test is complete
 				onTestComplete(testName, result);
 			});
@@ -781,7 +790,7 @@
 				@type {woosh._LibraryTest}
 				@description The library tests for this frame to test
 				*/
-				woosh._libraryTest = new LibraryTest(tests);
+				woosh._libraryTest = new LibraryTest(libraryName, tests);
 			}
 		}
 		return woosh;
@@ -800,7 +809,6 @@
 	window.woosh._LibraryTest = LibraryTest;
 	window.woosh._libsToConduct = libsToConduct;
 })();
-
 // woosh._TestSetRunner
 (function() {
 	var undefined;
@@ -825,7 +833,7 @@
 		}
 	}
 	
-	woosh._utils.extend(TestSetRunner, {}, {
+	woosh._utils.extend(TestSetRunner, Object, {
 		/**
 		@name woosh._TestSetRunner#libraryTest
 		@type {Object}
@@ -1053,7 +1061,6 @@
 	
 	window.woosh._TestFrame = TestFrame;
 })();
-
 // woosh._Conductor
 (function() {
 	/**
@@ -1124,13 +1131,13 @@
 				// get test names from first library's tests
 				conductor.testNames = conductor._testFrames[ libraryNames[0] ].libraryTest.testNames;
 				
-				var libraryTest = {};
+				var libraryTests = {};
 				// create the testset
 				for (var i = 0, len = libraryNames.length; i<len; i++) {
-					libraryTest[ libraryNames[i] ] = conductor._testFrames[ libraryNames[i] ].libraryTest;
+					libraryTests[ libraryNames[i] ] = conductor._testFrames[ libraryNames[i] ].libraryTest;
 				}
 				
-				conductor._testSetRunner = new woosh._TestSetRunner(libraryTest);
+				conductor._testSetRunner = new woosh._TestSetRunner(libraryTests);
 				onReady.call(conductor);
 			}
 		}
@@ -1226,7 +1233,6 @@
 	
 	window.woosh._Conductor = Conductor;
 })();
-
 // woosh._views
 (function() {
 	/**
@@ -1237,7 +1243,6 @@
 	*/
 	woosh._views = {};
 })();
-
 // woosh._views.Table
 (function() {
 	var tableHeading = '<th></th>',
@@ -1524,7 +1529,6 @@
 	
 	woosh._views.Table = Table;
 })();
-
 // woosh._buildOutputInterface
 (function() {
 	/**
@@ -1559,7 +1563,6 @@
 	
 	woosh._buildOutputInterface = buildOutputInterface;
 })();
-
 // page setup
 (function() {
 	/**

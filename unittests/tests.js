@@ -383,7 +383,7 @@ test('woosh._LibraryTest', 6, function() {
 	
 	var log = [];
 	
-	var libraryTest = new woosh._LibraryTest({
+	var libraryTest = new woosh._LibraryTest('Library', {
 		'$preTest': function(prevTest, nextTest) {
 			log.push('$preTest prev: ' + prevTest);
 			log.push('$preTest next: ' + nextTest);
@@ -483,7 +483,7 @@ test('creating all equal woosh._TestSetRunner', 15, function() {
 	var nullLib1TestRan = false,
 		nullLib2TestRan = false;
 	
-	var nullLib1LibrarySet = new woosh._LibraryTest({
+	var nullLib1LibrarySet = new woosh._LibraryTest('nullLib1', {
 		'test1': new woosh.Test(1, function(test) {
 			nullLib1TestRan = true;
 			test.result(5, 'fps', true);
@@ -491,7 +491,7 @@ test('creating all equal woosh._TestSetRunner', 15, function() {
 		})
 	});
 	
-	var nullLib2LibrarySet = new woosh._LibraryTest({
+	var nullLib2LibrarySet = new woosh._LibraryTest('nullLib2', {
 		'test1': new woosh.Test(1, function(test) {
 			nullLib2TestRan = true;
 			test.result(1, 'fps', true);
