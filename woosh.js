@@ -1741,7 +1741,7 @@
 		}
 		var output = document.createElement('div');
 		
-		output.innerHTML = '<div id="wooshBanner"><h1>' + document.title + '</h1></div><div id="wooshCommands"></div><div id="wooshViewOutput"><div>';
+		output.innerHTML = '<div id="wooshBanner"><h1>' + document.title + '</h1></div><div id="wooshUa">' + navigator.userAgent + '</div><div id="wooshCommands"></div><div id="wooshViewOutput"><div>';
 		output.appendChild( woosh._views.alert._container );
 		wooshOutput.appendChild(output);
 		

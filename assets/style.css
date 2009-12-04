@@ -9,23 +9,34 @@ body, html {
 	margin: 0;
 	padding: 0;
 	background: #f3f1f1;
-	font-family: arial, sans-serif;
+	font-family: Calibri,Arial, sans-serif;
 	font-size: 0.9em;
 }
 
 #wooshBanner {
 	background: #0d3349 url('logo.png') left center no-repeat;
-	padding: 15px 15px 15px 300px;
-	border-bottom: 7px solid #2b81af;
+	padding: 30px 30px 30px 300px;
+	border-bottom: 5px solid #C6E746;
+	min-height: 37px;
+	_height: 37px;
 }
 #wooshBanner h1 {
 	color: #fff;
 	font: 2.5em bold arial, sans-serif;
+	margin: 0;
 }
 
 #wooshViewOutput, #wooshCommands {
 	margin: 10px 30px;
 	clear: both;
+}
+#wooshUa {
+	background-color:#2B81AF;
+	color: #fff;
+	font-size: 0.9em;
+	margin: 0;
+	padding: 0.5em 0.5em 0.5em 48px;
+	font-weight: bold;
 }
 
 #wooshCommands a:link, #wooshCommands a:visited {
@@ -134,11 +145,11 @@ body, html {
 		}
 /* alerts view */
 	.wooshAlerts {
-		-moz-box-shadow: 0 2px 35px #999999;
-		-webkit-box-shadow: 0 2px 35px #999999;
-		box-shadow: 0 2px 35px #999999;
+		-moz-box-shadow: 0 2px 35px rgba(0,0,0,0.5);
+		-webkit-box-shadow: 0 2px 35px rgba(0,0,0,0.5);
+		box-shadow: 0 2px 35px rgba(0,0,0,0.5);
 		position: fixed;
-		right: 30px;
+		right: 17px;
 		bottom: 0;
 		width: 347px;
 	}
