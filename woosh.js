@@ -852,12 +852,12 @@
 	window.woosh._LibraryTest = LibraryTest;
 	window.woosh._libsToConduct = libsToConduct;
 })();
-// woosh._TestSetRunner
+// woosh._TestRunner
 (function() {
 	var undefined;
 	
 	/**
-	@name woosh._TestSetRunner
+	@name woosh._TestRunner
 	@constructor
 	@private
 	@description Helper to run and analyse a set of tests of the same name (but against different libraries)
@@ -867,7 +867,7 @@
 	@param {woosh.LibraryResult[]} libraryResults Array of result sets (where their name is the library name) to include in the runner.
 		They will fire the same events as other tests.
 	*/
-	function TestSetRunner(libraryTest, libraryResults) {
+	function TestRunner(libraryTest, libraryResults) {
 		this.libraryTest = libraryTest;
 		this.libraryNames = [];
 		this.libraryResults = libraryResults || [];
@@ -879,82 +879,82 @@
 		}
 	}
 	
-	woosh._utils.extend(TestSetRunner, Object, {
+	woosh._utils.extend(TestRunner, Object, {
 		/**
-		@name woosh._TestSetRunner#libraryTest
+		@name woosh._TestRunner#libraryTest
 		@type {Object}
 		@description Obj of woosh._LibraryTest instances keyed by library name
 		*/
 		libraryTest: {},
 		/**
-		@name woosh._TestSetRunner#libraryNames
+		@name woosh._TestRunner#libraryNames
 		@type {string[]}
 		@description Array of library names to test
 		*/
 		libraryNames: [],
 		/**
-		@name woosh._TestSetRunner#libraryResults
+		@name woosh._TestRunner#libraryResults
 		@type {woosh.LibraryResult[]}
 		@description Array of result sets for previously ran tests
 		*/
 		libraryResults: [],
 		/**
-		@name woosh._TestSetRunner#loopsEqual
+		@name woosh._TestRunner#loopsEqual
 		@type {boolean}
 		@description Were the loop counts of all tests equal?
 			Only available after all tests have ran
 		*/
 		loopsEqual: null,
 		/**
-		@name woosh._TestSetRunner#returnValsEqual
+		@name woosh._TestRunner#returnValsEqual
 		@type {boolean}
 		@description Were the return values of all tests equal?
 			Only available after all tests have ran
 		*/
 		returnValsEqual: null,
 		/**
-		@name woosh._TestSetRunner#unitsEqual
+		@name woosh._TestRunner#unitsEqual
 		@type {boolean}
 		@description Were the units of all tests equal?
 			Only available after all tests have ran
 		*/
 		unitsEqual: null,
 		/**
-		@name woosh._TestSetRunner#typesEqual
+		@name woosh._TestRunner#typesEqual
 		@type {boolean}
 		@description Were the types of all tests equal?
 			Only available after all tests have ran
 		*/
 		typesEqual: null,
 		/**
-		@name woosh._TestSetRunner#maxResult
+		@name woosh._TestRunner#maxResult
 		@type {number}
 		@description The maximum result from the tests
 			Only available after all tests have ran
 		*/
 		maxResult: null,
 		/**
-		@name woosh._TestSetRunner#minResult
+		@name woosh._TestRunner#minResult
 		@type {number}
 		@description The minimum result from the tests
 			Only available after all tests have ran
 		*/
 		minResult: null,
 		/**
-		@name woosh._TestSetRunner#highestIsBest
+		@name woosh._TestRunner#highestIsBest
 		@type {boolean}
 		@description Is the highest result best?
 			Only available after all tests have ran
 		*/
 		highestIsBest: null,
 		/**
-		@name woosh._TestSetRunner#lastResults
+		@name woosh._TestRunner#lastResults
 		@type {object}
 		@description The last Results create, keyed by library name (may be undefined if there was no test for that library)
 		*/
 		lastResults: {},
 		/**
-		@name woosh._TestSetRunner#run
+		@name woosh._TestRunner#run
 		@function
 		@description Run the test of tests
 		
@@ -974,16 +974,16 @@
 				currentLibName,
 				currentLibraryTest,
 				results = [],
-				testSetRunner = this;
+				testRunner = this;
 			
 			this.lastResults = {};
 			
 			function testComplete(testName, result) {
 				if (result) {
 					results.push(result);
-					testSetRunner.lastResults[currentLibName] = result;
+					testRunner.lastResults[currentLibName] = result;
 				}
-				onTestComplete.call(testSetRunner, currentLibName, result);
+				onTestComplete.call(testRunner, currentLibName, result);
 				setTimeout(function() {
 					runNextTest();
 				}, 300);
@@ -991,21 +991,21 @@
 			
 			function runNextTest() {
 				if (libraryResultsIndex < libraryResultsLen) {
-					libraryResult = testSetRunner.libraryResults[libraryResultsIndex];
+					libraryResult = testRunner.libraryResults[libraryResultsIndex];
 					currentLibName = libraryResult.name;
 					testComplete( testName, libraryResult.results[testName] );
 					libraryResultsIndex++;
 				} else {
 					// get the frame for the next library
-					currentLibName = testSetRunner.libraryNames[ ++libIndex ];
-					currentLibraryTest = testSetRunner.libraryTest[currentLibName];
+					currentLibName = testRunner.libraryNames[ ++libIndex ];
+					currentLibraryTest = testRunner.libraryTest[currentLibName];
 					
 					// if there's none, then we're done!
 					if (currentLibraryTest) {
 						currentLibraryTest.run(testName, testComplete);
 					} else {
-						testSetRunner._analyseResults(results);
-						onComplete.call(testSetRunner);
+						testRunner._analyseResults(results);
+						onComplete.call(testRunner);
 					}
 				}
 			}
@@ -1013,7 +1013,7 @@
 			runNextTest();
 		},
 		/**
-		@name woosh._TestSetRunner#_analyseResults
+		@name woosh._TestRunner#_analyseResults
 		@function
 		@private
 		@description Looks at the results of a set of tests and populate values
@@ -1067,7 +1067,7 @@
 			this.returnValsEqual = returnValsEqual;
 		}
 	});
-	woosh._TestSetRunner = TestSetRunner;
+	woosh._TestRunner = TestRunner;
 })();
 // woosh._TestFrame
 (function() {	
@@ -1165,7 +1165,7 @@
 					conductor._libraryResults[ libraryNames[i] ] = testFrame.libraryTest.libraryResult;
 				}
 				
-				conductor._testSetRunner = new woosh._TestSetRunner(libraryTests, savedResults);
+				conductor._testRunner = new woosh._TestRunner(libraryTests, savedResults);
 				onReady.call(conductor);
 			}
 		}
@@ -1195,11 +1195,11 @@
 		*/
 		savedResultName: '',
 		/**
-		@name woosh._Conductor#_testSetRunner
-		@type {woosh._TestSetRunner}
+		@name woosh._Conductor#_testRunner
+		@type {woosh._TestRunner}
 		@description Runner for the test sets
 		*/
-		_testSetRunner: undefined,
+		_testRunner: undefined,
 		/**
 		@name woosh._Conductor#_libraryResults
 		@type {Object}
@@ -1246,7 +1246,7 @@
 			
 			// called when all tests of a given name are complete
 			function testSetComplete() {
-				conductor._fire( 'testSetComplete', [currentTestName, conductor._testSetRunner] );
+				conductor._fire( 'testSetComplete', [currentTestName, conductor._testRunner] );
 				runNextTestPerFrame();
 			}
 			
@@ -1259,7 +1259,7 @@
 				currentTestName = conductor.testNames[ ++testIndex ];	
 				
 				if (currentTestName) {
-					conductor._testSetRunner.run(currentTestName, testComplete, testSetComplete);
+					conductor._testRunner.run(currentTestName, testComplete, testSetComplete);
 				} else {
 					// we're done!
 					conductor._fire('allTestsComplete', [conductor._libraryResults]);
@@ -1275,10 +1275,10 @@
 			listener.start()
 				- When the conductor starts
 			
-			listener.testSetComplete(testName, testSetRunner)
+			listener.testSetComplete(testName, testRunner)
 				- Called when the same test name is completed in each {@link woosh._TestFrame}
 				- testName is the name of the test
-				- testSetRunner is the {@link woosh._TestSetRunner} used to run the tests
+				- testRunner is the {@link woosh._TestRunner} used to run the tests
 				
 			listener.testComplete(libraryName, testName, results)
 				- Called when a test completes for a particular library
@@ -1490,8 +1490,8 @@
 			testComplete: function(libraryName, testName, result) {
 				this._addResult(libraryName, testName, result);
 			},
-			testSetComplete: function(testName, testSetRunner) {
-				this._checkResults(testName, testSetRunner);
+			testSetComplete: function(testName, testRunner) {
+				this._checkResults(testName, testRunner);
 			},
 			allTestsComplete: function(libraryResults) {
 				this._libraryResults = libraryResults;
@@ -1562,14 +1562,14 @@
 		@description Checks a set of results for a particular test, updates the table with warnings etc
 		 
 		@param {string} testName 
-		@param {woosh._TestSetRunner} testSetRunner Data about the tests that ran
+		@param {woosh._TestRunner} testRunner Data about the tests that ran
 		*/
-		_checkResults: function(testName, testSetRunner) {
+		_checkResults: function(testName, testRunner) {
 			var resultRow = this._testRows[testName],
 				testNameCell = resultRow.firstChild,
 				infoNode,
 				warningMsg = '',
-				results = testSetRunner.lastResults,
+				results = testRunner.lastResults,
 				result,
 				testCell,
 				resultPercent,
@@ -1584,17 +1584,17 @@
 					continue;
 				}
 				testCell = resultRow.childNodes[ this._libColIndex[libraryName] ];
-				resultDifference = testSetRunner.maxResult - testSetRunner.minResult;
+				resultDifference = testRunner.maxResult - testRunner.minResult;
 				
 				if (resultDifference === 0) {
 					resultPercent = 0;
 				}
 				else {
-					resultPercent = ( (result.result - testSetRunner.minResult) / (testSetRunner.maxResult - testSetRunner.minResult) );
+					resultPercent = ( (result.result - testRunner.minResult) / (testRunner.maxResult - testRunner.minResult) );
 				}
 				
 				// flip the result if low results are good
-				if (!testSetRunner.highestIsBest) {
+				if (!testRunner.highestIsBest) {
 					resultPercent = 1 - resultPercent;
 				}
 				
@@ -1631,15 +1631,15 @@
 				testCell.style.backgroundColor = 'rgb(' + cellBg.r + ',' + cellBg.g + ',' + cellBg.b + ')';
 				testCell.style.color = 'rgb(' + cellText.r + ',' + cellText.g + ',' + cellText.b + ')';
 				
-				if (result.result === testSetRunner.maxResult || result.result === testSetRunner.minResult) {
+				if (result.result === testRunner.maxResult || result.result === testRunner.minResult) {
 					testCell.style.fontWeight = 'bold';
 				}
 			}
-			if ( !(testSetRunner.loopsEqual && testSetRunner.returnValsEqual && testSetRunner.unitsEqual && testSetRunner.typesEqual) ) {
-				!testSetRunner.loopsEqual && 		(warningMsg += ' Tests have differing loop counts.');
-				!testSetRunner.returnValsEqual &&	(warningMsg += ' Tests have differing return values.');
-				!testSetRunner.unitsEqual && 		(warningMsg += ' Test results are of differing units.');
-				!testSetRunner.typesEqual &&		(warningMsg += ' Tests are of differing types.');
+			if ( !(testRunner.loopsEqual && testRunner.returnValsEqual && testRunner.unitsEqual && testRunner.typesEqual) ) {
+				!testRunner.loopsEqual && 		(warningMsg += ' Tests have differing loop counts.');
+				!testRunner.returnValsEqual &&	(warningMsg += ' Tests have differing return values.');
+				!testRunner.unitsEqual && 		(warningMsg += ' Test results are of differing units.');
+				!testRunner.typesEqual &&		(warningMsg += ' Tests are of differing types.');
 				infoNode = document.createElement('div');
 				infoNode.className = 'info';
 				infoNode.appendChild( document.createTextNode(warningMsg) );
