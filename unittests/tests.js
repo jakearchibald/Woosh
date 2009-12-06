@@ -526,7 +526,7 @@ test('creating all equal woosh._TestRunner', 16, function() {
 
 module('woosh._Conductor');
 
-test('creating a woosh._Conductor with 1 lib', 13, function() {
+test('creating a woosh._Conductor with 1 lib', 14, function() {
 	stop(5000);
 	
 	equals(typeof woosh._Conductor, 'function', 'woosh._Conductor is function');
@@ -562,10 +562,11 @@ test('creating a woosh._Conductor with 1 lib', 13, function() {
 						break;
 				}
 			},
-			allTestsComplete: function(libraryResults) {
+			allTestsComplete: function(libraryResults, resultComparisons) {
 				log.push('onAllTestsComplete');
 				
-				equals(woosh._utils.constructorName(libraryResults.fakeLib1), 'LibraryResult', 'Result sets provided');
+				equals(woosh._utils.constructorName(libraryResults.fakeLib1), 'LibraryResult', 'libraryResults provided');
+				equals(woosh._utils.constructorName(resultComparisons.blockingFunc), 'ResultComparison', 'resultComparisons provided');
 				
 				same(log, [
 					'onStart',

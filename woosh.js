@@ -1258,10 +1258,12 @@
 			
 			var testIndex = -1,
 				currentTestName,
+				resultComparisons = {},
 				conductor = this;
 			
 			// called when all tests of a given name are complete
 			function testSetComplete(resultComparison) {
+				resultComparisons[currentTestName] = resultComparison;
 				conductor._fire( 'testSetComplete', [currentTestName, resultComparison] );
 				runNextTestPerFrame();
 			}
@@ -1278,7 +1280,7 @@
 					conductor._testRunner.run(currentTestName, testComplete, testSetComplete);
 				} else {
 					// we're done!
-					conductor._fire('allTestsComplete', [conductor._libraryResults]);
+					conductor._fire( 'allTestsComplete', [conductor._libraryResults, resultComparisons] );
 				}
 			}
 			
@@ -1302,9 +1304,10 @@
 				- testName is the name of the test
 				- results is an instance of woosh.Results. Will be udefined if the test was missing.
 				
-			listener.allTestsComplete(libraryResults)
+			listener.allTestsComplete(libraryResults, resultComparisons)
 				- Called when all queued tests have completed
 				- libraryResults is an object of woosh.LibraryResult keyed by library name
+				- resultComparisons is an object of woosh.ResultComparisons keyed by test name
 		
 		@param {object} listener Object to fire events on
 		@param {object} thisVal What 'this' should equal in the callbacks
