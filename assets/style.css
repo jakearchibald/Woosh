@@ -121,7 +121,7 @@ body, html {
 			display: inline;
 		}
 		.wooshTable thead .save, .wooshTable thead .delete {
-			background: red;
+			background: url(cross.png);
 			text-decoration: none;
 			width: 16px;
 			height: 16px;
@@ -130,5 +130,42 @@ body, html {
 			text-indent: -2000px;
 		}
 		.wooshTable thead .save {
-			background: green;
+			background: url(disk.png);
 		}
+/* alerts view */
+	.wooshAlerts {
+		-moz-box-shadow: 0 2px 35px #999999;
+		-webkit-box-shadow: 0 2px 35px #999999;
+		box-shadow: 0 2px 35px #999999;
+		position: fixed;
+		right: 30px;
+		bottom: 0;
+		width: 347px;
+	}
+	.wooshAlert {
+		overflow: hidden;
+		background: #d0c8c8 url(ok.png) no-repeat -20px -20px;
+		border: 7px solid #fff;
+		border-bottom: none;
+		min-height: 86px;
+		_height: 86px;
+	}
+	.wooshAlerts .error {
+		background-image: url(error.png);
+	}
+	.wooshAlerts .close {
+		float: right;
+		margin: 7px 7px 0 0;
+		text-decoration: none;
+		color: #000;
+		text-indent: -2000px;
+		width: 16px; height: 14px;
+		background: url(close.png);
+		overflow: hidden;
+	}
+	.wooshAlerts .msg {
+		margin: 29px 20px 13px 128px;
+		font-weight: bold;
+		color: #444;
+	}
+	

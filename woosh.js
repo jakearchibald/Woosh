@@ -1444,6 +1444,7 @@
 					a.title = 'Delete';
 					a.onclick = function() {
 						woosh.deleteSavedResultSet();
+						woosh._views.alert.ok('Results for ' + this._libName.replace(' (saved)', '') + ' deleted. Refresh to see changes.');
 						return false;
 					}
 				}
@@ -1452,6 +1453,7 @@
 					a.appendChild( document.createTextNode('Save') );
 					a.title = 'Save';
 					a.onclick = function() {
+						woosh._views.alert.ok('Results for ' + this._libName + ' saved. Refresh to see changes.');
 						woosh.saveResultSet( table._resultSets[this._libName] );
 						return false;
 					}
@@ -1649,6 +1651,77 @@
 	
 	woosh._views.Table = Table;
 })();
+// woosh._views.alert
+(function() {
+	/**
+	@name woosh._views.alert
+	@namespace
+	@description A set of functions for providing information to the user
+	*/
+	var alert = {},
+		container = document.createElement('div'),
+		closeBtn = document.createElement('a'),
+		msgTimeout = 5000;
+	
+	container.className = 'wooshAlerts';
+	closeBtn.href = '#';
+	closeBtn.className = 'close';
+	closeBtn.innerHTML = 'X';
+	
+	// creates an alert
+	function addAlert(className, msg) {
+		var elm = document.createElement('div'),
+			msgElm = document.createElement('div'),
+			close = closeBtn.cloneNode(true),
+			timeout;
+		
+		elm.className = 'wooshAlert ' + className;
+		elm.appendChild(close);
+		
+		msgElm.className = 'msg';
+		msgElm.appendChild( document.createTextNode(msg) );
+		elm.appendChild(msgElm);
+		
+		container.appendChild(elm);
+		
+		function remove() {
+			clearTimeout(timeout);
+			close.onclick = undefined;
+			elm.onclick = undefined;
+			elm.parentNode.removeChild(elm);
+			return false;
+		}
+		
+		// if the message is clicked, don't auto-hide it
+		elm.onclick = function() {
+			clearTimeout(timeout);
+		}
+		
+		close.onclick = remove;
+		timeout = setTimeout(remove, msgTimeout);
+	}
+	
+	/**
+	@name woosh._views.alert._container
+	@type {HTMLElement}
+	@description Element containing the alerts
+	*/
+	alert._container = container;
+	
+	/**
+	@name woosh._views.alert.ok
+	@function
+	@description Informs the user that something worked
+	
+	@param {string} msg Message to display
+	*/
+	alert.ok = function(msg) {
+		addAlert('ok', msg);
+	}
+	
+	// export
+	woosh._views.alert = alert;
+})();
 // woosh._buildOutputInterface
 (function() {
 	/**
@@ -1669,6 +1742,7 @@
 		var output = document.createElement('div');
 		
 		output.innerHTML = '<div id="wooshBanner"><h1>' + document.title + '</h1></div><div id="wooshCommands"></div><div id="wooshViewOutput"><div>';
+		output.appendChild( woosh._views.alert._container );
 		wooshOutput.appendChild(output);
 		
 		conductor.addListener({
@@ -1750,6 +1824,7 @@
 			woosh._buildOutputInterface(woosh._conductor);
 			// view output element
 			var viewOutput = document.getElementById('wooshViewOutput');
+			viewOutput.appendChild( woosh._views.alert._container );
 		};
 	}
 })();
