@@ -473,9 +473,9 @@ test('creating woosh._TestFrames', 15, function() {
 	var testFrame2 = new woosh._TestFrame('fakeLib2', testFrameReady);
 });
 
-module('woosh._TestSet');
+module('woosh._TestRunner');
 
-test('creating all equal woosh._TestRunner', 15, function() {
+test('creating all equal woosh._TestRunner', 16, function() {
 	stop(2000);
 	
 	equals(typeof woosh._TestRunner, 'function', 'woosh._TestRunner is function');
@@ -506,19 +506,20 @@ test('creating all equal woosh._TestRunner', 15, function() {
 	
 	myTestSet.run('test1', function(libraryName, result) {
 		equals(woosh._utils.constructorName(result), 'Result', 'result is a Result');
-	}, function() {
+	}, function(resultComparison) {
 		ok(nullLib2TestRan, 'nullLib1TestRan');
 		ok(nullLib2TestRan, 'nullLib2TestRan');
 		ok(true, 'onComplete callback fired');
-		ok(myTestSet.loopsEqual, 'loopsEqual');
-		ok(myTestSet.returnValsEqual, 'returnValsEqual');
-		ok(myTestSet.unitsEqual, 'unitsEqual');
-		ok(myTestSet.typesEqual, 'typesEqual');
-		equals(myTestSet.maxResult, 5, 'maxResult');
-		equals(myTestSet.minResult, 1, 'minResult');
-		ok(myTestSet.highestIsBest, 'highestIsBest');
-		ok(myTestSet.lastResults.nullLib1, 'lastTestsRan.nullLib1');
-		ok(myTestSet.lastResults.nullLib2, 'lastTestsRan.nullLib2');
+		equals(woosh._utils.constructorName(resultComparison), 'ResultComparison', 'resultComparison is a ResultComparison');
+		ok(resultComparison.loopsEqual, 'loopsEqual');
+		ok(resultComparison.returnValsEqual, 'returnValsEqual');
+		ok(resultComparison.unitsEqual, 'unitsEqual');
+		ok(resultComparison.typesEqual, 'typesEqual');
+		equals(resultComparison.maxResult, 5, 'maxResult');
+		equals(resultComparison.minResult, 1, 'minResult');
+		ok(resultComparison.highestIsBest, 'highestIsBest');
+		ok(resultComparison.results.nullLib1, 'lastTestsRan.nullLib1');
+		ok(resultComparison.results.nullLib2, 'lastTestsRan.nullLib2');
 		start();
 	});
 });
@@ -542,22 +543,22 @@ test('creating a woosh._Conductor with 1 lib', 13, function() {
 			testComplete: function(libraryName, testName, result) {
 				log.push('onTestComplete: ' + testName + ', ' + libraryName);
 			},
-			testSetComplete: function(testName, testRunner) {
+			testSetComplete: function(testName, resultComparison) {
 				log.push('onTestSetComplete: ' + testName);
 				switch (testName) {
 					case 'blockingFunc':
-						equals(testRunner.lastResults.fakeLib1.returnVal, 'fakeLib1.blockingFunc', 'Correct return val on fakeLib1.blockingFunc');
+						equals(resultComparison.results.fakeLib1.returnVal, 'fakeLib1.blockingFunc', 'Correct return val on fakeLib1.blockingFunc');
 						break;
 					case 'asyncFunc':
-						equals(testRunner.lastResults.fakeLib1.returnVal, 'fakeLib1.asyncFunc', 'Correct return val on fakeLib1.asyncFunc');
+						equals(resultComparison.results.fakeLib1.returnVal, 'fakeLib1.asyncFunc', 'Correct return val on fakeLib1.asyncFunc');
 						break;
 					case 'customResultTest':
-						equals(testRunner.lastResults.fakeLib1.returnVal, 'fakeLib1 customResultTest', 'Correct return val on fakeLib1 customResultTest');
-						equals(testRunner.lastResults.fakeLib1.result, 123, 'Correct result on fakeLib1 customResultTest');
-						equals(testRunner.lastResults.fakeLib1.unit, 'fps', 'Correct unit on fakeLib1 customResultTest');
+						equals(resultComparison.results.fakeLib1.returnVal, 'fakeLib1 customResultTest', 'Correct return val on fakeLib1 customResultTest');
+						equals(resultComparison.results.fakeLib1.result, 123, 'Correct result on fakeLib1 customResultTest');
+						equals(resultComparison.results.fakeLib1.unit, 'fps', 'Correct unit on fakeLib1 customResultTest');
 						break;
 					case 'onlyInFakeLib1':
-						equals(testRunner.lastResults.fakeLib1.returnVal, 'fakeLib1 onlyInFakeLib1', 'Correct return val on fakeLib1 onlyInFakeLib1');
+						equals(resultComparison.results.fakeLib1.returnVal, 'fakeLib1 onlyInFakeLib1', 'Correct return val on fakeLib1 onlyInFakeLib1');
 						break;
 				}
 			},
@@ -608,30 +609,30 @@ test('creating a woosh._Conductor with 2 libs', 21, function() {
 			testComplete: function(libraryName, testName, results) {
 				log.push('onTestComplete: ' + testName + ', ' + libraryName);
 			},
-			testSetComplete: function(testName, testRunner) {
+			testSetComplete: function(testName, resultComparison) {
 				log.push('onTestSetComplete: ' + testName);
 				switch (testName) {
 					case 'blockingFunc':
-						equals(testRunner.lastResults.fakeLib1.returnVal, 'fakeLib1.blockingFunc', 'Correct return val on fakeLib1.blockingFunc');
-						equals(testRunner.lastResults.fakeLib2.returnVal, 'fakeLib2.blockingFunc', 'Correct return val on fakeLib2.blockingFunc');
+						equals(resultComparison.results.fakeLib1.returnVal, 'fakeLib1.blockingFunc', 'Correct return val on fakeLib1.blockingFunc');
+						equals(resultComparison.results.fakeLib2.returnVal, 'fakeLib2.blockingFunc', 'Correct return val on fakeLib2.blockingFunc');
 						break;
 					case 'asyncFunc':
-						equals(testRunner.lastResults.fakeLib1.returnVal, 'fakeLib1.asyncFunc', 'Correct return val on fakeLib1.asyncFunc');
-						equals(testRunner.lastResults.fakeLib2.returnVal, 'fakeLib2.asyncFunc', 'Correct return val on fakeLib2.asyncFunc');
+						equals(resultComparison.results.fakeLib1.returnVal, 'fakeLib1.asyncFunc', 'Correct return val on fakeLib1.asyncFunc');
+						equals(resultComparison.results.fakeLib2.returnVal, 'fakeLib2.asyncFunc', 'Correct return val on fakeLib2.asyncFunc');
 						break;
 					case 'customResultTest':
-						equals(testRunner.lastResults.fakeLib1.returnVal, 'fakeLib1 customResultTest', 'Correct return val on fakeLib1 customResultTest');
-						equals(testRunner.lastResults.fakeLib2.returnVal, 'fakeLib2 customResultTest', 'Correct return val on fakeLib2 customResultTest');
+						equals(resultComparison.results.fakeLib1.returnVal, 'fakeLib1 customResultTest', 'Correct return val on fakeLib1 customResultTest');
+						equals(resultComparison.results.fakeLib2.returnVal, 'fakeLib2 customResultTest', 'Correct return val on fakeLib2 customResultTest');
 						
-						equals(testRunner.lastResults.fakeLib1.result, 123, 'Correct result on fakeLib1 customResultTest');
-						equals(testRunner.lastResults.fakeLib2.result, 456, 'Correct result on fakeLib2 customResultTest');
+						equals(resultComparison.results.fakeLib1.result, 123, 'Correct result on fakeLib1 customResultTest');
+						equals(resultComparison.results.fakeLib2.result, 456, 'Correct result on fakeLib2 customResultTest');
 						
-						equals(testRunner.lastResults.fakeLib1.unit, 'fps', 'Correct unit on fakeLib1 customResultTest');
-						equals(testRunner.lastResults.fakeLib2.unit, 'fps', 'Correct unit on fakeLib2 customResultTest');
+						equals(resultComparison.results.fakeLib1.unit, 'fps', 'Correct unit on fakeLib1 customResultTest');
+						equals(resultComparison.results.fakeLib2.unit, 'fps', 'Correct unit on fakeLib2 customResultTest');
 						break;
 					case 'onlyInFakeLib1':
-						equals(testRunner.lastResults.fakeLib1.returnVal, 'fakeLib1 onlyInFakeLib1', 'Correct return val on fakeLib1 onlyInFakeLib1');
-						equals(testRunner.lastResults.fakeLib2, undefined, 'Result for fakeLib2 undefined');
+						equals(resultComparison.results.fakeLib1.returnVal, 'fakeLib1 onlyInFakeLib1', 'Correct return val on fakeLib1 onlyInFakeLib1');
+						equals(resultComparison.results.fakeLib2, undefined, 'Result for fakeLib2 undefined');
 						break;
 				}
 			},
