@@ -139,7 +139,7 @@ test('Running a sync test', 12, function() {
 	equals(onCompleteFiredCount, 1, '_onComplete was called correct number of times');
 	equals(test._returnVal, 'Hello', '_returnVal set');
 	equals(typeof test._result, 'number', '_result is number (' + test._result + ')');
-	ok(result instanceof woosh.TestResult, 'Result object provided');
+	ok(result instanceof woosh.Result, 'Result object provided');
 	equals(result.result, test._result, 'Result object has result');
 	equals(result.returnVal, test._returnVal, 'Result object has returnVal');
 	equals(result.loopCount, 1000000, 'Result object has loopCount');
@@ -158,16 +158,16 @@ test('Handling errors in a sync test', 11, function() {
 		return undefined();
 	});
 	
-	test._run(function(testResult) {
+	test._run(function(r) {
 		onCompleteFiredCount++;
-		result = testResult;
+		result = r;
 	});
 	equals(testRunCount, 1, '_testFunc was called only once since it errored');
 	equals(onCompleteFiredCount, 1, '_onComplete was called correct number of times');
 	equals(test._returnVal, undefined, '_returnVal is undefined');
 	equals(test._result, undefined, '_result is undefined');
 	ok(test._error instanceof Error, '_error is Error');
-	ok(result instanceof woosh.TestResult, 'Result object provided');
+	ok(result instanceof woosh.Result, 'Result object provided');
 	equals(result.result, test._result, 'Result object has result');
 	equals(result.returnVal, test._returnVal, 'Result object has returnVal');
 	equals(result.loopCount, 1000000, 'Result object has loopCount');
@@ -195,14 +195,14 @@ test('Overriding results and units', 10, function() {
 	
 	var result1, result2, result3;
 	
-	test1._run(function(testResult) {
-		result1 = testResult;
+	test1._run(function(result) {
+		result1 = result;
 	});
-	test2._run(function(testResult) {
-		result2 = testResult;
+	test2._run(function(result) {
+		result2 = result;
 	});
-	test3._run(function(testResult) {
-		result3 = testResult;
+	test3._run(function(result) {
+		result3 = result;
 	});
 	
 	equals(result1.result, 123, 'result1.result');
@@ -256,15 +256,15 @@ test('Running an async test', 9, function() {
 	equals(typeof test._run, 'function', 'woosh.AsyncTest#_run exists');
 	equals(typeof test.endTest, 'function', 'woosh.AsyncTest#endTest exists');
 	
-	test._run(function(testResult) {
+	test._run(function(result) {
 		onCompleteFiredCount++;
 		
 		equals(testRunCount, 10, '_testFunc was called correct number of times');
 		equals(setTimeoutCallbackRunCount, 10, 'setTimeout callback was called the correct number of times');
 		equals(onCompleteFiredCount, 1, '_onComplete was called correct number of times');
-		equals(testResult.returnVal, 'Hello', 'returnVal set via endTest');
-		equals(typeof testResult.result, 'number', 'result is number (' + test._result + ')');
-		ok(testResult.result >= 500, 'result indicates setTimeout callbacks have been waited for');
+		equals(result.returnVal, 'Hello', 'returnVal set via endTest');
+		equals(typeof result.result, 'number', 'result is number (' + test._result + ')');
+		ok(result.result >= 500, 'result indicates setTimeout callbacks have been waited for');
 		start();
 	});
 });
@@ -286,92 +286,92 @@ test('Handling errors in an async test', 6, function() {
 		}, 60);
 	});
 	
-	test._run(function(testResult) {
+	test._run(function(result) {
 		onCompleteFiredCount++;
 		
 		equals(testRunCount, 1, '_testFunc was called only once since it errored');
 		equals(setTimeoutCallbackRunCount, 1, 'setTimeout callback was called only once since it errored');
 		equals(onCompleteFiredCount, 1, '_onComplete was called correct number of times');
-		equals(testResult.returnVal, undefined, '_returnVal is undefined');
-		equals(testResult.result, undefined, '_result is undefined');
-		ok(testResult.error instanceof Error, '_error is Error');
+		equals(result.returnVal, undefined, '_returnVal is undefined');
+		equals(result.result, undefined, '_result is undefined');
+		ok(result.error instanceof Error, '_error is Error');
 		start();
 	});
 });
 
-module('woosh.TestResult & woosh.TestResultSet');
+module('woosh.Result & woosh.ResultSet');
 
-test('woosh.TestResult serializing & unserializing', 12, function() {
-	var testResult = new woosh.TestResult();
-	testResult.result = 123;
-	testResult.unit   = 'fps';
-	testResult.type   = 'Test';
-	testResult.error  = new Error('All went wrong');
-	testResult.loopCount = 100;
-	testResult.returnVal = 60;
-	testResult.highestIsBest = false;
-	var serial = testResult.serialize();
+test('woosh.Result serializing & unserializing', 12, function() {
+	var result = new woosh.Result();
+	result.result = 123;
+	result.unit   = 'fps';
+	result.type   = 'Test';
+	result.error  = new Error('All went wrong');
+	result.loopCount = 100;
+	result.returnVal = 60;
+	result.highestIsBest = false;
+	var serial = result.serialize();
 	
-	var anotherTestResult = new woosh.TestResult().unserialize(serial);
+	var anotherResult = new woosh.Result().unserialize(serial);
 	
-	equals(anotherTestResult.result, 123, 'result');
-	equals(anotherTestResult.unit, 'fps', 'unit');
-	equals(anotherTestResult.type, 'Test', 'type');
-	equals(anotherTestResult.error.message, 'All went wrong', 'error.message');
-	equals(anotherTestResult.loopCount, 100, 'loopCount');
-	equals(typeof anotherTestResult.returnVal, 'number', 'returnVal type');
-	equals(anotherTestResult.returnVal, 60, 'returnVal');
-	equals(anotherTestResult.highestIsBest, false, 'highestIsBest');
+	equals(anotherResult.result, 123, 'result');
+	equals(anotherResult.unit, 'fps', 'unit');
+	equals(anotherResult.type, 'Test', 'type');
+	equals(anotherResult.error.message, 'All went wrong', 'error.message');
+	equals(anotherResult.loopCount, 100, 'loopCount');
+	equals(typeof anotherResult.returnVal, 'number', 'returnVal type');
+	equals(anotherResult.returnVal, 60, 'returnVal');
+	equals(anotherResult.highestIsBest, false, 'highestIsBest');
 	
-	testResult = new woosh.TestResult();
-	testResult.returnVal = 'Hello';
-	serial = testResult.serialize();
+	result = new woosh.Result();
+	result.returnVal = 'Hello';
+	serial = result.serialize();
 	
-	anotherTestResult = new woosh.TestResult().unserialize(serial);
+	anotherResult = new woosh.Result().unserialize(serial);
 	
-	equals(typeof anotherTestResult.returnVal, 'string', 'returnVal type');
-	equals(anotherTestResult.returnVal, 'Hello', 'returnVal');
+	equals(typeof anotherResult.returnVal, 'string', 'returnVal type');
+	equals(anotherResult.returnVal, 'Hello', 'returnVal');
 	
-	testResult = new woosh.TestResult();
-	testResult.returnVal = undefined;
-	serial = testResult.serialize();
+	result = new woosh.Result();
+	result.returnVal = undefined;
+	serial = result.serialize();
 	
-	anotherTestResult = new woosh.TestResult().unserialize(serial);
+	anotherResult = new woosh.Result().unserialize(serial);
 	
-	equals(typeof anotherTestResult.returnVal, 'undefined', 'returnVal type');
-	equals(anotherTestResult.returnVal, undefined, 'returnVal');
+	equals(typeof anotherResult.returnVal, 'undefined', 'returnVal type');
+	equals(anotherResult.returnVal, undefined, 'returnVal');
 });
 
-test('woosh.TestResultSet serializing & unserializing', 3, function() {
-	var testResult = new woosh.TestResult();
-	testResult.result = 123;
-	testResult.unit   = 'fps';
-	testResult.type   = 'Test';
-	testResult.loopCount = 100;
-	testResult.returnVal = 60;
-	testResult.highestIsBest = false;
+test('woosh.ResultSet serializing & unserializing', 3, function() {
+	var result = new woosh.Result();
+	result.result = 123;
+	result.unit   = 'fps';
+	result.type   = 'Test';
+	result.loopCount = 100;
+	result.returnVal = 60;
+	result.highestIsBest = false;
 	
-	var testResult2 = new woosh.TestResult();
-	testResult2.result = 456;
-	testResult2.unit   = 'ms';
-	testResult2.type   = 'AsyncTest';
-	testResult2.loopCount = 100;
-	testResult2.returnVal = 60;
-	testResult2.highestIsBest = false;
+	var result2 = new woosh.Result();
+	result2.result = 456;
+	result2.unit   = 'ms';
+	result2.type   = 'AsyncTest';
+	result2.loopCount = 100;
+	result2.returnVal = 60;
+	result2.highestIsBest = false;
 	
-	var testResultSet = new woosh.TestResultSet('My library');
-	testResultSet.testResults = {
-		'result1': testResult,
-		'result2': testResult2
+	var resultSet = new woosh.ResultSet('My library');
+	resultSet.results = {
+		'result1': result,
+		'result2': result2
 	};
 	
-	var serial = testResultSet.serialize();
+	var serial = resultSet.serialize();
 	
-	var anotherTestResultSet = new woosh.TestResultSet().unserialize(serial);
+	var anotherResultSet = new woosh.ResultSet().unserialize(serial);
 	
-	same(testResultSet, anotherTestResultSet, 'Serialized & Unserialized');
-	same(anotherTestResultSet.testResults.result1, testResultSet.testResults.result1, 'result1 Serialized & Unserialized');
-	same(anotherTestResultSet.testResults.result2, testResultSet.testResults.result2, 'result2 Serialized & Unserialized');
+	same(resultSet, anotherResultSet, 'Serialized & Unserialized');
+	same(anotherResultSet.results.result1, resultSet.results.result1, 'result1 Serialized & Unserialized');
+	same(anotherResultSet.results.result2, resultSet.results.result2, 'result2 Serialized & Unserialized');
 });
 
 module('woosh._LibraryTest');
@@ -409,10 +409,10 @@ test('woosh._LibraryTest', 6, function() {
 	
 	same(libraryTest.testNames, ['functionTest', 'TestTest', 'AsyncTestTest'], 'woosh._LibraryTest#testNames set');
 	
-	libraryTest.run(libraryTest.testNames[i], function(testName, testResult) {
+	libraryTest.run(libraryTest.testNames[i], function(testName, result) {
 		i++;
 		log.push('onTestComplete: ' + testName);
-		equals(woosh._utils.constructorName(testResult), 'TestResult', 'testResult param is instanceof woosh.TestResult');
+		equals(woosh._utils.constructorName(result), 'Result', 'result param is instanceof woosh.Result');
 		if (i == libraryTest.testNames.length) {
 			same(log, [
 				'$preTest prev: undefined',
@@ -504,8 +504,8 @@ test('creating all equal woosh._TestSetRunner', 15, function() {
 		'nullLib2': nullLib2LibrarySet
 	});
 	
-	myTestSet.run('test1', function(libraryName, testResult) {
-		equals(woosh._utils.constructorName(testResult), 'TestResult', 'testResult is a TestResult');
+	myTestSet.run('test1', function(libraryName, result) {
+		equals(woosh._utils.constructorName(result), 'Result', 'result is a Result');
 	}, function() {
 		ok(nullLib2TestRan, 'nullLib1TestRan');
 		ok(nullLib2TestRan, 'nullLib2TestRan');
@@ -517,8 +517,8 @@ test('creating all equal woosh._TestSetRunner', 15, function() {
 		equals(myTestSet.maxResult, 5, 'maxResult');
 		equals(myTestSet.minResult, 1, 'minResult');
 		ok(myTestSet.highestIsBest, 'highestIsBest');
-		ok(myTestSet.lastTestResults.nullLib1, 'lastTestsRan.nullLib1');
-		ok(myTestSet.lastTestResults.nullLib2, 'lastTestsRan.nullLib2');
+		ok(myTestSet.lastResults.nullLib1, 'lastTestsRan.nullLib1');
+		ok(myTestSet.lastResults.nullLib2, 'lastTestsRan.nullLib2');
 		start();
 	});
 });
@@ -539,32 +539,32 @@ test('creating a woosh._Conductor with 1 lib', 13, function() {
 				ok(true, 'conductor onStart called');
 				log.push('onStart');
 			},
-			testComplete: function(libraryName, testName, testResult) {
+			testComplete: function(libraryName, testName, result) {
 				log.push('onTestComplete: ' + testName + ', ' + libraryName);
 			},
 			testSetComplete: function(testName, testSetRunner) {
 				log.push('onTestSetComplete: ' + testName);
 				switch (testName) {
 					case 'blockingFunc':
-						equals(testSetRunner.lastTestResults.fakeLib1.returnVal, 'fakeLib1.blockingFunc', 'Correct return val on fakeLib1.blockingFunc');
+						equals(testSetRunner.lastResults.fakeLib1.returnVal, 'fakeLib1.blockingFunc', 'Correct return val on fakeLib1.blockingFunc');
 						break;
 					case 'asyncFunc':
-						equals(testSetRunner.lastTestResults.fakeLib1.returnVal, 'fakeLib1.asyncFunc', 'Correct return val on fakeLib1.asyncFunc');
+						equals(testSetRunner.lastResults.fakeLib1.returnVal, 'fakeLib1.asyncFunc', 'Correct return val on fakeLib1.asyncFunc');
 						break;
 					case 'customResultTest':
-						equals(testSetRunner.lastTestResults.fakeLib1.returnVal, 'fakeLib1 customResultTest', 'Correct return val on fakeLib1 customResultTest');
-						equals(testSetRunner.lastTestResults.fakeLib1.result, 123, 'Correct result on fakeLib1 customResultTest');
-						equals(testSetRunner.lastTestResults.fakeLib1.unit, 'fps', 'Correct unit on fakeLib1 customResultTest');
+						equals(testSetRunner.lastResults.fakeLib1.returnVal, 'fakeLib1 customResultTest', 'Correct return val on fakeLib1 customResultTest');
+						equals(testSetRunner.lastResults.fakeLib1.result, 123, 'Correct result on fakeLib1 customResultTest');
+						equals(testSetRunner.lastResults.fakeLib1.unit, 'fps', 'Correct unit on fakeLib1 customResultTest');
 						break;
 					case 'onlyInFakeLib1':
-						equals(testSetRunner.lastTestResults.fakeLib1.returnVal, 'fakeLib1 onlyInFakeLib1', 'Correct return val on fakeLib1 onlyInFakeLib1');
+						equals(testSetRunner.lastResults.fakeLib1.returnVal, 'fakeLib1 onlyInFakeLib1', 'Correct return val on fakeLib1 onlyInFakeLib1');
 						break;
 				}
 			},
 			allTestsComplete: function(resultSets) {
 				log.push('onAllTestsComplete');
 				
-				equals(woosh._utils.constructorName(resultSets.fakeLib1), 'TestResultSet', 'Result sets provided');
+				equals(woosh._utils.constructorName(resultSets.fakeLib1), 'ResultSet', 'Result sets provided');
 				
 				same(log, [
 					'onStart',
@@ -605,41 +605,41 @@ test('creating a woosh._Conductor with 2 libs', 21, function() {
 				ok(true, 'conductor onStart called');
 				log.push('onStart');
 			},
-			testComplete: function(libraryName, testName, testResults) {
+			testComplete: function(libraryName, testName, results) {
 				log.push('onTestComplete: ' + testName + ', ' + libraryName);
 			},
 			testSetComplete: function(testName, testSetRunner) {
 				log.push('onTestSetComplete: ' + testName);
 				switch (testName) {
 					case 'blockingFunc':
-						equals(testSetRunner.lastTestResults.fakeLib1.returnVal, 'fakeLib1.blockingFunc', 'Correct return val on fakeLib1.blockingFunc');
-						equals(testSetRunner.lastTestResults.fakeLib2.returnVal, 'fakeLib2.blockingFunc', 'Correct return val on fakeLib2.blockingFunc');
+						equals(testSetRunner.lastResults.fakeLib1.returnVal, 'fakeLib1.blockingFunc', 'Correct return val on fakeLib1.blockingFunc');
+						equals(testSetRunner.lastResults.fakeLib2.returnVal, 'fakeLib2.blockingFunc', 'Correct return val on fakeLib2.blockingFunc');
 						break;
 					case 'asyncFunc':
-						equals(testSetRunner.lastTestResults.fakeLib1.returnVal, 'fakeLib1.asyncFunc', 'Correct return val on fakeLib1.asyncFunc');
-						equals(testSetRunner.lastTestResults.fakeLib2.returnVal, 'fakeLib2.asyncFunc', 'Correct return val on fakeLib2.asyncFunc');
+						equals(testSetRunner.lastResults.fakeLib1.returnVal, 'fakeLib1.asyncFunc', 'Correct return val on fakeLib1.asyncFunc');
+						equals(testSetRunner.lastResults.fakeLib2.returnVal, 'fakeLib2.asyncFunc', 'Correct return val on fakeLib2.asyncFunc');
 						break;
 					case 'customResultTest':
-						equals(testSetRunner.lastTestResults.fakeLib1.returnVal, 'fakeLib1 customResultTest', 'Correct return val on fakeLib1 customResultTest');
-						equals(testSetRunner.lastTestResults.fakeLib2.returnVal, 'fakeLib2 customResultTest', 'Correct return val on fakeLib2 customResultTest');
+						equals(testSetRunner.lastResults.fakeLib1.returnVal, 'fakeLib1 customResultTest', 'Correct return val on fakeLib1 customResultTest');
+						equals(testSetRunner.lastResults.fakeLib2.returnVal, 'fakeLib2 customResultTest', 'Correct return val on fakeLib2 customResultTest');
 						
-						equals(testSetRunner.lastTestResults.fakeLib1.result, 123, 'Correct result on fakeLib1 customResultTest');
-						equals(testSetRunner.lastTestResults.fakeLib2.result, 456, 'Correct result on fakeLib2 customResultTest');
+						equals(testSetRunner.lastResults.fakeLib1.result, 123, 'Correct result on fakeLib1 customResultTest');
+						equals(testSetRunner.lastResults.fakeLib2.result, 456, 'Correct result on fakeLib2 customResultTest');
 						
-						equals(testSetRunner.lastTestResults.fakeLib1.unit, 'fps', 'Correct unit on fakeLib1 customResultTest');
-						equals(testSetRunner.lastTestResults.fakeLib2.unit, 'fps', 'Correct unit on fakeLib2 customResultTest');
+						equals(testSetRunner.lastResults.fakeLib1.unit, 'fps', 'Correct unit on fakeLib1 customResultTest');
+						equals(testSetRunner.lastResults.fakeLib2.unit, 'fps', 'Correct unit on fakeLib2 customResultTest');
 						break;
 					case 'onlyInFakeLib1':
-						equals(testSetRunner.lastTestResults.fakeLib1.returnVal, 'fakeLib1 onlyInFakeLib1', 'Correct return val on fakeLib1 onlyInFakeLib1');
-						equals(testSetRunner.lastTestResults.fakeLib2, undefined, 'Result for fakeLib2 undefined');
+						equals(testSetRunner.lastResults.fakeLib1.returnVal, 'fakeLib1 onlyInFakeLib1', 'Correct return val on fakeLib1 onlyInFakeLib1');
+						equals(testSetRunner.lastResults.fakeLib2, undefined, 'Result for fakeLib2 undefined');
 						break;
 				}
 			},
 			allTestsComplete: function(resultSets) {
 				log.push('onAllTestsComplete');
 				
-				equals(woosh._utils.constructorName(resultSets.fakeLib1), 'TestResultSet', 'Result sets provided');
-				equals(woosh._utils.constructorName(resultSets.fakeLib2), 'TestResultSet', 'Result sets provided');
+				equals(woosh._utils.constructorName(resultSets.fakeLib1), 'ResultSet', 'Result sets provided');
+				equals(woosh._utils.constructorName(resultSets.fakeLib2), 'ResultSet', 'Result sets provided');
 				
 				same(log, [
 					'onStart',
