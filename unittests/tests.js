@@ -525,7 +525,7 @@ test('creating all equal woosh._TestSetRunner', 15, function() {
 
 module('woosh._Conductor');
 
-test('creating a woosh._Conductor with 1 lib', 12, function() {
+test('creating a woosh._Conductor with 1 lib', 13, function() {
 	stop(5000);
 	
 	equals(typeof woosh._Conductor, 'function', 'woosh._Conductor is function');
@@ -561,8 +561,10 @@ test('creating a woosh._Conductor with 1 lib', 12, function() {
 						break;
 				}
 			},
-			allTestsComplete: function() {
+			allTestsComplete: function(resultSets) {
 				log.push('onAllTestsComplete');
+				
+				equals(woosh._utils.constructorName(resultSets.fakeLib1), 'TestResultSet', 'Result sets provided');
 				
 				same(log, [
 					'onStart',
@@ -587,7 +589,7 @@ test('creating a woosh._Conductor with 1 lib', 12, function() {
 	equals(typeof conductor.start, 'function', 'woosh._Conductor#start is function');
 });
 
-test('creating a woosh._Conductor with 2 libs', 19, function() {
+test('creating a woosh._Conductor with 2 libs', 21, function() {
 	stop(10000);
 	
 	equals(typeof woosh._Conductor, 'function', 'woosh._Conductor is function');
@@ -633,8 +635,11 @@ test('creating a woosh._Conductor with 2 libs', 19, function() {
 						break;
 				}
 			},
-			allTestsComplete: function() {
+			allTestsComplete: function(resultSets) {
 				log.push('onAllTestsComplete');
+				
+				equals(woosh._utils.constructorName(resultSets.fakeLib1), 'TestResultSet', 'Result sets provided');
+				equals(woosh._utils.constructorName(resultSets.fakeLib2), 'TestResultSet', 'Result sets provided');
 				
 				same(log, [
 					'onStart',

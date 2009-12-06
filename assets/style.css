@@ -103,7 +103,7 @@ body, html {
 		*float: none;
 		margin: 0; padding: 0;
 	}
-	.info dd {
+	.wooshTable .info dd {
 		*margin-left: 20px;
 	}
 	.wooshTable .info dt:after {
@@ -113,3 +113,22 @@ body, html {
 		width: 100px;
 		clear: both;
 	}
+	/* Save and delete buttons */
+		.wooshTable thead .save {
+			display: none;
+		}
+		.allTestsComplete .wooshTable thead .save {
+			display: inline;
+		}
+		.wooshTable thead .save, .wooshTable thead .delete {
+			background: red;
+			text-decoration: none;
+			width: 16px;
+			height: 16px;
+			float: right;
+			overflow: hidden;
+			text-indent: -2000px;
+		}
+		.wooshTable thead .save {
+			background: green;
+		}

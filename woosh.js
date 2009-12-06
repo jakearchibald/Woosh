@@ -3,7 +3,7 @@
 // Graphing with error margins
 // Save previous result
 
-// Namespace
+// woosh
 (function(){
 	/**
 	@name woosh
@@ -616,6 +616,49 @@
 	
 	woosh.TestResultSet = TestResultSet;
 })();
+// woosh._savedResultSet & woosh.saveResultSet
+(function() {
+	/**
+	@name woosh._savedResultSet
+	@type {woosh.TestResultSet}
+	@description A resultset from a previous session
+		Currently this is unserialized into window.name
+	*/
+	var savedResultSet;
+	
+	// TODO: stop this from happening if we're not conducting
+	
+	if (window.name) {
+		try {
+			savedResultSet = new woosh.TestResultSet().unserialize(window.name);
+			savedResultSet.name += ' (saved)';
+		} catch (e) {}
+	}
+	
+	/**
+	@name woosh.saveResultSet
+	@function
+	@description Save a resultset to a persistent location
+	@param {woosh.TestResultSet} resultSet Results to save 
+	*/
+	function saveResultSet(resultSet) {
+		window.name = resultSet.serialize();
+	}
+	
+	/**
+	@name woosh.deleteSavedResultSet
+	@function
+	@description Clear the saved result set 
+	*/
+	function deleteSavedResultSet() {
+		window.name = '';
+	}
+	
+	// export
+	woosh._savedResultSet = savedResultSet;
+	woosh.saveResultSet = saveResultSet;
+	woosh.deleteSavedResultSet = deleteSavedResultSet;
+})();
 // woosh._LibraryTest & woosh.addTests
 (function() {
 	/**
@@ -820,11 +863,14 @@
 	@description Helper to run and analyse a set of tests of the same name (but against different libraries)
 	
 	@param {Object} libraryTest Obj of woosh._LibraryTest instances keyed by library name
-		
+	
+	@param {woosh.TestResultSet[]} resultSets Array of result sets (where their name is the library name) to include in the runner.
+		They will fire the same events as other tests.
 	*/
-	function TestSetRunner(libraryTest) {
+	function TestSetRunner(libraryTest, resultSets) {
 		this.libraryTest = libraryTest;
 		this.libraryNames = [];
+		this.resultSets = resultSets || [];
 		var i = 0;
 		
 		// gather library names
@@ -846,6 +892,12 @@
 		@description Array of library names to test
 		*/
 		libraryNames: [],
+		/**
+		@name woosh._TestSetRunner#resultSets
+		@type {woosh.TestResultSet[]}
+		@description Array of result sets for previously ran tests
+		*/
+		resultSets: [],
 		/**
 		@name woosh._TestSetRunner#loopsEqual
 		@type {boolean}
@@ -916,6 +968,9 @@
 		*/
 		run: function(testName, onTestComplete, onComplete) {
 			var libIndex = -1,
+				resultSet,
+				resultSetsIndex = 0,
+				resultSetsLen = this.resultSets.length,
 				currentLibName,
 				currentLibraryTest,
 				testResults = [],
@@ -935,16 +990,23 @@
 			}
 			
 			function runNextTest() {
-				// get the frame for the next library
-				currentLibName = testSetRunner.libraryNames[ ++libIndex ];
-				currentLibraryTest = testSetRunner.libraryTest[currentLibName];
-				
-				// if there's none, then we're done!
-				if (currentLibraryTest) {
-					currentLibraryTest.run(testName, testComplete);
+				if (resultSetsIndex < resultSetsLen) {
+					resultSet = testSetRunner.resultSets[resultSetsIndex];
+					currentLibName = resultSet.name;
+					testComplete( testName, resultSet.testResults[testName] );
+					resultSetsIndex++;
 				} else {
-					testSetRunner._analyseResults(testResults);
-					onComplete.call(testSetRunner);
+					// get the frame for the next library
+					currentLibName = testSetRunner.libraryNames[ ++libIndex ];
+					currentLibraryTest = testSetRunner.libraryTest[currentLibName];
+					
+					// if there's none, then we're done!
+					if (currentLibraryTest) {
+						currentLibraryTest.run(testName, testComplete);
+					} else {
+						testSetRunner._analyseResults(testResults);
+						onComplete.call(testSetRunner);
+					}
 				}
 			}
 			
@@ -1031,7 +1093,6 @@
 			});
 			
 		iframe.className = 'wooshCreated';
-		
 		function iframeonload() {
 			/**
 			@name woosh._TestFrame#window
@@ -1054,7 +1115,6 @@
 			iframe.onload = iframeonload;
 		}
 		
-		
 		iframe.src = window.location.href.replace(window.location.search, '').replace(/#.*$/, '') + '?notest&' + queryString;
 		document.getElementById('wooshOutput').appendChild(iframe);
 	}
@@ -1067,7 +1127,7 @@
 	@name woosh._Conductor
 	@constructor
 	@private
-	@description Runs {@link woosh._LibraryTest} in a series of {@link woosh._TestFrame}s.
+	@description Conducts the testing, views hook into this to render results
 	
 	@param {String[]} libraryNames Names of libraries to be tested.
 	
@@ -1075,69 +1135,37 @@
 	*/
 	function Conductor(libraryNames, onReady) {
 		var numOfFramesWaiting = libraryNames.length,
-			conductor = this;
+			conductor = this,
+			testFrame,
+			savedResults = woosh._savedResultSet ? [woosh._savedResultSet] : [];
 			
-		/**
-		@name woosh._Conductor#libraryNames
-		@type {String[]}
-		@description Library names being tested
-		*/
+		this._listeners = [];
+		this._currentTestIndex = -1;
+		this._testFrames = {};
+		this._resultSets = {};
 		this.libraryNames = libraryNames;
 		
-		/**
-		@name woosh._Conductor#_testSetRunner
-		@type {woosh._TestSetRunner}
-		@description Runner for the test sets
-		*/
-		this._testSetRunner = undefined;
-		
-		/**
-		@name woosh._Conductor#_listeners
-		@type {Array[]}
-		@description Array of arrays:
-			[
-				[listenerObj, thisVal],
-				[listenerObj, thisVal]...
-			]
-		*/
-		this._listeners = [];
-		
-		/**
-		@name woosh._Conductor#_currentTestIndex
-		@private
-		@type {Number}
-		@description Index number for the current test.
-			Is -1 before tests have started.
-		*/
-		this._currentTestIndex = -1;
-		
-		/**
-		@name woosh._Conductor#_testFrames
-		@private
-		@type {Object}
-		@description Object of {@link woosh._TestFrame}s
-			The key is the name of the library being tested in the frame.
-		*/
-		this._testFrames = {};
+		// do we have saved results?
+		if (savedResults[0]) {
+			this.libraryNames = [savedResults[0].name].concat(libraryNames);
+			this.savedResultName = savedResults[0].name;
+		}
 		
 		// call onReady when all frames have loaded
 		function testFrameReady() {
 			if ( !--numOfFramesWaiting ) {
-				/**
-				@name woosh._Conductor#testNames
-				@type {String[]}
-				@description Names of tests to run
-				*/
 				// get test names from first library's tests
 				conductor.testNames = conductor._testFrames[ libraryNames[0] ].libraryTest.testNames;
 				
 				var libraryTests = {};
 				// create the testset
 				for (var i = 0, len = libraryNames.length; i<len; i++) {
-					libraryTests[ libraryNames[i] ] = conductor._testFrames[ libraryNames[i] ].libraryTest;
+					testFrame = conductor._testFrames[ libraryNames[i] ];
+					libraryTests[ libraryNames[i] ] = testFrame.libraryTest;
+					conductor._resultSets[ libraryNames[i] ] = testFrame.libraryTest.testResultSet;
 				}
 				
-				conductor._testSetRunner = new woosh._TestSetRunner(libraryTests);
+				conductor._testSetRunner = new woosh._TestSetRunner(libraryTests, savedResults);
 				onReady.call(conductor);
 			}
 		}
@@ -1148,6 +1176,62 @@
 	}
 	
 	Conductor.prototype = {
+		/**
+		@name woosh._Conductor#testNames
+		@type {String[]}
+		@description Names of tests to run
+		*/
+		testNames: [],
+		/**
+		@name woosh._Conductor#libraryNames
+		@type {String[]}
+		@description Library names being tested
+		*/
+		libraryNames: [],
+		/**
+		@name woosh._Conductor#savedResultName
+		@type {string}
+		@description What's the name of the saved result, if any
+		*/
+		savedResultName: '',
+		/**
+		@name woosh._Conductor#_testSetRunner
+		@type {woosh._TestSetRunner}
+		@description Runner for the test sets
+		*/
+		_testSetRunner: undefined,
+		/**
+		@name woosh._Conductor#_resultSets
+		@type {Object}
+		@description woosh.TestResultSet objects keyed by library name
+		*/
+		_resultSets: undefined,
+		/**
+		@name woosh._Conductor#_listeners
+		@type {Array[]}
+		@description Array of arrays:
+			[
+				[listenerObj, thisVal],
+				[listenerObj, thisVal]...
+			]
+		*/
+		_listeners: [],
+		/**
+		@name woosh._Conductor#_currentTestIndex
+		@private
+		@type {Number}
+		@description Index number for the current test.
+			Is -1 before tests have started.
+		*/
+		_currentTestIndex: -1,
+		/**
+		@name woosh._Conductor#_testFrames
+		@private
+		@type {Object}
+		@description Object of {@link woosh._TestFrame}s
+			The key is the name of the library being tested in the frame.
+		*/
+		_testFrames: {},
 		/**
 		@name woosh._Conductor#start
 		@function
@@ -1178,7 +1262,7 @@
 					conductor._testSetRunner.run(currentTestName, testComplete, testSetComplete);
 				} else {
 					// we're done!
-					conductor._fire('allTestsComplete');
+					conductor._fire('allTestsComplete', [conductor._resultSets]);
 				}
 			}
 			
@@ -1202,8 +1286,9 @@
 				- testName is the name of the test
 				- testResults is an instance of woosh.TestResults. Will be udefined if the test was missing.
 				
-			listener.allTestsComplete()
+			listener.allTestsComplete(resultSets)
 				- Called when all queued tests have completed
+				- resultSets is an object of woosh.TestResultSet keyed by library name
 		
 		@param {object} listener Object to fire events on
 		@param {object} thisVal What 'this' should equal in the callbacks
@@ -1286,46 +1371,52 @@
 	@param {woosh._Conductor} conductor Test conductor to get results from
 	*/
 	function Table(conductor) {
-		/**
-		@name woosh._views.Table#conductor
-		@type {woosh._Conductor}
-		@description The instance conducting the test
-		*/
 		this.conductor = conductor;
-		
-		/**
-		@name woosh._views.Table#element
-		@type {HTMLElement}
-		@description Table element that can be appended to the document
-		*/
 		this.element = createResultsTable(conductor.libraryNames.length, conductor.testNames.length);
-		
-		/**
-		@name woosh._views.Table#_testRows
-		@type {Object}
-		@description Object of table rows keyed on test name
-		*/
 		this._testRows = {};
-		
-		/**
-		@name woosh._views.Table#_libColIndex
-		@type {Object}
-		@description Column index for a library, keyed on library name
-		*/
 		this._libColIndex = {};
-		
-		/**
-		@name woosh._views.Table#_nextResultCell
-		@type {HTMLElement}
-		@description The next cell to write to
-		*/
-		this._nextResultCell = undefined;
 		
 		this._initAndIndex();
 		conductor.addListener(this._listener, this);
 	}
 	
 	Table.prototype = {
+		/**
+		@name woosh._views.Table#conductor
+		@type {woosh._Conductor}
+		@description The instance conducting the test
+		*/
+		conductor: undefined,
+		/**
+		@name woosh._views.Table#element
+		@type {HTMLElement}
+		@description Table element that can be appended to the document
+		*/
+		element: undefined,
+		/**
+		@name woosh._views.Table#_testRows
+		@type {Object}
+		@description Object of table rows keyed on test name
+		*/
+		_testRows: {},
+		/**
+		@name woosh._views.Table#_libColIndex
+		@type {Object}
+		@description Column index for a library, keyed on library name
+		*/
+		_libColIndex: {},
+		/**
+		@name woosh._views.Table#_nextResultCell
+		@type {HTMLElement}
+		@description The next cell to write to
+		*/
+		_nextResultCell: undefined,
+		/**
+		@name woosh._views.Table#_resultSets
+		@type {Object}
+		@description woosh.TestResultSet objects keyed on library name
+		*/
+		_resultSets: {},
 		/**
 		@name woosh._views.Table#initAndIndex
 		@function
@@ -1336,11 +1427,36 @@
 			var libRowCells = this.element.firstChild.firstChild.childNodes,
 				testRows = this.element.childNodes[1].childNodes,
 				testNames = this.conductor.testNames,
-				libraryNames = this.conductor.libraryNames;
+				libraryNames = this.conductor.libraryNames,
+				table = this,
+				a;
 			
 			// headings
 			for (var i = 0, len = libraryNames.length; i < len; i++) {
 				this._libColIndex[ libraryNames[i] ] = i+1;
+				a = document.createElement('a');
+				a.href = '#';
+				a._libName = libraryNames[i];
+				
+				if ( libraryNames[i] == this.conductor.savedResultName ) {
+					a.className = 'delete';
+					a.appendChild( document.createTextNode('Delete') );
+					a.title = 'Delete';
+					a.onclick = function() {
+						woosh.deleteSavedResultSet();
+						return false;
+					}
+				}
+				else {
+					a.className = 'save';
+					a.appendChild( document.createTextNode('Save') );
+					a.title = 'Save';
+					a.onclick = function() {
+						woosh.saveResultSet( table._resultSets[this._libName] );
+						return false;
+					}
+				}
+				libRowCells[i+1].appendChild(a);
 				libRowCells[i+1].appendChild( document.createTextNode( libraryNames[i] ) );
 			}
 			// rows
@@ -1374,6 +1490,9 @@
 			},
 			testSetComplete: function(testName, testSetRunner) {
 				this._checkResults(testName, testSetRunner);
+			},
+			allTestsComplete: function(resultSets) {
+				this._resultSets = resultSets;
 			}
 		},
 		/**
@@ -1467,7 +1586,8 @@
 				
 				if (resultDifference === 0) {
 					resultPercent = 0;
-				} else {
+				}
+				else {
 					resultPercent = ( (testResult.result - testSetRunner.minResult) / (testSetRunner.maxResult - testSetRunner.minResult) );
 				}
 				
@@ -1509,7 +1629,7 @@
 				testCell.style.backgroundColor = 'rgb(' + cellBg.r + ',' + cellBg.g + ',' + cellBg.b + ')';
 				testCell.style.color = 'rgb(' + cellText.r + ',' + cellText.g + ',' + cellText.b + ')';
 				
-				if (testResults.result === testSetRunner.maxResult || testResults.result === testSetRunner.minResult) {
+				if (testResult.result === testSetRunner.maxResult || testResult.result === testSetRunner.minResult) {
 					testCell.style.fontWeight = 'bold';
 				}
 			}
@@ -1536,16 +1656,26 @@
 	@function
 	@private
 	@description Builds the output interface to display to the user
+	@param {woosh._Conductor} conductor Conductor running the test
 	*/
 	var wooshOutput;
 	
-	function buildOutputInterface() {
+	function buildOutputInterface(conductor) {
 		wooshOutput = document.getElementById('wooshOutput');
 		
 		if (!wooshOutput) {
 			return;
 		}
-		wooshOutput.innerHTML = '<div id="wooshBanner"><h1>' + document.title + '</h1></div><div id="wooshCommands"></div><div id="wooshViewOutput"><div>';
+		var output = document.createElement('div');
+		
+		output.innerHTML = '<div id="wooshBanner"><h1>' + document.title + '</h1></div><div id="wooshCommands"></div><div id="wooshViewOutput"><div>';
+		wooshOutput.appendChild(output);
+		
+		conductor.addListener({
+			allTestsComplete: function() {
+				document.documentElement.className += ' allTestsComplete';
+			}
+		});
 		
 		var a = document.createElement('a');
 		a.href = '#';
@@ -1553,7 +1683,7 @@
 		a.className = 'wooshButton';
 		a.innerHTML = 'Start';
 		a.onclick = function() {
-			woosh._conductor.start();
+			conductor.start();
 			this.style.visibility = 'hidden';
 			return false;
 		}
@@ -1578,7 +1708,7 @@
 	// set this frame / window up
 	var query = woosh._utils.urlDecode( window.location.search.slice(1) );
 	
-	if ( query.lib ) {
+	if (query.lib) {
 		// Ok, we're running tests against a library
 		// we need to load a particular library
 		woosh._pageMode = 'testing';
@@ -1604,12 +1734,6 @@
 		window.onload = function() {
 			oldOnload.call(this, arguments);
 			
-			// build the interface
-			woosh._buildOutputInterface();
-			
-			// view output element
-			var viewOutput = document.getElementById('wooshViewOutput');
-			
 			/**
 			@name woosh._conductor
 			@type {woosh._Conductor}
@@ -1621,6 +1745,11 @@
 				var table = new woosh._views.Table(woosh._conductor);
 				viewOutput.appendChild(table.element);
 			});
+			
+			// build the interface
+			woosh._buildOutputInterface(woosh._conductor);
+			// view output element
+			var viewOutput = document.getElementById('wooshViewOutput');
 		};
 	}
 })();

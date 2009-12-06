@@ -7,7 +7,7 @@ woosh.addTests('jq-132', {
 		return $('#testContainer div').length;
 	},
 	// You can provide tests as a Test, where the first param is number of loops
-	"Create 100 elements looped": woosh.Test(100, function(test) {
+	"Create 100 elements looped": woosh.Test(10, function(test) {
 		$('#testContainer').html( new Array(101).join('<div></div>') );
 		return $('#testContainer div').length;
 		// Here you can also change the result to something differnet than time
