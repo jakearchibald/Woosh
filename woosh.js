@@ -33,7 +33,7 @@
 		'yui-270': ['libs/yui-270.js'],
 		'yui-300': ['libs/yui-300.js'],
 		'puredom': ['libs/puredom.js'],
-		'glow-170': ['libs/glow-170/core/core.debug.js', 'libs/glow-170/widgets/widgets.debug.js', 'libs/glow-170/widgets/widgets.debug.css']
+		'glow-170': ['libs/glow-170/core/core.debug.js']
 	}
 	
 	window.woosh.libs = libs;
