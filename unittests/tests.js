@@ -299,7 +299,7 @@ test('Handling errors in an async test', 6, function() {
 	});
 });
 
-module('woosh.Result & woosh.ResultSet');
+module('woosh.Result & woosh.LibraryResult');
 
 test('woosh.Result serializing & unserializing', 12, function() {
 	var result = new woosh.Result();
@@ -342,7 +342,7 @@ test('woosh.Result serializing & unserializing', 12, function() {
 	equals(anotherResult.returnVal, undefined, 'returnVal');
 });
 
-test('woosh.ResultSet serializing & unserializing', 3, function() {
+test('woosh.LibraryResult serializing & unserializing', 3, function() {
 	var result = new woosh.Result();
 	result.result = 123;
 	result.unit   = 'fps';
@@ -359,19 +359,19 @@ test('woosh.ResultSet serializing & unserializing', 3, function() {
 	result2.returnVal = 60;
 	result2.highestIsBest = false;
 	
-	var resultSet = new woosh.ResultSet('My library');
-	resultSet.results = {
+	var libraryResult = new woosh.LibraryResult('My library');
+	libraryResult.results = {
 		'result1': result,
 		'result2': result2
 	};
 	
-	var serial = resultSet.serialize();
+	var serial = libraryResult.serialize();
 	
-	var anotherResultSet = new woosh.ResultSet().unserialize(serial);
+	var anotherLibraryResult = new woosh.LibraryResult().unserialize(serial);
 	
-	same(resultSet, anotherResultSet, 'Serialized & Unserialized');
-	same(anotherResultSet.results.result1, resultSet.results.result1, 'result1 Serialized & Unserialized');
-	same(anotherResultSet.results.result2, resultSet.results.result2, 'result2 Serialized & Unserialized');
+	same(libraryResult, anotherLibraryResult, 'Serialized & Unserialized');
+	same(anotherLibraryResult.results.result1, libraryResult.results.result1, 'result1 Serialized & Unserialized');
+	same(anotherLibraryResult.results.result2, libraryResult.results.result2, 'result2 Serialized & Unserialized');
 });
 
 module('woosh._LibraryTest');
@@ -561,10 +561,10 @@ test('creating a woosh._Conductor with 1 lib', 13, function() {
 						break;
 				}
 			},
-			allTestsComplete: function(resultSets) {
+			allTestsComplete: function(libraryResults) {
 				log.push('onAllTestsComplete');
 				
-				equals(woosh._utils.constructorName(resultSets.fakeLib1), 'ResultSet', 'Result sets provided');
+				equals(woosh._utils.constructorName(libraryResults.fakeLib1), 'LibraryResult', 'Result sets provided');
 				
 				same(log, [
 					'onStart',
@@ -635,11 +635,11 @@ test('creating a woosh._Conductor with 2 libs', 21, function() {
 						break;
 				}
 			},
-			allTestsComplete: function(resultSets) {
+			allTestsComplete: function(libraryResults) {
 				log.push('onAllTestsComplete');
 				
-				equals(woosh._utils.constructorName(resultSets.fakeLib1), 'ResultSet', 'Result sets provided');
-				equals(woosh._utils.constructorName(resultSets.fakeLib2), 'ResultSet', 'Result sets provided');
+				equals(woosh._utils.constructorName(libraryResults.fakeLib1), 'LibraryResult', 'Result sets provided');
+				equals(woosh._utils.constructorName(libraryResults.fakeLib2), 'LibraryResult', 'Result sets provided');
 				
 				same(log, [
 					'onStart',
