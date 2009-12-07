@@ -1708,8 +1708,9 @@
 		
 		function remove() {
 			clearTimeout(timeout);
-			close.onclick = undefined;
-			elm.onclick = undefined;
+			// would just set these to undefined but IE gets in the way
+			close.onclick = new Function;
+			elm.onclick = new Function;
 			elm.parentNode.removeChild(elm);
 			return false;
 		}
