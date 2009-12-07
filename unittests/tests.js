@@ -678,9 +678,8 @@ test('woosh._views.Table output', 2, function() {
 	equals(typeof woosh._views.Table, 'function', 'woosh._views.Table is function');
 	
 	var conductor = new woosh._Conductor(['fakeLib1', 'fakeLib2'], function() {
-		var table = new woosh._views.Table(conductor);
-		equals(table.element.nodeName, 'TABLE', 'woosh._views.Table#element is a table');
-		document.getElementById('tableOutput').appendChild(table.element);
+		var table = new woosh._views.Table( conductor, document.getElementById('tableOutput') );
+		equals(table._element.nodeName, 'TABLE', 'woosh._views.Table#_element is a table');
 		conductor.start();
 		start();
 	});

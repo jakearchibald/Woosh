@@ -1388,13 +1388,15 @@
 	@description Create a dynamically updating table to display results
 	
 	@param {woosh._Conductor} conductor Test conductor to get results from
+	@param {HTMLElement} outputElement Element to output to
 	*/
-	function Table(conductor) {
+	function Table(conductor, outputElement) {
 		this.conductor = conductor;
-		this.element = createResultsTable(conductor.libraryNames.length, conductor.testNames.length);
+		this._element = createResultsTable(conductor.libraryNames.length, conductor.testNames.length);
 		this._testRows = {};
 		this._libColIndex = {};
 		
+		outputElement.appendChild(this._element);
 		this._initAndIndex();
 		conductor.addListener(this._listener, this);
 	}
@@ -1407,11 +1409,12 @@
 		*/
 		conductor: undefined,
 		/**
-		@name woosh._views.Table#element
+		@name woosh._views.Table#__element
+		@private
 		@type {HTMLElement}
 		@description Table element that can be appended to the document
 		*/
-		element: undefined,
+		_element: undefined,
 		/**
 		@name woosh._views.Table#_testRows
 		@type {Object}
@@ -1443,8 +1446,8 @@
 		@description Populate the headings and index row element on {@link woosh._views.Table#_testRows}
 		*/
 		_initAndIndex: function() {
-			var libRowCells = this.element.firstChild.firstChild.childNodes,
-				testRows = this.element.childNodes[1].childNodes,
+			var libRowCells = this._element.firstChild.firstChild.childNodes,
+				testRows = this._element.childNodes[1].childNodes,
 				testNames = this.conductor.testNames,
 				libraryNames = this.conductor.libraryNames,
 				table = this,
@@ -1741,23 +1744,22 @@
 	// export
 	woosh._views.alert = alert;
 })();
-// woosh._buildOutputInterface
+// woosh._views._outputInterface
 (function() {
 	/**
-	@name woosh._buildOutputInterface
-	@function
-	@private
-	@description Builds the output interface to display to the user
-	@param {woosh._Conductor} conductor Conductor running the test
+		@name woosh._views._outputInterface
+		@function
+		@private
+		@description Builds the output interface to display to the user
+		@param {woosh._Conductor} conductor Conductor running the test
 	*/
-	var wooshOutput;
-	
-	function buildOutputInterface(conductor) {
-		wooshOutput = document.getElementById('wooshOutput');
+	function outputInterface(conductor) {
+		var wooshOutput = document.getElementById('wooshOutput');
 		
 		if (!wooshOutput) {
 			return;
 		}
+		
 		var output = document.createElement('div');
 		
 		output.innerHTML = '<div id="wooshBanner"><h1>' + document.title + '</h1></div><div id="wooshUa">' + navigator.userAgent + '</div><div id="wooshCommands"></div><div id="wooshViewOutput"><div>';
@@ -1784,7 +1786,49 @@
 		document.getElementById('wooshCommands').appendChild(a);
 	}
 	
-	woosh._buildOutputInterface = buildOutputInterface;
+	woosh._views._outputInterface = outputInterface;
+})();
+// woosh.ready and woosh._fireReady
+(function() {
+	/**
+		@name woosh.ready
+		@function
+		@description Add a callback to run when woosh is ready
+			
+		@param {Function} callback Function to call
+			The callback is given 2 params, the {@link woosh._Conductor} in
+			use and an element to output view elements to.
+			
+		@example
+			woosh.ready(function(conductor, outputElement) {
+				new BarChart(conductor, outputElement);
+			});
+	*/
+	var callbacks = [];
+		
+	function ready(callback) {
+		callbacks.push(callback);
+	}
+	
+	/**
+		@name woosh._fireReady
+		@function
+		@private
+		@description Fires all the queued ready callbacks
+		
+		@param {woosh._Conductor} conductor The conductor running the test
+		@param {HTMLElement} outputElement An element to output to
+	*/
+	function fireReady(conductor, outputElement) {
+		for (var i = 0, len = callbacks.length; i<len; i++) {
+			callbacks[i](conductor, outputElement);
+		}
+		callbacks = [];
+	}
+	
+	// export
+	woosh.ready = ready;
+	woosh._fireReady = fireReady;
 })();
 // page setup
 (function() {
@@ -1827,23 +1871,28 @@
 		window.onload = function() {
 			oldOnload.call(this, arguments);
 			
+			var viewOutput;
+			
 			/**
 			@name woosh._conductor
 			@type {woosh._Conductor}
 			@private
 			@description The conductor for this page
 			*/
-			// create our tests
 			woosh._conductor = new woosh._Conductor(woosh._libsToConduct, function() {
-				var table = new woosh._views.Table(woosh._conductor);
-				viewOutput.appendChild(table.element);
+				woosh._fireReady(woosh._conductor, viewOutput);
 			});
 			
-			// build the interface
-			woosh._buildOutputInterface(woosh._conductor);
-			// view output element
-			var viewOutput = document.getElementById('wooshViewOutput');
+			// build the main interface
+			woosh._views._outputInterface(woosh._conductor);
+			
+			// set up views
+			viewOutput = document.getElementById('wooshViewOutput');
 			viewOutput.appendChild( woosh._views.alert._container );
+			
+			woosh.ready(function(conductor, outputElement) {
+				new woosh._views.Table(conductor, outputElement);
+			});
 		};
 	}
 })();
