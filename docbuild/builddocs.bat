@@ -1,3 +1,4 @@
-rd /S docs
-java -jar ..\jsdoc-toolkit\jsrun.jar ..\jsdoc-toolkit\app\run.js -n -t=..\jsdoc-toolkit\templates\jsdoc -d=docs woosh.js
+@ECHO OFF
+rd /S /Q docs
+java -jar ..\..\jsdoc-toolkit\jsrun.jar ..\..\jsdoc-toolkit\app\run.js -n -t=template -d=..\docs ..\woosh.js
 PAUSE
