@@ -524,15 +524,15 @@ test('creating all equal woosh._TestRunner', 16, function() {
 	});
 });
 
-module('woosh._Conductor');
+module('woosh.Conductor');
 
-test('creating a woosh._Conductor with 1 lib', 14, function() {
+test('creating a woosh.Conductor with 1 lib', 14, function() {
 	stop(5000);
 	
-	equals(typeof woosh._Conductor, 'function', 'woosh._Conductor is function');
+	equals(typeof woosh.Conductor, 'function', 'woosh.Conductor is function');
 	var log = [];
 	
-	var conductor = new woosh._Conductor(['fakeLib1'], function() {
+	var conductor = new woosh.Conductor(['fakeLib1'], function() {
 		ok(true, 'conductor onReady called');
 		equals(typeof conductor._testFrames.fakeLib1.libraryTest, 'object', 'fakeLib1.libraryTest is function');
 		conductor.addListener({
@@ -588,15 +588,15 @@ test('creating a woosh._Conductor with 1 lib', 14, function() {
 		conductor.start();
 	});
 	
-	equals(typeof conductor.start, 'function', 'woosh._Conductor#start is function');
+	equals(typeof conductor.start, 'function', 'woosh.Conductor#start is function');
 });
 
-test('woosh._Conductor running only particular tests', 1, function() {
+test('woosh.Conductor running only particular tests', 1, function() {
 	stop(5000);
 
 	var log = [];
 	
-	var conductor = new woosh._Conductor(['fakeLib1'], function() {
+	var conductor = new woosh.Conductor(['fakeLib1'], function() {
 		conductor.testsToRun = ['customResultTest', 'onlyInFakeLib1'];
 		
 		conductor.addListener({
@@ -629,13 +629,13 @@ test('woosh._Conductor running only particular tests', 1, function() {
 	});
 });
 
-test('creating a woosh._Conductor with 2 libs', 21, function() {
+test('creating a woosh.Conductor with 2 libs', 21, function() {
 	stop(10000);
 	
-	equals(typeof woosh._Conductor, 'function', 'woosh._Conductor is function');
+	equals(typeof woosh.Conductor, 'function', 'woosh.Conductor is function');
 	var log = [];
 	
-	var conductor = new woosh._Conductor(['fakeLib1', 'fakeLib2'], function() {
+	var conductor = new woosh.Conductor(['fakeLib1', 'fakeLib2'], function() {
 		ok(true, 'conductor onReady called');
 		equals(typeof conductor._testFrames.fakeLib1.libraryTest, 'object', 'fakeLib1.libraryTest is function');
 		equals(typeof conductor._testFrames.fakeLib2.libraryTest, 'object', 'fakeLib2.libraryTest is function');
@@ -705,19 +705,19 @@ test('creating a woosh._Conductor with 2 libs', 21, function() {
 		conductor.start();
 	});
 	
-	equals(typeof conductor.start, 'function', 'woosh._Conductor#start is function');
+	equals(typeof conductor.start, 'function', 'woosh.Conductor#start is function');
 });
 
-module('woosh._views');
+module('woosh.views');
 
-test('woosh._views.Table output', 2, function() {
+test('woosh.views.Table output', 2, function() {
 	stop(5000);
 
-	equals(typeof woosh._views.Table, 'function', 'woosh._views.Table is function');
+	equals(typeof woosh.views.Table, 'function', 'woosh.views.Table is function');
 	
-	var conductor = new woosh._Conductor(['fakeLib1', 'fakeLib2'], function() {
-		var table = new woosh._views.Table( conductor, document.getElementById('tableOutput') );
-		equals(table._element.nodeName, 'TABLE', 'woosh._views.Table#_element is a table');
+	var conductor = new woosh.Conductor(['fakeLib1', 'fakeLib2'], function() {
+		var table = new woosh.views.Table( conductor, document.getElementById('tableOutput') );
+		equals(table._element.nodeName, 'TABLE', 'woosh.views.Table#_element is a table');
 		conductor.start();
 		start();
 	});

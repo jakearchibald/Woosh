@@ -1132,12 +1132,11 @@
 	
 	window.woosh._TestFrame = TestFrame;
 })();
-// woosh._Conductor
+// woosh.Conductor
 (function() {
 	/**
-	@name woosh._Conductor
+	@name woosh.Conductor
 	@constructor
-	@private
 	@description Conducts the testing, views hook into this to render results
 	
 	@param {String[]} libraryNames Names of libraries to be tested.
@@ -1190,44 +1189,44 @@
 	
 	Conductor.prototype = {
 		/**
-		@name woosh._Conductor#testNames
+		@name woosh.Conductor#testNames
 		@type {String[]}
 		@description Names of tests to run
 		*/
 		testNames: [],
 		/**
-		@name woosh._Conductor#libraryNames
+		@name woosh.Conductor#libraryNames
 		@type {String[]}
 		@description Library names being tested
 		*/
 		libraryNames: [],
 		/**
-		@name woosh._Conductor#savedResultName
+		@name woosh.Conductor#savedResultName
 		@type {string}
 		@description What's the name of the saved result, if any
 		*/
 		savedResultName: '',
 		/**
-		@name woosh._Conductor#testsToRun
+		@name woosh.Conductor#testsToRun
 		@type {string[]}
 		@description Names of tests to run
 			If empty, all tests will run
 		*/
 		testsToRun: [],
 		/**
-		@name woosh._Conductor#_testRunner
+		@name woosh.Conductor#_testRunner
 		@type {woosh._TestRunner}
 		@description Runner for the test sets
 		*/
 		_testRunner: undefined,
 		/**
-		@name woosh._Conductor#_libraryResults
+		@name woosh.Conductor#_libraryResults
 		@type {Object}
 		@description woosh.LibraryResult objects keyed by library name
 		*/
 		_libraryResults: undefined,
 		/**
-		@name woosh._Conductor#_listeners
+		@name woosh.Conductor#_listeners
 		@type {Array[]}
 		@description Array of arrays:
 			[
@@ -1237,7 +1236,7 @@
 		*/
 		_listeners: [],
 		/**
-		@name woosh._Conductor#_currentTestIndex
+		@name woosh.Conductor#_currentTestIndex
 		@private
 		@type {Number}
 		@description Index number for the current test.
@@ -1245,7 +1244,7 @@
 		*/
 		_currentTestIndex: -1,
 		/**
-		@name woosh._Conductor#_testFrames
+		@name woosh.Conductor#_testFrames
 		@private
 		@type {Object}
 		@description Object of {@link woosh._TestFrame}s
@@ -1253,7 +1252,7 @@
 		*/
 		_testFrames: {},
 		/**
-		@name woosh._Conductor#start
+		@name woosh.Conductor#start
 		@function
 		@description Start running tests
 		*/
@@ -1302,7 +1301,7 @@
 			runNextTestPerFrame();
 		},
 		/**
-		@name woosh._Conductor#addListener
+		@name woosh.Conductor#addListener
 		@function
 		@description Add an object to listen for conductor events. Conductor fires the following:
 			listener.ready()
@@ -1335,7 +1334,7 @@
 			this._listeners.push( [listener, thisVal] );
 		},
 		/**
-		@name woosh._Conductor#_fire
+		@name woosh.Conductor#_fire
 		@function
 		@private
 		@description Fires an event
@@ -1353,19 +1352,18 @@
 		}
 	};
 	
-	window.woosh._Conductor = Conductor;
+	window.woosh.Conductor = Conductor;
 })();
-// woosh._views
+// woosh.views
 (function() {
 	/**
-	@name woosh._views
+	@name woosh.views
 	@namespace
-	@private
 	@description Constructors for visual output of test results
 	*/
-	woosh._views = {};
+	woosh.views = {};
 })();
-// woosh._views.Table
+// woosh.views.Table
 (function() {
 	var tableHeading = '<th></th>',
 		tableCell = '<td></td>',
@@ -1400,12 +1398,12 @@
 	}
 	
 	/**
-	@name woosh._views.Table
+	@name woosh.views.Table
 	@constructor
 	@private
 	@description Create a dynamically updating table to display results
 	
-	@param {woosh._Conductor} conductor Test conductor to get results from
+	@param {woosh.Conductor} conductor Test conductor to get results from
 	@param {HTMLElement} outputElement Element to output to
 	*/
 	function Table(conductor, outputElement) {
@@ -1422,65 +1420,65 @@
 	
 	Table.prototype = {
 		/**
-		@name woosh._views.Table#conductor
-		@type {woosh._Conductor}
+		@name woosh.views.Table#conductor
+		@type {woosh.Conductor}
 		@description The instance conducting the test
 		*/
 		conductor: undefined,
 		/**
-		@name woosh._views.Table#_element
+		@name woosh.views.Table#_element
 		@private
 		@type {HTMLElement}
 		@description Table element that can be appended to the document
 		*/
 		_element: undefined,
 		/**
-		@name woosh._views.Table#_testRows
+		@name woosh.views.Table#_testRows
 		@type {Object}
 		@description Object of table rows keyed on test name
 		*/
 		_testRows: {},
 		/**
-		@name woosh._views.Table#_libColIndex
+		@name woosh.views.Table#_libColIndex
 		@type {Object}
 		@description Column index for a library, keyed on library name
 		*/
 		_libColIndex: {},
 		/**
-		@name woosh._views.Table#_nextResultCell
+		@name woosh.views.Table#_nextResultCell
 		@type {HTMLElement}
 		@description The next cell to write to
 		*/
 		_nextResultCell: undefined,
 		/**
-		@name woosh._views.Table#_libraryResults
+		@name woosh.views.Table#_libraryResults
 		@type {Object}
 		@description woosh.LibraryResult objects keyed on library name
 		*/
 		_libraryResults: {},
 		/**
-		@name woosh._views.Table#_selectAllCheckbox
+		@name woosh.views.Table#_selectAllCheckbox
 		@type {HTMLElement}
 		@description The checkbox for selecting all / no tests
 		*/
 		_selectAllCheckbox: undefined,
 		/**
-		@name woosh._views.Table#_checkboxes
+		@name woosh.views.Table#_checkboxes
 		@type {HTMLElement[]}
 		@description The checkboxs for selecting which tests to run
 		*/
 		_checkboxes: undefined,
 		/**
-		@name woosh._views.Table#_checkboxesChecked
+		@name woosh.views.Table#_checkboxesChecked
 		@type {number}
 		@description The number of checkboxes checked
 		*/
 		_checkboxesChecked: 0,
 		/**
-		@name woosh._views.Table#initAndIndex
+		@name woosh.views.Table#initAndIndex
 		@function
 		@private
-		@description Populate the headings and index row element on {@link woosh._views.Table#_testRows}
+		@description Populate the headings and index row element on {@link woosh.views.Table#_testRows}
 		*/
 		_initAndIndex: function() {
 			var libRowCells = this._element.firstChild.firstChild.childNodes,
@@ -1509,7 +1507,7 @@
 					a.title = 'Delete';
 					a.onclick = function() {
 						woosh.deleteSavedLibraryResult();
-						woosh._views.alert.ok('Results for ' + this._libName.replace(' (saved)', '') + ' deleted. Refresh to see changes.');
+						woosh.views.alert.ok('Results for ' + this._libName.replace(' (saved)', '') + ' deleted. Refresh to see changes.');
 						return false;
 					}
 				}
@@ -1518,7 +1516,7 @@
 					a.appendChild( document.createTextNode('Save') );
 					a.title = 'Save';
 					a.onclick = function() {
-						woosh._views.alert.ok('Results for ' + this._libName + ' saved. Refresh to see changes.');
+						woosh.views.alert.ok('Results for ' + this._libName + ' saved. Refresh to see changes.');
 						woosh.saveLibraryResult( table._libraryResults[this._libName] );
 						return false;
 					}
@@ -1558,7 +1556,7 @@
 			this._nextResultCell = testRows[0].childNodes[1];
 		},
 		/**
-		@name woosh._views.Table#_listener
+		@name woosh.views.Table#_listener
 		@type {Object}
 		@private
 		@description Listener to the conductor
@@ -1578,7 +1576,7 @@
 			}
 		},
 		/**
-		@name woosh._views.Table#_addResult
+		@name woosh.views.Table#_addResult
 		@function
 		@private
 		@description Add a result to the table in the position of the cursor
@@ -1636,7 +1634,7 @@
 			}
 		},
 		/**
-		@name woosh._views.Table#_checkResults
+		@name woosh.views.Table#_checkResults
 		@function
 		@private
 		@description Checks a set of results for a particular test, updates the table with warnings etc
@@ -1788,12 +1786,12 @@
 		}
 	}
 	
-	woosh._views.Table = Table;
+	woosh.views.Table = Table;
 })();
-// woosh._views.alert
+// woosh.views.alert
 (function() {
 	/**
-	@name woosh._views.alert
+	@name woosh.views.alert
 	@namespace
 	@description A set of functions for providing information to the user
 	*/
@@ -1842,14 +1840,14 @@
 	}
 	
 	/**
-	@name woosh._views.alert._container
+	@name woosh.views.alert._container
 	@type {HTMLElement}
 	@description Element containing the alerts
 	*/
 	alert._container = container;
 	
 	/**
-	@name woosh._views.alert.ok
+	@name woosh.views.alert.ok
 	@function
 	@description Informs the user that something worked
 	
@@ -1860,16 +1858,16 @@
 	}
 	
 	// export
-	woosh._views.alert = alert;
+	woosh.views.alert = alert;
 })();
-// woosh._views._outputInterface
+// woosh.views._outputInterface
 (function() {
 	/**
-		@name woosh._views._outputInterface
+		@name woosh.views._outputInterface
 		@function
 		@private
 		@description Builds the output interface to display to the user
-		@param {woosh._Conductor} conductor Conductor running the test
+		@param {woosh.Conductor} conductor Conductor running the test
 	*/
 	function outputInterface(conductor) {
 		var wooshOutput = document.getElementById('wooshOutput');
@@ -1881,7 +1879,7 @@
 		var output = document.createElement('div');
 		
 		output.innerHTML = '<div id="wooshBanner"><h1>' + document.title + '</h1></div><div id="wooshUa">' + navigator.userAgent + '</div><div id="wooshCommands"></div><div id="wooshViewOutput"><div>';
-		output.appendChild( woosh._views.alert._container );
+		output.appendChild( woosh.views.alert._container );
 		wooshOutput.appendChild(output);
 		
 		conductor.addListener({
@@ -1908,7 +1906,7 @@
 		})
 	}
 	
-	woosh._views._outputInterface = outputInterface;
+	woosh.views._outputInterface = outputInterface;
 })();
 // woosh.ready and woosh._fireReady
 (function() {
@@ -1918,7 +1916,7 @@
 		@description Add a callback to run when woosh is ready
 			
 		@param {Function} callback Function to call
-			The callback is given 2 params, the {@link woosh._Conductor} in
+			The callback is given 2 params, the {@link woosh.Conductor} in
 			use and an element to output view elements to.
 			
 		@example
@@ -1938,7 +1936,7 @@
 		@private
 		@description Fires all the queued ready callbacks
 		
-		@param {woosh._Conductor} conductor The conductor running the test
+		@param {woosh.Conductor} conductor The conductor running the test
 		@param {HTMLElement} outputElement An element to output to
 	*/
 	function fireReady(conductor, outputElement) {
@@ -1997,23 +1995,23 @@
 			
 			/**
 			@name woosh._conductor
-			@type {woosh._Conductor}
+			@type {woosh.Conductor}
 			@private
 			@description The conductor for this page
 			*/
-			woosh._conductor = new woosh._Conductor(woosh._libsToConduct, function() {
+			woosh._conductor = new woosh.Conductor(woosh._libsToConduct, function() {
 				woosh._fireReady(woosh._conductor, viewOutput);
 			});
 			
 			// build the main interface
-			woosh._views._outputInterface(woosh._conductor);
+			woosh.views._outputInterface(woosh._conductor);
 			
 			// set up views
 			viewOutput = document.getElementById('wooshViewOutput');
-			viewOutput.appendChild( woosh._views.alert._container );
+			viewOutput.appendChild( woosh.views.alert._container );
 			
 			woosh.ready(function(conductor, outputElement) {
-				new woosh._views.Table(conductor, outputElement);
+				new woosh.views.Table(conductor, outputElement);
 			});
 		};
 	}
