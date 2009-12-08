@@ -1,8 +1,3 @@
-// Ideas:
-// Restricting tests to certain libraries / tests
-// Graphing with error margins
-// Save previous result
-
 // woosh
 (function(){
 	/**
@@ -1183,6 +1178,7 @@
 				}
 				
 				conductor._testRunner = new woosh._TestRunner(libraryTests, savedResults);
+				conductor._fire('ready');
 				onReady.call(conductor);
 			}
 		}
@@ -1309,6 +1305,9 @@
 		@name woosh._Conductor#addListener
 		@function
 		@description Add an object to listen for conductor events. Conductor fires the following:
+			listener.ready()
+				- When the conductor is able to start
+			
 			listener.start()
 				- When the conductor starts
 			
@@ -1902,7 +1901,11 @@
 			return false;
 		}
 		
-		document.getElementById('wooshCommands').appendChild(a);
+		conductor.addListener({
+			ready: function() {
+				document.getElementById('wooshCommands').appendChild(a);
+			}
+		})
 	}
 	
 	woosh._views._outputInterface = outputInterface;
