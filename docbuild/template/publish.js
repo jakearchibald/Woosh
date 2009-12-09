@@ -1,14 +1,32 @@
 /** Called automatically by JsDoc Toolkit. */
 function publish(symbolSet) {
 	publish.conf = {  // trailing slash expected for dirs
-		ext:         '.html',
-		outDir:      JSDOC.opt.d,
+		ext: '.html',
+		outDir: JSDOC.opt.d,
 		templatesDir: JSDOC.opt.t
 	};
 	
 	// create the folders and subfolders to hold the output
-	IO.mkPath((publish.conf.outDir+'writingTests').split("/"));
-	IO.mkPath((publish.conf.outDir+"writingViews").split("/"));
+	IO.mkPath( (publish.conf.outDir+'writingTests').split("/") );
+	IO.mkPath( (publish.conf.outDir+"writingViews").split("/") );
+	IO.mkPath( (publish.conf.outDir+"fullApi").split("/") );
+	
+	// The grand plan:
+	//   Output 3 copies for one template
+	//   One for how to write tests, with the relevent API
+	//   One for how to write views, with the relevent API
+	//   One with the full API, for hacking / contributing
+	//   They all share an index template and a class template
+	//   Each has a left-hand nav which indicates the current page
+	//   LHN covers namespaces and classes that hang off woosh
+	//   LHN expands to show inner namespaces & classes for that item
+	//   Each page provides a switch to the view API & full API (link disabled if page doesn't exist)
+	//   This switch is a tab like woosh's start button
+	//   Pages are styled like the rest of woosh 
+	//   
+	//   1. Make loop that runs 3 times and knows the page type 
+	//   2. Make the nav
+	//    
 		
 	// used to allow Link to check the details of things being linked to
 	Link.symbolSet = symbolSet;
@@ -22,7 +40,7 @@ function publish(symbolSet) {
 		quit();
 	}
 	
-	// some ustility filters
+	// some utility filters
 	function hasNoParent($) {return ($.memberOf == "")}
 	function isaClass($) {return ($.is("CONSTRUCTOR") || $.isNamespace)}
 	
