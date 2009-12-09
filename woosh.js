@@ -14,6 +14,7 @@
 	/**
 	@name woosh.libs
 	@type {Object}
+	@writingTests
 	@description Libraries available to the system.
 		Feel free to add additional libraries. Values are arrays of
 		files that need to be included to use the library.
@@ -215,6 +216,7 @@
 	/**
 	@name woosh.Test
 	@constructor
+	@writingTests
 	@description A test to be run
 	
 	@param {number} loopCount Number of times to run the test
@@ -314,6 +316,7 @@
 	/**
 	@name woosh.AsyncTest
 	@constructor
+	@writingTests
 	@extends woosh.Test
 	@description Like {@link woosh.Test}, but allows async tests.
 		This test waits for {@link woosh.AsyncTest#endTest} to be
@@ -899,6 +902,7 @@
 	/**
 	@name woosh.addTests
 	@function
+	@writingTests
 	@description Add a set of tests for a particular framework
 	
 	@param {string} libraryName Library to include for these tests.

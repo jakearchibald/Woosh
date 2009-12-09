@@ -3,23 +3,60 @@ function publish(symbolSet) {
 	publish.conf = {  // trailing slash expected for dirs
 		ext: '.html',
 		outDir: JSDOC.opt.d,
+		symbolsDir:  "api/",
 		templatesDir: JSDOC.opt.t
 	};
+		
+	// used to allow Link to check the details of things being linked to
+	Link.symbolSet = symbolSet;
+
+	// create the required templates
+	try {
+		var symbolTemplate = new JSDOC.JsPlate(publish.conf.templatesDir+"class.tmpl");
+		var indexTemplate = new JSDOC.JsPlate(publish.conf.templatesDir+"index.tmpl");
+	}
+	catch(e) {
+		print("Couldn't create the required templates: "+e);
+		quit();
+	}
 	
-	// create the folders and subfolders to hold the output
-	IO.mkPath( (publish.conf.outDir+'writingTests').split("/") );
-	IO.mkPath( (publish.conf.outDir+"writingViews").split("/") );
-	IO.mkPath( (publish.conf.outDir+"fullApi").split("/") );
+	function hasOwnPage($) {
+		return ($.is("CONSTRUCTOR") || $.isNamespace) && $.memberOf != '';	
+	}
 	
-	var modes = ['fullApi', 'writingViews', 'writingTests'],
-		mode,
-		nav;
+	// get an array version of the symbolset, useful for filtering
+	var symbols = symbolSet.toArray();
 	
-	for (var i = 0, len = modes.length; i<len; i++) {
-		mode = modes[i];
-		// build nav
-		// build index
-		// build pages
+	symbols.forEach(function(symbol) {
+		if ( members[symbol.memberOf] ) {
+			members[symbol.memberOf].push(symbol);
+		} else {
+			members[symbol.memberOf] = [symbol];
+		}
+	});
+	
+	// sort the members
+	for (var symbolName in members) {
+		members[symbolName] = members[symbolName].sort( makeSortby("alias") );
+	}
+ 	
+ 	// get a list of all the classes in the symbolset
+ 	var symbolsForPages = symbols.filter(hasOwnPage).sort(makeSortby("alias"));
+	
+	// create a filemap in which outfiles must be to be named uniquely, ignoring case
+	if (JSDOC.opt.u) {
+		var filemapCounts = {};
+		Link.filemap = {};
+		for (var i = 0, l = symbolsForPages.length; i < l; i++) {
+			var lcAlias = symbolsForPages[i].alias.toLowerCase();
+			
+			if (!filemapCounts[lcAlias]) filemapCounts[lcAlias] = 1;
+			else filemapCounts[lcAlias]++;
+			
+			Link.filemap[symbolsForPages[i].alias] = 
+				(filemapCounts[lcAlias] > 1)?
+				lcAlias+"_"+filemapCounts[lcAlias] : lcAlias;
+		}
 	}
 	
 	// The grand plan:
@@ -34,60 +71,104 @@ function publish(symbolSet) {
 	//   Each page provides a switch to the view API & full API (link disabled if page doesn't exist)
 	//   This switch is a tab like woosh's start button
 	//   Pages are styled like the rest of woosh 
-	//   
+	//
+	
+	// create the folders and subfolders to hold the output
+	IO.mkPath( (publish.conf.outDir+'writingTests/api').split('/') );
+	IO.mkPath( (publish.conf.outDir+'writingViews/api').split('/') );
+	IO.mkPath( (publish.conf.outDir+'fullApi/api').split('/') );
+	
+	var modes = ['fullApi', 'writingViews', 'writingTests'],
+		mode,
+		data = {},
+		output;
+	
+	// build nav
+	data.nav = new Nav( symbolSet, symbolSet.getSymbol('woosh') )
+	
+	for (var i = 0, len = modes.length; i<len; i++) {
+		mode = modes[i];
+		data.nav.mode = mode;
 		
-	// used to allow Link to check the details of things being linked to
-	Link.symbolSet = symbolSet;
-
-	// create the required templates
-	try {
-		var classTemplate = new JSDOC.JsPlate(publish.conf.templatesDir+"class.tmpl");
-	}
-	catch(e) {
-		print("Couldn't create the required templates: "+e);
-		quit();
-	}
-	
-	// some utility filters
-	function hasNoParent($) {return ($.memberOf == "")}
-	function isaClass($) {return ($.is("CONSTRUCTOR") || $.isNamespace)}
-	
-	// get an array version of the symbolset, useful for filtering
-	var symbols = symbolSet.toArray();
- 	
- 	// get a list of all the classes in the symbolset
- 	var classes = symbols.filter(isaClass).sort(makeSortby("alias"));
-	
-	// create a filemap in which outfiles must be to be named uniquely, ignoring case
-	if (JSDOC.opt.u) {
-		var filemapCounts = {};
-		Link.filemap = {};
-		for (var i = 0, l = classes.length; i < l; i++) {
-			var lcAlias = classes[i].alias.toLowerCase();
+		// build index
+		output = indexTemplate.process(data);
+		IO.saveFile(publish.conf.outDir + mode, 'index' + publish.conf.ext, output);
+		
+		// create each of the class pages
+		/*for (var i = 0, l = classes.length; i < l; i++) {
+			var symbol = classes[i];
 			
-			if (!filemapCounts[lcAlias]) filemapCounts[lcAlias] = 1;
-			else filemapCounts[lcAlias]++;
+			symbol.events = symbol.getEvents();   // 1 order matters
+			symbol.methods = symbol.getMethods(); // 2
 			
-			Link.filemap[classes[i].alias] = 
-				(filemapCounts[lcAlias] > 1)?
-				lcAlias+"_"+filemapCounts[lcAlias] : lcAlias;
-		}
-	}
-	
-	// create each of the class pages
-	for (var i = 0, l = classes.length; i < l; i++) {
-		var symbol = classes[i];
-		
-		symbol.events = symbol.getEvents();   // 1 order matters
-		symbol.methods = symbol.getMethods(); // 2
-		
-		var output = "";
-		output = classTemplate.process(symbol);
-		
-		IO.saveFile(publish.conf.outDir, ((JSDOC.opt.u)? Link.filemap[symbol.alias] : symbol.alias) + publish.conf.ext, output);
+			var output = "";
+			output = classTemplate.process(symbol);
+			
+			IO.saveFile(publish.conf.outDir, ((JSDOC.opt.u)? Link.filemap[symbol.alias] : symbol.alias) + publish.conf.ext, output);
+		}*/
 	}
 	
 }
+
+// a quick way to get the members of an item
+var members = {};
+
+// Nav object for generating LHN html
+var Nav = (function(undefined) {
+	function Nav(symbolset, rootSymbol) {
+		this.symbolset  = symbolset;
+		this.rootSymbol = rootSymbol;
+	}
+	var NavProto = Nav.prototype;
+	
+	// the page mode
+	NavProto.mode = undefined;
+	
+	// the symbolset we're dealing with
+	NavProto.symbolset = undefined;
+	
+	// the symbol to treat as the root, ie 'woosh'
+	NavProto.rootSymbol = undefined;
+	
+	// the current item for this page
+	NavProto.active = undefined;
+	
+	// output to html string
+	// first level items will be woosh.whatever, 2nd level will just be name
+	NavProto.toString = function() {
+		var html = '<ol>',
+			link,
+			nav = this;
+		
+		if (this.active) {
+			html += '<li><a href="../index.html">Index</a></li>';
+		} else {
+			html += '<li><span class="active">Index</span></li>';
+		}
+		
+		link = new Link().toSymbol(this.rootSymbol.alias);
+		html += '<li>' + link + '</li>';
+		
+		members[this.rootSymbol.alias].forEach(function(symbol) {
+			if ( symbol.is('CONSTRUCTOR') || symbol.isNamespace ) {
+				switch (nav.mode) {
+					case 'writingTests':
+						if ( !symbol.comment.getTag('writingTests')[0] ) { return; }
+					case 'writingViews':
+						if (symbol.isPrivate) { return; }
+				}
+				link = new Link().toSymbol(symbol.alias);
+				html += '<li>' + link + '</li>';
+			}
+		});
+		
+		html += '</ol>'
+		return html;
+	};
+	
+	
+	return Nav;
+})();
 
 
 /** Just the first sentence (up to a full stop). Should not break on dotted variable names. */
@@ -136,10 +217,22 @@ function makeSignature(params) {
 
 /** Find symbol {@link ...} strings in text and turn into html links */
 function resolveLinks(str, from) {
-	str = str.replace(/\{@link ([^} ]+) ?\}/gi,
-		function(match, symbolName) {
-			return new Link().toSymbol(symbolName);
+	str = str.replace(/\{@link ([^} ]+)\s*([^}]*)\}/gi,
+		function(match, symbolName, text) {
+			var link = new Link().toSymbol(symbolName);
+			link.text = text;
+			return link;
 		}
 	);	
 	return str;
+}
+
+// escape html
+function h(str) {
+	return h
+		.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
+		.replace(/"/g, '&#34;')
+		.replace(/'/g, '&#39;')
 }
