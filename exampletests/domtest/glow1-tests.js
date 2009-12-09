@@ -2,8 +2,8 @@ woosh.addTests('glow-170', {
 	
 	"make": function(){
 		for(var i = 0; i<250; i++){
-			glow.dom.create("<ul id='setid" + i + "' class='fromcode'></ul>")
-				.append("<li>one</li><li>two</li><li>three</li>")
+			glow.dom.create("<ul class='fromcode'><li>one</li><li>two</li><li>three</li></ul>")
+				.attr("id", "setid" + i)
 				.appendTo("body");
 		}
 		return glow.dom.get("ul.fromcode").length;
@@ -24,7 +24,7 @@ woosh.addTests('glow-170', {
 	},
 	
 	"bind" : function(){
-		var lis = glow.dom.get('ul > li');
+		var lis = glow.dom.get();
 		glow.events.addListener(lis, 'click', function(){});
 		return lis.length;
 	},
@@ -48,10 +48,9 @@ woosh.addTests('glow-170', {
 
 	"table": function(){
 		for(var i = 0; i < 40; i++){
-		  glow.dom.create("<table class='madetable'></table>")
-			.appendTo("body")
-			.html("<tr><td>first</td></tr>")
-			.get("tr").prepend("<td>before</td>");
+			glow.dom.create("<table class='madetable'><tr><td>first</td></tr></table>")
+				.appendTo("body")
+				.get("tr").prepend("<td>before</td>");
 		}
 		return glow.dom.get("tr td").length;
 	},

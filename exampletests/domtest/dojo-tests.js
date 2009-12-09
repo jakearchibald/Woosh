@@ -1,4 +1,4 @@
-woosh.addTests('dojo-132', {
+woosh.addTests('dojo-140', {
 	
 	"make" : function(){
 		for(var i = 0; i<250; i++){

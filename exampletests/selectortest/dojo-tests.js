@@ -1,4 +1,4 @@
-woosh.addTests('dojo-132', {
+woosh.addTests('dojo-140', {
 	'body': function(test) {
 		return dojo.query('body').length;
 	},

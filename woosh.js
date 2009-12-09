@@ -26,7 +26,7 @@
 		Paths must be relative to whoosh.js.
 	*/
 	var libs = {
-		'dojo-132': ['libs/dojo-132.js'],
+		'dojo-140': ['libs/dojo-140.js'],
 		'jq-132': ['libs/jq-132.js'],
 		'moo-122': ['libs/moo-122.js'],
 		'proto-1603': ['libs/proto-1603.js'],

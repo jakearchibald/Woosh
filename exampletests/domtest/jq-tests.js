@@ -2,8 +2,8 @@ woosh.addTests('jq-132', {
 	
 	"make": function(){
 		for(var i = 0; i<250; i++){
-			$("<ul id='setid" + i + "' class='fromcode'></ul>")
-				.append("<li>one</li><li>two</li><li>three</li>")
+			$("<ul class='fromcode'><li>one</li><li>two</li><li>three</li></ul>")
+				.attr("id", "setid" + i)
 				.appendTo("body");
 		}
 		return $("ul.fromcode").length;
@@ -36,10 +36,9 @@ woosh.addTests('jq-132', {
 
 	"table": function(){
 		for(var i = 0; i < 40; i++){
-		  $("<table class='madetable'></table>")
-			.appendTo("body")
-			.html("<tr><td>first</td></tr>")
-			.find("tr").prepend("<td>before</td>");
+		  $("<table class='madetable'><tr><td>first</td></tr></table>")
+				.appendTo("body")
+				.find("tr").prepend("<td>before</td>");
 		}
 		return $("tr td").length;
 	},
