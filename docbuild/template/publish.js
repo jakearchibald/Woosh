@@ -11,6 +11,17 @@ function publish(symbolSet) {
 	IO.mkPath( (publish.conf.outDir+"writingViews").split("/") );
 	IO.mkPath( (publish.conf.outDir+"fullApi").split("/") );
 	
+	var modes = ['fullApi', 'writingViews', 'writingTests'],
+		mode,
+		nav;
+	
+	for (var i = 0, len = modes.length; i<len; i++) {
+		mode = modes[i];
+		// build nav
+		// build index
+		// build pages
+	}
+	
 	// The grand plan:
 	//   Output 3 copies for one template
 	//   One for how to write tests, with the relevent API
@@ -24,9 +35,6 @@ function publish(symbolSet) {
 	//   This switch is a tab like woosh's start button
 	//   Pages are styled like the rest of woosh 
 	//   
-	//   1. Make loop that runs 3 times and knows the page type 
-	//   2. Make the nav
-	//    
 		
 	// used to allow Link to check the details of things being linked to
 	Link.symbolSet = symbolSet;
