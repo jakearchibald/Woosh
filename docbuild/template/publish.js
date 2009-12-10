@@ -84,7 +84,8 @@ function publish(symbolSet) {
 		output;
 	
 	// build nav
-	data.nav = new Nav( symbolSet, symbolSet.getSymbol('woosh') )
+	data.nav = new Nav( symbolSet.getSymbol('woosh') )
+	//data.nav.active = symbolSet.getSymbol('woosh.Test');
 	
 	for (var i = 0, len = modes.length; i<len; i++) {
 		mode = modes[i];
@@ -115,17 +116,13 @@ var members = {};
 
 // Nav object for generating LHN html
 var Nav = (function(undefined) {
-	function Nav(symbolset, rootSymbol) {
-		this.symbolset  = symbolset;
+	function Nav(rootSymbol) {
 		this.rootSymbol = rootSymbol;
 	}
 	var NavProto = Nav.prototype;
 	
 	// the page mode
 	NavProto.mode = undefined;
-	
-	// the symbolset we're dealing with
-	NavProto.symbolset = undefined;
 	
 	// the symbol to treat as the root, ie 'woosh'
 	NavProto.rootSymbol = undefined;
@@ -138,10 +135,10 @@ var Nav = (function(undefined) {
 		var link;
 		
 		if (this.active == symbol) {
-			return '<li><span class="active">' + symbol.alias + '</span></li>';
+			return '<li><span class="active">' + symbol.alias + (inner || '') + '</span></li>\n';
 		} else {
 			link = new Link().toSymbol(symbol.alias);
-			return '<li>' + link + (inner || '') + '</li>';
+			return '<li>' + link + '\n' + (inner || '') + '</li>\n';
 		}
 	};
 	
@@ -154,7 +151,7 @@ var Nav = (function(undefined) {
 	// make a list of items, will fiter out symbols we don't want to show
 	NavProto._list = function(symbols) {
 		var nav = this,
-			html = '<ol>',
+			html = '<ol>\n',
 			memberSymbols,
 			listInner;
 		
@@ -163,35 +160,40 @@ var Nav = (function(undefined) {
 				return nav._shouldDisplay(symbol);
 			});
 			// don't treat 'woosh' as a parent item
-			listInner = (memberSymbols.length && symbol.alias != 'woosh') ? nav._list(memberSymbols) : '';
+			listInner = (
+				memberSymbols.length &&
+				symbol != nav.rootSymbol &&
+				nav.active &&
+				nav.active.alias.indexOf(symbol.alias) === 0 
+			) ? nav._list(memberSymbols) : '';
 			html += nav._listItem( symbol, listInner );
 		});
-		html += '</ol>';
+		html += '</ol>\n';
 		return html;
 	}
 	
 	// output to html string
 	// first level items will be woosh.whatever, 2nd level will just be name
 	NavProto.toString = function() {
-		var html = '<ol>',
+		var html = '<ol>\n',
 			link,
 			nav = this,
 			symbols;
 		
 		// the index is active if there's no active symbol
 		if (this.active) {
-			html += '<li><a href="../index.html">Index</a></li>';
+			html += '<li><a href="../index.html">Index</a></li>\n';
 		} else {
-			html += '<li><span class="active">Index</span></li>';
+			html += '<li><span class="active">Index</span></li>\n';
 		}
 		
-		html += '<li>Api';
+		html += '<li>Api\n';
 		symbols = [this.rootSymbol].concat( members[this.rootSymbol.alias] ).filter(function(symbol) {
 			return nav._shouldDisplay(symbol);
 		});;
 		html += nav._list(symbols);
 		
-		html += '</li></ol>';
+		html += '</li>\n</ol>\n';
 		return html;
 	};
 	
