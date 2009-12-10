@@ -12,7 +12,7 @@ function publish(symbolSet) {
 
 	// create the required templates
 	try {
-		var symbolTemplate = new JSDOC.JsPlate(publish.conf.templatesDir+"class.tmpl");
+		var symbolTemplate = new JSDOC.JsPlate(publish.conf.templatesDir+"symbol.tmpl");
 		var indexTemplate = new JSDOC.JsPlate(publish.conf.templatesDir+"index.tmpl");
 	}
 	catch(e) {
@@ -21,7 +21,7 @@ function publish(symbolSet) {
 	}
 	
 	function hasOwnPage($) {
-		return ($.is("CONSTRUCTOR") || $.isNamespace) && $.memberOf != '';	
+		return ($.is("CONSTRUCTOR") || $.isNamespace) && $.alias != '_global_';	
 	}
 	
 	// get an array version of the symbolset, useful for filtering
@@ -78,41 +78,50 @@ function publish(symbolSet) {
 	IO.mkPath( (publish.conf.outDir+'writingViews/api').split('/') );
 	IO.mkPath( (publish.conf.outDir+'fullApi/api').split('/') );
 	
-	var modes = ['fullApi', 'writingViews', 'writingTests'],
-		mode,
+	var mode,
 		data = {},
-		output;
+		output,
+		symbol;
 	
 	// build nav
 	data.nav = new Nav( symbolSet.getSymbol('woosh') )
 	//data.nav.active = symbolSet.getSymbol('woosh.Test');
+	data.modeSwitch = new ModeSwitch();
 	
 	for (var i = 0, len = modes.length; i<len; i++) {
+		publish.conf.symbolsDir = 'api/';
 		mode = modes[i];
 		data.nav.mode = mode;
+		data.nav.active = undefined;
+		data.modeSwitch.mode = mode;
+		data.modeSwitch.symbol = undefined;
 		
 		// build index
 		output = indexTemplate.process(data);
 		IO.saveFile(publish.conf.outDir + mode, 'index' + publish.conf.ext, output);
 		
+		publish.conf.symbolsDir = '';
+		
 		// create each of the class pages
-		/*for (var i = 0, l = classes.length; i < l; i++) {
-			var symbol = classes[i];
+		for (var j = 0, jlen = symbolsForPages.length; j < jlen; j++) {
+			symbol = symbolsForPages[j];
+			data.nav.active = symbol;
+			data.modeSwitch.symbol = symbol;
+			data.symbol = symbol;
 			
 			symbol.events = symbol.getEvents();   // 1 order matters
 			symbol.methods = symbol.getMethods(); // 2
 			
-			var output = "";
-			output = classTemplate.process(symbol);
+			output = symbolTemplate.process(data);
 			
-			IO.saveFile(publish.conf.outDir, ((JSDOC.opt.u)? Link.filemap[symbol.alias] : symbol.alias) + publish.conf.ext, output);
-		}*/
+			IO.saveFile(publish.conf.outDir + mode + '/api', ((JSDOC.opt.u)? Link.filemap[symbol.alias] : symbol.alias) + publish.conf.ext, output);
+		}
 	}
-	
 }
 
 // a quick way to get the members of an item
 var members = {};
+var modes = ['fullApi', 'writingViews', 'writingTests'];
 
 // Nav object for generating LHN html
 var Nav = (function(undefined) {
@@ -201,6 +210,45 @@ var Nav = (function(undefined) {
 	return Nav;
 })();
 
+// switch between the different doc modes
+var ModeSwitch = (function(undefined){
+	function ModeSwitch() {}
+	
+	var ModeSwitchProto = ModeSwitch.prototype;
+	
+	// the symbol being documented, undef for index
+	ModeSwitchProto.symbol = undefined;
+	
+	// the mode of the current page
+	ModeSwitchProto.mode = undefined;
+	
+	ModeSwitchProto._listItem = function(mode) {
+		var link;
+		if (this.symbol) {
+			return '';
+			// give publish.conf.symbolsDir a tmp value & put it back after making link
+			link = new Link().toSymbol(symbol.alias);
+			return '<li>' + link + '\n' + (inner || '') + '</li>\n';
+		} else {
+			return '<li><a href="../' + h(mode) + '/">' + h(mode) + '</a></li>\n';
+		}
+	};
+	
+	ModeSwitchProto.toString = function() {
+		var html = '<ul>',
+			modeSwitch = this;
+		
+		modes.forEach(function(mode) {
+			html += modeSwitch._listItem(mode);
+		});
+		
+		html += '</ul>';
+		return html;
+	}
+	
+	return ModeSwitch;
+})();
+
 // should the symbol be displayed in this page mode?
 function showSymbol(symbol, mode) {
 	switch (mode) {
@@ -272,7 +320,7 @@ function resolveLinks(str, from) {
 
 // escape html
 function h(str) {
-	return h
+	return str
 		.replace(/&/g, '&amp;')
 		.replace(/</g, '&lt;')
 		.replace(/>/g, '&gt;')
