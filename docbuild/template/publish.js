@@ -133,36 +133,65 @@ var Nav = (function(undefined) {
 	// the current item for this page
 	NavProto.active = undefined;
 	
+	// make list item
+	NavProto._listItem = function(symbol, inner) {
+		var link;
+		
+		if (this.active == symbol) {
+			return '<li><span class="active">' + symbol.alias + '</span></li>';
+		} else {
+			link = new Link().toSymbol(symbol.alias);
+			return '<li>' + link + (inner || '') + '</li>';
+		}
+	};
+	
+	// should a symbol be displayed in the nav?
+	NavProto._shouldDisplay = function(symbol) {
+		return ( symbol.is('CONSTRUCTOR') || symbol.isNamespace )
+			&& showSymbol(symbol, this.mode);
+	}
+	
+	// make a list of items, will fiter out symbols we don't want to show
+	NavProto._list = function(symbols) {
+		var nav = this,
+			html = '<ol>',
+			memberSymbols,
+			listInner;
+		
+		symbols.forEach(function(symbol) {
+			memberSymbols = members[symbol.alias].filter(function(symbol) {
+				return nav._shouldDisplay(symbol);
+			});
+			// don't treat 'woosh' as a parent item
+			listInner = (memberSymbols.length && symbol.alias != 'woosh') ? nav._list(memberSymbols) : '';
+			html += nav._listItem( symbol, listInner );
+		});
+		html += '</ol>';
+		return html;
+	}
+	
 	// output to html string
 	// first level items will be woosh.whatever, 2nd level will just be name
 	NavProto.toString = function() {
 		var html = '<ol>',
 			link,
-			nav = this;
+			nav = this,
+			symbols;
 		
+		// the index is active if there's no active symbol
 		if (this.active) {
 			html += '<li><a href="../index.html">Index</a></li>';
 		} else {
 			html += '<li><span class="active">Index</span></li>';
 		}
 		
-		link = new Link().toSymbol(this.rootSymbol.alias);
-		html += '<li>' + link + '</li>';
+		html += '<li>Api';
+		symbols = [this.rootSymbol].concat( members[this.rootSymbol.alias] ).filter(function(symbol) {
+			return nav._shouldDisplay(symbol);
+		});;
+		html += nav._list(symbols);
 		
-		members[this.rootSymbol.alias].forEach(function(symbol) {
-			if ( symbol.is('CONSTRUCTOR') || symbol.isNamespace ) {
-				switch (nav.mode) {
-					case 'writingTests':
-						if ( !symbol.comment.getTag('writingTests')[0] ) { return; }
-					case 'writingViews':
-						if (symbol.isPrivate) { return; }
-				}
-				link = new Link().toSymbol(symbol.alias);
-				html += '<li>' + link + '</li>';
-			}
-		});
-		
-		html += '</ol>'
+		html += '</li></ol>';
 		return html;
 	};
 	
@@ -170,6 +199,18 @@ var Nav = (function(undefined) {
 	return Nav;
 })();
 
+// should the symbol be displayed in this page mode?
+function showSymbol(symbol, mode) {
+	switch (mode) {
+		case 'writingTests':
+			// look out for our custom tag
+			if ( !symbol.comment.getTag('writingTests')[0] ) { return false; }
+		case 'writingViews':
+			// we don't want to display our privates (teehee)
+			if (symbol.isPrivate) { return false; }
+	}
+	return true;
+}
 
 /** Just the first sentence (up to a full stop). Should not break on dotted variable names. */
 function summarize(desc) {
