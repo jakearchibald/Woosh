@@ -121,7 +121,18 @@ function publish(symbolSet) {
 
 // a quick way to get the members of an item
 var members = {};
-var modes = ['fullApi', 'writingViews', 'writingTests'];
+var modes = [],
+	modeNames = {
+		writingTests: 'Writing Tests',
+		writingViews: 'Writing Views',
+		fullApi: 'Full API'
+	};
+	
+(function(){
+	for (var mode in modeNames) {
+		modes.push(mode);
+	}
+})();
 
 // Nav object for generating LHN html
 var Nav = (function(undefined) {
@@ -223,14 +234,20 @@ var ModeSwitch = (function(undefined){
 	ModeSwitchProto.mode = undefined;
 	
 	ModeSwitchProto._listItem = function(mode) {
-		var link;
+		var link,
+			html,
+			modeName = modeNames[mode],
+			oldSymbolsDir = publish.conf.symbolsDir;
+			
 		if (this.symbol) {
-			return '';
-			// give publish.conf.symbolsDir a tmp value & put it back after making link
-			link = new Link().toSymbol(symbol.alias);
-			return '<li>' + link + '\n' + (inner || '') + '</li>\n';
+			publish.conf.symbolsDir = '../../' + mode + '/api/';
+			link = new Link().toSymbol(this.symbol.alias);
+			link.text = modeName;
+			html = '<li>' + link + '</li>\n';
+			publish.conf.symbolsDir = oldSymbolsDir;
+			return html;
 		} else {
-			return '<li><a href="../' + h(mode) + '/">' + h(mode) + '</a></li>\n';
+			return '<li><a href="../' + h(mode) + '/">' + h(modeName) + '</a></li>\n';
 		}
 	};
 	
