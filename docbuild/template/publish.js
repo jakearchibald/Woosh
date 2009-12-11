@@ -41,7 +41,7 @@ function publish(symbolSet) {
 	}
  	
  	// get a list of all the classes in the symbolset
- 	var symbolsForPages = symbols.filter(hasOwnPage).sort(makeSortby("alias"));
+ 	var symbolsForPages = symbols.filter(hasOwnPage).sort( makeSortby("alias") );
 	
 	// create a filemap in which outfiles must be to be named uniquely, ignoring case
 	if (JSDOC.opt.u) {
@@ -108,6 +108,9 @@ function publish(symbolSet) {
 			data.nav.active = symbol;
 			data.modeSwitch.symbol = symbol;
 			data.symbol = symbol;
+			data.members = organiseMembers(symbol, function(symbol) {
+				return shouldOutput(symbol, mode);
+			});
 			
 			symbol.events = symbol.getEvents();   // 1 order matters
 			symbol.methods = symbol.getMethods(); // 2
@@ -210,7 +213,7 @@ var Nav = (function(undefined) {
 		html += '<li>Api\n';
 		symbols = [this.rootSymbol].concat( members[this.rootSymbol.alias] ).filter(function(symbol) {
 			return nav._shouldDisplay(symbol);
-		});;
+		});
 		html += nav._list(symbols);
 		
 		html += '</li>\n</ol>\n';
@@ -274,6 +277,44 @@ var ModeSwitch = (function(undefined){
 	return ModeSwitch;
 })();
 
+// returns an object of symbol members keyed by their type
+function organiseMembers(symbol, filter) {
+	// TODO: resolve inherited methods
+	var symbols = members[symbol.alias].filter(filter),
+		r = {
+			properties: [],
+			methods: [],
+			instanceProperties: [],
+			instanceMethods: [],
+			constructors: [],
+			namespaces: []
+		};
+	
+	symbols.forEach(function(symbol) {
+		if ( symbol.is('CONSTRUCTOR') ) {
+			r.constructors.push(symbol);
+		}
+		else if (symbol.isNamespace) {
+			r.namespaces.push(symbol);
+		}
+		else if ( symbol.is('FUNCTION') ) {
+			if (symbol.isStatic) {
+				r.methods.push(symbol);
+			} else {
+				r.instanceMethods.push(symbol);
+			}
+		}
+		else if ( symbol.isStatic ) {
+			r.properties.push(symbol);
+		}
+		else {
+			r.instanceProperties.push(symbol);
+		}
+	});
+	
+	return r;
+}
+
 // should the symbol be displayed in this page mode?
 function shouldOutput(symbol, mode) {
 	switch (mode) {
@@ -297,8 +338,8 @@ function summarize(desc) {
 function makeSortby(attribute) {
 	return function(a, b) {
 		if (a[attribute] != undefined && b[attribute] != undefined) {
-			a = a[attribute].toLowerCase();
-			b = b[attribute].toLowerCase();
+			a = a[attribute].toLowerCase().replace(/_/g, '');
+			b = b[attribute].toLowerCase().replace(/_/g, '');
 			if (a < b) return -1;
 			if (a > b) return 1;
 			return 0;

@@ -1,10 +1,27 @@
 <!DOCTYPE html>
 <html lang="en-gb">
+	{!
+		var symbolTypes = [
+			'properties',
+			'methods',
+			'instanceProperties',
+			'instanceMethods',
+			'constructors',
+			'namespaces'
+		];
+		var symbolTypeNames = {
+			properties: 'Properties',
+			methods: 'Methods',
+			instanceProperties: 'Instance Properties',
+			instanceMethods: 'Instance Methods',
+			constructors: 'Constructors',
+			namespaces: 'Namespaces'
+		}
+	!}
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset={+IO.encoding+}">
 		<meta name="generator" content="JsDoc Toolkit">
 		<title>Woosh Documentation - {+data.alias+}</title>
-
 		<style type="text/css">
 		</style>
 	</head>
@@ -20,5 +37,20 @@
 		
 		<p>Here comes the nav:</p>
 		{+data.nav+}
+		
+		<p>And now the content:</p>
+		
+		<for each="symbolType" in="symbolTypes">
+			{! var symbols = data.members[symbolType] !}
+			<if test="symbols.length">
+				<p>{+ h( symbolTypeNames[symbolType] ) +}</p>
+				<ol>
+					<for each="symbol" in="symbols">
+						<li>{+ h(symbol.name) +}</li>
+					</for>
+				</ol>
+			</if>
+		</for>
+		
 	</body>
 </html>

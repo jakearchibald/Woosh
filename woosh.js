@@ -318,7 +318,7 @@
 	@name woosh.AsyncTest
 	@constructor
 	@writingTests
-	@extends woosh.Test
+	@augments woosh.Test
 	@description Like {@link woosh.Test}, but allows async tests.
 		This test waits for {@link woosh.AsyncTest#endTest} to be
 		called before the test is complete.
