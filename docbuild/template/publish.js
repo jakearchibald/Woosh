@@ -277,18 +277,62 @@ var ModeSwitch = (function(undefined){
 	return ModeSwitch;
 })();
 
+// get an array of members (including inherited instance members) of a symbol 
+function resolveInstanceMembers(symbol) {
+	var r = {
+			methods: [],
+			properties: []
+		},
+		member,
+		symbolMembers,
+		namesTaken = {},
+		i, len;
+	
+	do {
+		symbolMembers = members[symbol.alias];
+		
+		// loop through members
+		for (i = 0, len = symbolMembers.length; i<len; i++) {
+			member = symbolMembers[i];
+			// skip if static or we've already got a thing of that name
+			if ( member.isStatic || namesTaken[member.name] ) { continue; }
+			// make sure we don't get two of these
+			namesTaken[member.name] = true;
+			// add it to our list
+			if ( member.is('FUNCTION') ) {
+				r.methods.push(member);
+			} else {
+				r.properties.push(member);
+			}
+		}
+		
+		// get inherited symbol if there is one
+		if ( symbol.augments[0] ) {
+			symbol = Link.symbolSet.getSymbol( symbol.augments[0] );
+		} else {
+			symbol = null;
+		}
+	} while (symbol);
+	
+	// sort the members
+	r.methods = r.methods.sort( makeSortby('alias') );
+	r.properties = r.properties.sort( makeSortby('alias') );
+	
+	return r;
+}
+
 // returns an object of symbol members keyed by their type
 function organiseMembers(symbol, filter) {
-	// TODO: resolve inherited methods
 	var symbols = members[symbol.alias].filter(filter),
+		instanceMembers = resolveInstanceMembers(symbol),
 		r = {
 			properties: [],
 			methods: [],
-			instanceProperties: [],
-			instanceMethods: [],
+			instanceProperties: instanceMembers.properties.filter(filter),
+			instanceMethods: instanceMembers.methods.filter(filter),
 			constructors: [],
 			namespaces: []
-		};
+		};	
 	
 	symbols.forEach(function(symbol) {
 		if ( symbol.is('CONSTRUCTOR') ) {
@@ -297,18 +341,11 @@ function organiseMembers(symbol, filter) {
 		else if (symbol.isNamespace) {
 			r.namespaces.push(symbol);
 		}
-		else if ( symbol.is('FUNCTION') ) {
-			if (symbol.isStatic) {
-				r.methods.push(symbol);
-			} else {
-				r.instanceMethods.push(symbol);
-			}
+		else if (symbol.is('FUNCTION') && symbol.isStatic) {
+			r.methods.push(symbol);
 		}
-		else if ( symbol.isStatic ) {
+		else if (symbol.isStatic) {
 			r.properties.push(symbol);
-		}
-		else {
-			r.instanceProperties.push(symbol);
 		}
 	});
 	
@@ -328,10 +365,14 @@ function shouldOutput(symbol, mode) {
 	return true;
 }
 
-/** Just the first sentence (up to a full stop). Should not break on dotted variable names. */
-function summarize(desc) {
-	if (typeof desc != "undefined")
-		return desc.match(/([\w\W]+?\.)[^a-z0-9_$]/i)? RegExp.$1 : desc;
+// just get the first line of the text excluding a trailing full stop
+function summary(str) {
+	return h( /^(.*?)(?:\.?\s*?(?:\n|$))/.exec(str)[0] );
+}
+
+// get everything but the first line
+function further(str) {
+	return h( str.replace(/^(.*?)(?:\.?\s*?(?:\n|$))/, '') );
 }
 
 /** Make a symbol sorter by some attribute. */

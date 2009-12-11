@@ -21,13 +21,13 @@
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset={+IO.encoding+}">
 		<meta name="generator" content="JsDoc Toolkit">
-		<title>Woosh Documentation - {+data.alias+}</title>
+		<title>Woosh Documentation - {+ h(data.symbol.alias) +}</title>
 		<style type="text/css">
 		</style>
 	</head>
 	<body>
 		<div id="wooshBanner">
-			<h1>The Title</h1>
+			<h1>{+ h(data.symbol.alias) +}</h1>
 		</div>
 		<div id="wooshUa"></div>
 		<div id="wooshCommands"></div>
@@ -43,12 +43,15 @@
 		<for each="symbolType" in="symbolTypes">
 			{! var symbols = data.members[symbolType] !}
 			<if test="symbols.length">
-				<p>{+ h( symbolTypeNames[symbolType] ) +}</p>
-				<ol>
+				<h2>{+ h( symbolTypeNames[symbolType] ) +}</h2>
+				<dl>
 					<for each="symbol" in="symbols">
-						<li>{+ h(symbol.name) +}</li>
+						<dt>{+ h(symbol.name) +}</dt>
+						<dd>
+							{+ summary(symbol.desc) +}
+						</dd>
 					</for>
-				</ol>
+				</dl>
 			</if>
 		</for>
 		
