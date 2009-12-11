@@ -3,6 +3,7 @@
 	/**
 	@name woosh
 	@namespace
+	@writingTests
 	@description For creating speed tests
 	*/
 	var woosh = {};

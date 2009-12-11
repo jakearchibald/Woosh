@@ -165,7 +165,7 @@ var Nav = (function(undefined) {
 	// should a symbol be displayed in the nav?
 	NavProto._shouldDisplay = function(symbol) {
 		return ( symbol.is('CONSTRUCTOR') || symbol.isNamespace )
-			&& showSymbol(symbol, this.mode);
+			&& shouldOutput(symbol, this.mode);
 	}
 	
 	// make a list of items, will fiter out symbols we don't want to show
@@ -239,12 +239,20 @@ var ModeSwitch = (function(undefined){
 			modeName = modeNames[mode],
 			oldSymbolsDir = publish.conf.symbolsDir;
 			
-		if (this.symbol) {
-			publish.conf.symbolsDir = '../../' + mode + '/api/';
-			link = new Link().toSymbol(this.symbol.alias);
-			link.text = modeName;
-			html = '<li>' + link + '</li>\n';
-			publish.conf.symbolsDir = oldSymbolsDir;
+		if (this.mode == mode) {
+			return '<li><span class="active">' + h(modeName) + '</span></li>';
+		}
+		else if (this.symbol) {
+			if ( shouldOutput(this.symbol, mode) ) {
+				publish.conf.symbolsDir = '../../' + mode + '/api/';
+				link = new Link().toSymbol(this.symbol.alias);
+				link.text = modeName;
+				html = '<li>' + link + '</li>\n';
+				publish.conf.symbolsDir = oldSymbolsDir;
+			}
+			else {
+				html = '<li><span class="notInMode">' + h(modeName) + '</span></li>';
+			}
 			return html;
 		} else {
 			return '<li><a href="../' + h(mode) + '/">' + h(modeName) + '</a></li>\n';
@@ -267,7 +275,7 @@ var ModeSwitch = (function(undefined){
 })();
 
 // should the symbol be displayed in this page mode?
-function showSymbol(symbol, mode) {
+function shouldOutput(symbol, mode) {
 	switch (mode) {
 		case 'writingTests':
 			// look out for our custom tag
