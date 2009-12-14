@@ -48,7 +48,13 @@
 					<for each="symbol" in="symbols">
 						<dt>{+ h(symbol.name) +}</dt>
 						<dd>
-							{+ summary(symbol.desc) +}
+							<div class="summary">{+ summary(symbol.desc) +}</div>
+							<div class="signiture"><pre><code>{+ makeSignature(symbol) +}</code></pre></div>
+							<div class="description">{+ further(symbol.desc) +}</div>
+							<div class="returns"></div>
+							<div class="params"></div>
+							<div class="example"></div>
+							<div class="see"></div>
 						</dd>
 					</for>
 				</dl>

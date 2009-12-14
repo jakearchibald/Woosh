@@ -258,7 +258,7 @@ var ModeSwitch = (function(undefined){
 			}
 			return html;
 		} else {
-			return '<li><a href="../' + h(mode) + '/">' + h(modeName) + '</a></li>\n';
+			return '<li><a href="../' + h(mode) + '/index.html">' + h(modeName) + '</a></li>\n';
 		}
 	};
 	
@@ -367,12 +367,23 @@ function shouldOutput(symbol, mode) {
 
 // just get the first line of the text excluding a trailing full stop
 function summary(str) {
-	return h( /^(.*?)(?:\.?\s*?(?:\n|$))/.exec(str)[0] );
+	return resolveLinks( 
+		h( /^(.*?)(?:\.?\s*?(?:\n|$))/.exec(str)[0] )
+	);
 }
 
 // get everything but the first line
+// paragraphs starting in < aren't escaped
 function further(str) {
-	return h( str.replace(/^(.*?)(?:\.?\s*?(?:\n|$))/, '') );
+	// split on double newlines
+	var paragraphs = str.replace(/^(.*?)(?:\.?\s*?(?:\n|$))/, '').split(/(\r\n\r\n|\n\n)/),
+		html;
+	
+	html = paragraphs.map(function(paragraph) {
+		return /^\s*</.test(paragraph) ? paragraph : '<p>' + h(paragraph) + '</p>';
+	}).join('\n\n');
+	
+	return resolveLinks(html);
 }
 
 /** Make a symbol sorter by some attribute. */
@@ -395,22 +406,34 @@ function include(path) {
 }
 
 /** Build output for displaying function parameters. */
-function makeSignature(params) {
-	if (!params) return "()";
-	var signature = "("
-	+
-	params.filter(
-		function($) {
-			return $.name.indexOf(".") == -1; // don't show config params in signature
-		}
-	).map(
-		function($) {
-			return $.name;
-		}
-	).join(", ")
-	+
-	")";
-	return signature;
+function makeSignature(symbol) {
+	var params = '',
+		name;
+		
+	if (!symbol.isStatic) {
+		name = 'my' + symbol.memberOf.slice( symbol.memberOf.lastIndexOf('.') + 1 ) +
+			'.' + symbol.name;
+	}
+	else if ( symbol.is('CONSTRUCTOR') ) {
+		name = 'var my' + symbol.alias.slice( symbol.alias.lastIndexOf('.') + 1 ) + ' = new ' + symbol.alias;
+	}
+	else {
+		name = symbol.alias;
+	}
+	if (symbol.params.length) {
+		params = '(' +
+			symbol.params.filter(function($) {
+				return $.name.indexOf('.') == -1; // don't show config params in signature
+			}).map(function($) {
+				return $.name;
+			}).join(', ') +
+			')';
+	}
+	else if ( symbol.is('FUNCTION') ) {
+		params = '()';
+	}
+	
+	return h(name + params);
 }
 
 /** Find symbol {@link ...} strings in text and turn into html links */
@@ -418,7 +441,7 @@ function resolveLinks(str, from) {
 	str = str.replace(/\{@link ([^} ]+)\s*([^}]*)\}/gi,
 		function(match, symbolName, text) {
 			var link = new Link().toSymbol(symbolName);
-			link.text = text;
+			link.text = text || symbolName;
 			return link;
 		}
 	);	

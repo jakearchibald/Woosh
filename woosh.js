@@ -973,8 +973,7 @@
 	/**
 	@name woosh._libsToConduct
 	@type {String[]}
-	@description Library names that should be conducted when
-		{@link woosh._pageMode} is 'conducting'
+	@description Library names that should be conducted when {@link woosh._pageMode} is 'conducting'
 	*/
 	var libsToConduct = [],
 		libsAdded = {};
