@@ -20,10 +20,6 @@ function publish(symbolSet) {
 		quit();
 	}
 	
-	function hasOwnPage($) {
-		return ($.is("CONSTRUCTOR") || $.isNamespace) && $.alias != '_global_';	
-	}
-	
 	// get an array version of the symbolset, useful for filtering
 	var symbols = symbolSet.toArray();
 	
@@ -120,6 +116,11 @@ function publish(symbolSet) {
 			IO.saveFile(publish.conf.outDir + mode + '/api', ((JSDOC.opt.u)? Link.filemap[symbol.alias] : symbol.alias) + publish.conf.ext, output);
 		}
 	}
+}
+
+// does a symbol get its own page?
+function hasOwnPage($) {
+	return ($.is("CONSTRUCTOR") || $.isNamespace) && $.alias != '_global_';	
 }
 
 // a quick way to get the members of an item
@@ -375,10 +376,14 @@ function summary(str) {
 // get everything but the first line
 // paragraphs starting in < aren't escaped
 function further(str) {
-	// split on double newlines
-	var paragraphs = str.replace(/^(.*?)(?:\.?\s*?(?:\n|$))/, '').split(/(\r\n\r\n|\n\n)/),
+	return autoHtml( str.replace(/^(.*?)(?:\.?\s*?(?:\n|$))/, '') );
+}
+
+// wrap lines in paragraphs unless they begin with a tag, resolve links
+function autoHtml(str) {
+	var paragraphs = str.split(/(\r\n\r\n|\n\n)/),
 		html;
-	
+		
 	html = paragraphs.map(function(paragraph) {
 		return /^\s*</.test(paragraph) ? paragraph : '<p>' + h(paragraph) + '</p>';
 	}).join('\n\n');

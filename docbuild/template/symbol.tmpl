@@ -46,15 +46,36 @@
 				<h2>{+ h( symbolTypeNames[symbolType] ) +}</h2>
 				<dl>
 					<for each="symbol" in="symbols">
+						{!
+							var furtherDesc = further(symbol.desc);
+						!}
 						<dt>{+ h(symbol.name) +}</dt>
 						<dd>
 							<div class="summary">{+ summary(symbol.desc) +}</div>
-							<div class="signiture"><pre><code>{+ makeSignature(symbol) +}</code></pre></div>
-							<div class="description">{+ further(symbol.desc) +}</div>
-							<div class="returns"></div>
-							<div class="params"></div>
-							<div class="example"></div>
-							<div class="see"></div>
+							<if test="!hasOwnPage(symbol)">
+								<div class="signiture"><pre><code>{+ makeSignature(symbol) +}</code></pre></div>
+								<if test="furtherDesc">
+									<div class="description">{+ furtherDesc +}</div>
+								</if>
+								<for each="returnItem" in="symbol.returns">
+									<div class="return">{+ h(returnItem.type + ' ' + returnItem.desc) +}</div>
+								</for>
+								<if test="symbol.params.length">
+									<dl class="params">
+										<for each="param" in="symbol.params">
+											<dt>{+ h(param.name) +}</dt>
+											<dd>
+												<div>{+ h(param.type) +}</div>
+												<div>{+ param.isOptional ? 'Optional' : '' +}</div>
+												<div>{+ h(param.defaultValue) +}</div>
+												<div>{+ autoHtml(param.desc) +}</div>
+											</dd>
+										</for>
+									</dl>
+								</if>
+								<div class="example"></div>
+								<div class="see"></div>
+							</if>
 						</dd>
 					</for>
 				</dl>
