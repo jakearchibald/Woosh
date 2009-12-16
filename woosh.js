@@ -284,6 +284,7 @@
 		/**
 		@name woosh.Test#result
 		@function
+		@writingTests
 		@description Change the result of the test.
 			By default, the result is the time the test took to run in milliseconds,
 			however, you may want your test to measure something else like
@@ -351,6 +352,7 @@
 	/**
 	@name woosh.AsyncTest#endTest
 	@function
+	@writingTests
 	@description Must be called within an async test to end the test
 	
 	@param {Object} returnVal The value to return.
