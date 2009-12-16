@@ -368,9 +368,7 @@ function shouldOutput(symbol, mode) {
 
 // just get the first line of the text excluding a trailing full stop
 function summary(str) {
-	return resolveLinks( 
-		h( /^(.*?)(?:\.?\s*?(?:\n|$))/.exec(str)[0] )
-	);
+	return h( /^(.*?)(?:\.?\s*?(?:\n|$))/.exec(str)[0] );
 }
 
 // get everything but the first line
@@ -385,10 +383,10 @@ function autoHtml(str) {
 		html;
 		
 	html = paragraphs.map(function(paragraph) {
-		return /^\s*</.test(paragraph) ? paragraph : '<p>' + h(paragraph) + '</p>';
+		return /^\s*</.test(paragraph) ? resolveLinks(paragraph) : '<p>' + h(paragraph) + '</p>';
 	}).join('\n\n');
 	
-	return resolveLinks(html);
+	return html;
 }
 
 /** Make a symbol sorter by some attribute. */
@@ -468,12 +466,14 @@ function formatExample(str) {
 	return h(str);
 }
 
-// escape html
+// escape html & resolve links
 function h(str) {
-	return str
+	str = str
 		.replace(/&/g, '&amp;')
 		.replace(/</g, '&lt;')
 		.replace(/>/g, '&gt;')
 		.replace(/"/g, '&#34;')
 		.replace(/'/g, '&#39;')
+	
+	return resolveLinks(str); 
 }

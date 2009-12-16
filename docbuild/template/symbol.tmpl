@@ -75,11 +75,14 @@
 								</if>
 								<if test="symbol.example.length">
 									<for each="example" in="symbol.example">
-										<pre><code>{+ formatExample(example.desc) +}</code></pre>
+										<pre class="example"><code>{+ formatExample(example.desc) +}</code></pre>
 									</for>
 								</if>
-								<div class="example"></div>
-								<div class="see"></div>
+								<if test="symbol.see.length">
+									<for each="see" in="symbol.see">
+										<div class="see">{+ h(see) +}</div>
+									</for>
+								</if>
 							</if>
 						</dd>
 					</for>
