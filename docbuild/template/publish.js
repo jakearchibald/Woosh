@@ -442,7 +442,7 @@ function makeSignature(symbol) {
 }
 
 /** Find symbol {@link ...} strings in text and turn into html links */
-function resolveLinks(str, from) {
+function resolveLinks(str) {
 	str = str.replace(/\{@link ([^} ]+)\s*([^}]*)\}/gi,
 		function(match, symbolName, text) {
 			var link = new Link().toSymbol(symbolName);
@@ -451,6 +451,21 @@ function resolveLinks(str, from) {
 		}
 	);	
 	return str;
+}
+
+// cater for indenting in examples
+function formatExample(str) {
+	var initialIndent;
+	// remove empty lines
+	str = str.replace(/^(?:\s*(?:\n|\r\n))*/, '');
+	// get initial indent
+	initalIndent = /^\s*/.exec(str)[0];
+	// remove indent from start of each line
+	str = str.replace(new RegExp('^' + initalIndent, 'mg'), '')
+		// convert tabs to 4 spaces
+		.replace(/\t/g, '    ');
+	
+	return h(str);
 }
 
 // escape html

@@ -49,7 +49,7 @@
 						{!
 							var furtherDesc = further(symbol.desc);
 						!}
-						<dt>{+ h(symbol.name) +}</dt>
+						<dt>{+ hasOwnPage(symbol) ? resolveLinks('{@link ' + symbol.alias + ' ' + symbol.name + '}') : h(symbol.name) +}</dt>
 						<dd>
 							<div class="summary">{+ summary(symbol.desc) +}</div>
 							<if test="!hasOwnPage(symbol)">
@@ -72,6 +72,11 @@
 											</dd>
 										</for>
 									</dl>
+								</if>
+								<if test="symbol.example.length">
+									<for each="example" in="symbol.example">
+										<pre><code>{+ formatExample(example.desc) +}</code></pre>
+									</for>
 								</if>
 								<div class="example"></div>
 								<div class="see"></div>
