@@ -40,6 +40,42 @@
 		
 		<p>And now the content:</p>
 		
+		{! var symbol = data.symbol !}
+		<p>{+ summary(symbol.desc) +}</p>
+		{+ further(symbol.desc) +}
+		
+		<if test="symbol.see.length">
+			<for each="see" in="symbol.see">
+				<div class="see">{+ h(see) +}</div>
+			</for>
+		</if>
+		
+		<if test="data.symbol.is('CONSTRUCTOR')">
+			<dt><code>Constructor</code></dt>
+			<dd>
+				<div class="summary"></div>
+				<div class="signiture"><pre><code>{+ makeSignature(symbol) +}</code></pre></div>
+				<if test="symbol.params.length">
+					<dl class="params">
+						<for each="param" in="symbol.params">
+							<dt>{+ h(param.name) +}</dt>
+							<dd>
+								<div>{+ h(param.type) +}</div>
+								<div>{+ param.isOptional ? 'Optional' : '' +}</div>
+								<div>{+ h(param.defaultValue) +}</div>
+								<div>{+ autoHtml(param.desc) +}</div>
+							</dd>
+						</for>
+					</dl>
+				</if>
+				<if test="symbol.example.length">
+					<for each="example" in="symbol.example">
+						<pre class="example"><code>{+ formatExample(example.desc) +}</code></pre>
+					</for>
+				</if>
+			</dd>
+		</if>
+		
 		<for each="symbolType" in="symbolTypes">
 			{! var symbols = data.members[symbolType] !}
 			<if test="symbols.length">
