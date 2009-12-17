@@ -143,7 +143,6 @@
 						document.write('<script type="text/javascript" src="' + woosh._root + files[i] + '"></scr' + 'ipt>');
 					}
 					else if (files[i].slice(-4) == '.css') {
-						//document.write('<link rel="stylesheet" type="text/css" src="' + woosh._root + files[i] + '">');
 						document.write('<style type="text/css">@import "' + woosh._root + files[i] + '";</style>')
 					}
 				}
