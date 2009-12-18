@@ -591,6 +591,44 @@ test('creating a woosh._Conductor with 1 lib', 14, function() {
 	equals(typeof conductor.start, 'function', 'woosh._Conductor#start is function');
 });
 
+test('woosh._Conductor running only particular tests', 1, function() {
+	stop(5000);
+
+	var log = [];
+	
+	var conductor = new woosh._Conductor(['fakeLib1'], function() {
+		conductor.testsToRun = ['customResultTest', 'onlyInFakeLib1'];
+		
+		conductor.addListener({
+			start: function() {
+				log.push('onStart');
+			},
+			testComplete: function(libraryName, testName, result) {
+				log.push('onTestComplete: ' + testName + ', ' + libraryName);
+			},
+			testSetComplete: function(testName, resultComparison) {
+				log.push('onTestSetComplete: ' + testName);
+			},
+			allTestsComplete: function(libraryResults, resultComparisons) {
+				log.push('onAllTestsComplete');
+				
+				deepEqual(log, [
+					'onStart',
+					'onTestComplete: customResultTest, fakeLib1',
+					'onTestSetComplete: customResultTest',
+					'onTestComplete: onlyInFakeLib1, fakeLib1',
+					'onTestSetComplete: onlyInFakeLib1',
+					'onAllTestsComplete'
+				], 'Events happened in correct order')
+				
+				start();
+			}
+		});
+		
+		conductor.start();
+	});
+});
+
 test('creating a woosh._Conductor with 2 libs', 21, function() {
 	stop(10000);
 	

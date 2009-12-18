@@ -1160,6 +1160,7 @@
 		this._testFrames = {};
 		this._libraryResults = {};
 		this.libraryNames = libraryNames;
+		this.testsToRun = [];
 		
 		// do we have saved results?
 		if (savedResults[0]) {
@@ -1211,6 +1212,13 @@
 		*/
 		savedResultName: '',
 		/**
+		@name woosh._Conductor#testsToRun
+		@type {string[]}
+		@description Names of tests to run
+			If empty, all tests will run
+		*/
+		testsToRun: [],
+		/**
 		@name woosh._Conductor#_testRunner
 		@type {woosh._TestRunner}
 		@description Runner for the test sets
@@ -1259,7 +1267,9 @@
 			var testIndex = -1,
 				currentTestName,
 				resultComparisons = {},
-				conductor = this;
+				conductor = this,
+				// create a string to make it easier to check if we should be running a particular test
+				testsToRunStr = conductor.testsToRun.length ? '##' + conductor.testsToRun.join('##') + '##' : '';
 			
 			// called when all tests of a given name are complete
 			function testSetComplete(resultComparison) {
@@ -1274,7 +1284,16 @@
 			}
 			
 			function runNextTestPerFrame() {
-				currentTestName = conductor.testNames[ ++testIndex ];	
+				if (testsToRunStr) {
+					// find the next test we want to run
+					while (currentTestName = conductor.testNames[ ++testIndex ]) {
+						if ( testsToRunStr.indexOf('##' + currentTestName + '##') != -1) {
+							break;
+						}
+					}
+				} else {
+					currentTestName = conductor.testNames[ ++testIndex ];
+				}
 				
 				if (currentTestName) {
 					conductor._testRunner.run(currentTestName, testComplete, testSetComplete);
