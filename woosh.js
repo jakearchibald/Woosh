@@ -1388,7 +1388,7 @@
 			resultRowStr;
 		
 		// add headers for library names to go in	
-		tableStr += '<tr><th>Tests</th>' + ( new Array(libsLen+1).join(tableHeading) ) + '</tr>';
+		tableStr += '<tr><th><input type="checkbox" id="selectAll" class="checkbox" checked>Tests</th>' + ( new Array(libsLen+1).join(tableHeading) ) + '</tr>';
 		tableStr += '</thead><tbody>';
 		// add result rows
 		resultRowStr = '<tr>' + tableHeading + new Array(libsLen+1).join(tableCell) + '</tr>';
@@ -1414,6 +1414,7 @@
 		this._element = createResultsTable(conductor.libraryNames.length, conductor.testNames.length);
 		this._testRows = {};
 		this._libColIndex = {};
+		this._checkboxes = [];
 		
 		outputElement.appendChild(this._element);
 		this._initAndIndex();
@@ -1428,7 +1429,7 @@
 		*/
 		conductor: undefined,
 		/**
-		@name woosh._views.Table#__element
+		@name woosh._views.Table#_element
 		@private
 		@type {HTMLElement}
 		@description Table element that can be appended to the document
@@ -1459,6 +1460,24 @@
 		*/
 		_libraryResults: {},
 		/**
+		@name woosh._views.Table#_selectAllCheckbox
+		@type {HTMLElement}
+		@description The checkbox for selecting all / no tests
+		*/
+		_selectAllCheckbox: undefined,
+		/**
+		@name woosh._views.Table#_checkboxes
+		@type {HTMLElement[]}
+		@description The checkboxs for selecting which tests to run
+		*/
+		_checkboxes: undefined,
+		/**
+		@name woosh._views.Table#_checkboxesChecked
+		@type {number}
+		@description The number of checkboxes checked
+		*/
+		_checkboxesChecked: 0,
+		/**
 		@name woosh._views.Table#initAndIndex
 		@function
 		@private
@@ -1471,6 +1490,12 @@
 				libraryNames = this.conductor.libraryNames,
 				table = this,
 				a;
+			
+			// add listener to the select all checkbox
+			this._selectAllCheckbox = libRowCells[0].getElementsByTagName('input')[0];
+			this._selectAllCheckbox.onclick = function() {
+				table._selectAllClick();
+			}
 			
 			// headings
 			for (var i = 0, len = libraryNames.length; i < len; i++) {
@@ -1505,16 +1530,28 @@
 			// rows
 			for (var i = 0, len = testNames.length; i < len; i++) {
 				this._testRows[ testNames[i] ] = testRows[i];
+				testRows[i].firstChild.innerHTML = '<input type="checkbox" class="checkbox" checked>';
+				this._checkboxes.push( testRows[i].firstChild.firstChild );
+				testRows[i].firstChild.firstChild.value = testNames[i];
 				testRows[i].firstChild.appendChild( document.createTextNode( testNames[i] ) );
+				
 				// TODO: delegate this event
-				// Click the table heading to make the info toggle
-				testRows[i].firstChild.onclick = function() {
-					var tableRow = this.parentNode;
-					if (tableRow.className == 'fullInfo') {
-						tableRow.className = '';
-					}
-					else {
-						tableRow.className = 'fullInfo';
+				// Click the table heading to make the info toggle / catch the checkbox click
+				testRows[i].firstChild.onclick = function(event) {
+					event = event || window.event;
+					
+					var tableRow = this.parentNode,
+						src = (event.target || event.srcElement);
+						
+					if (src.className == 'checkbox') {
+						table._checkboxClick(src);
+					} else {
+						if (tableRow.className == 'fullInfo') {
+							tableRow.className = '';
+						}
+						else {
+							tableRow.className = 'fullInfo';
+						}
 					}
 				}
 			}
@@ -1528,6 +1565,9 @@
 		@description Listener to the conductor
 		*/
 		_listener: {
+			start: function() {
+				this._setTestsToRun();
+			},
 			testComplete: function(libraryName, testName, result) {
 				this._addResult(libraryName, testName, result);
 			},
@@ -1686,6 +1726,65 @@
 				infoNode.appendChild( document.createTextNode(warningMsg) );
 				testNameCell.appendChild(infoNode);
 				testNameCell.className += ' mismatch';
+			}
+		},
+		/**
+		@name woosh._views.Table#_selectAllClick
+		@function
+		@private
+		@description Handles the user clicking the 'select all' checkbox
+		*/
+		_selectAllClick: function() {
+			var checkboxes = this._element.getElementsByTagName('input'),
+				checkbox;
+			
+			this._checkboxesChecked = this._selectAllCheckbox.checked ? checkboxes.length - 1 : 0;
+			
+			for (var i = 0, len = checkboxes.length; i<len; i++) {
+				checkbox = checkboxes[i];
+				if (checkbox.type == 'checkbox') {
+					checkbox.checked = this._selectAllCheckbox.checked;
+					checkbox.style.visibility = 'visible';
+				}
+			}
+		},
+		/**
+		@name woosh._views.Table#_checkboxClick
+		@function
+		@private
+		@description Handles the user clicking a checkbox other than 'select all'
+		
+		@param {HTMLElement} checkbox The checkbox clicked
+		*/
+		_checkboxClick: function(checkbox) {
+			checkbox.checked ? this._checkboxesChecked++ : this._checkboxesChecked--;
+			
+			if (this._checkboxesChecked == 0) {
+				this._selectAllCheckbox.checked = false;
+			}
+			else if (this._checkboxesChecked == this._checkboxes.length) {
+				this._selectAllCheckbox.checked = true;
+			}
+			else {
+				this._selectAllCheckbox.checked = false;
+				this._selectAllCheckbox.indeterminate = true;
+			}
+		},
+		/**
+		@name woosh._views.Table#_setTestsToRun
+		@function
+		@private
+		@description Looks at the checkboxes and tells the conductor which tests to run
+		*/
+		_setTestsToRun: function() {
+			var checkbox,
+				testsToRun = this.conductor.testsToRun = [];
+				
+			for (var i = 0, len = this._checkboxes.length; i<len; i++) {
+				checkbox = this._checkboxes[i];
+				if (checkbox.checked) {
+					testsToRun.push(checkbox.value);
+				}
 			}
 		}
 	}
