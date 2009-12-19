@@ -65,7 +65,7 @@
 							<div class="summary"></div>
 							<div class="apiItemDetail">
 								<h3>Synopsis</h3>
-								<div class="signiture"><pre><code>{+ makeSignature(symbol) +}</code></pre></div>
+								<pre class="signiture"><code>{+ makeSignature(symbol) +}</code></pre>
 								<if test="symbol.params.length">
 									<h3>Parameters</h3>
 									<dl class="params">
@@ -105,8 +105,14 @@
 									<p class="summary">{+ summary(symbol.desc) +}</p>
 									<if test="!hasOwnPage(symbol)">
 										<div class="apiItemDetail">
+											<if test="symbol.type">
+												<dl class="attributes">
+													<dt>Type</dt>
+													<dd>{+ h(symbol.type) +}</dd>
+												</dl>
+											</if>
 											<h3>Synopsis</h3>
-											<div class="signiture"><pre><code>{+ makeSignature(symbol) +}</code></pre></div>
+											<pre class="signiture"><code>{+ makeSignature(symbol) +}</code></pre>
 											<if test="furtherDesc">
 												<h3>Description</h3>
 												<div class="description">{+ furtherDesc +}</div>
@@ -121,9 +127,14 @@
 													<for each="param" in="symbol.params">
 														<dt>{+ h(param.name) +}</dt>
 														<dd>
-															<div>{+ h(param.type) +}</div>
-															<div>{+ param.isOptional ? 'Optional' : '' +}</div>
-															<div>{+ h(param.defaultValue) +}</div>
+															<dl class="attributes">
+																<dt>Type</dt>
+																<dd>{+ h(param.type) +}<dd>
+																<dt>Optional</dt>
+																<dd>{+ param.isOptional ? 'Yes' : 'No' +}</dd>
+																<dt>Default</dt>
+																<dd>{+ h(param.defaultValue) +}</dd>
+															</dl>
 															<div>{+ autoHtml(param.desc) +}</div>
 														</dd>
 													</for>

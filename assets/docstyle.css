@@ -5,6 +5,15 @@ body, html {
 	font-family: Calibri,Arial, sans-serif;
 	height: 100%;
 }
+body {
+	/* fix font sizes for fixed width fonts */
+	font-size: 12pt;
+	*font-size: 1em;
+}
+
+pre, code {
+	font-family: consolas, "courier new", courier, monospace;
+}
 
 a:link, a:visited {
 	color: #2B81AF;
@@ -170,7 +179,7 @@ a:hover, a:active {
 	}
 /* api lists */
 	.apiList {
-		border-bottom: 1px solid #ccc;
+		border-bottom: 1px solid #D0C8C8;
 	}
 	.apiList > dt {
 		float: left;
@@ -194,7 +203,7 @@ a:hover, a:active {
 	}
 	.apiList > dd {
 		background: #fff;
-		border: 1px solid #ccc;
+		border: 1px solid #D0C8C8;
 		border-width:1px 1px 0;
 		margin: 0;
 	}
@@ -210,7 +219,11 @@ a:hover, a:active {
 		/*height: 0;*/
 		clear: both;
 		padding: 0 30px;
-		background: #F3F1F1;
+		background: #D0C8C8;
+	}
+	
+	.apiItemDetail code {
+		font-size: 0.9em;
 	}
 	
 	.apiItemDetail .signiture,
@@ -228,5 +241,9 @@ a:hover, a:active {
 	
 	.apiItemDetail h3 {
 		font-size: 1em;
+		margin: 10px 0;
+	}
+	.apiItemDetail pre code {
+		display: block;
 		margin: 10px 0;
 	}
