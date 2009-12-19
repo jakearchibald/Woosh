@@ -14,7 +14,7 @@
 (function(){
 	/**
 	@name woosh.libs
-	@type {Object}
+	@type Object
 	@writingTests
 	@description Libraries available to the system.
 		Feel free to add additional libraries. Values are arrays of
@@ -39,7 +39,7 @@
 (function(){
 	/**
 	@name woosh._root
-	@type {String}
+	@type string
 	@private
 	@description Path to woosh repo root
 	*/
@@ -289,9 +289,9 @@
 			however, you may want your test to measure something else like
 			frames-per-second. You can achieve that using this method.
 		
-		@param {Number} result The result value as a number
-		@param {String} [unit='ms'] The unit for the result
-		@param {Boolean} [highestIsBest=false] Treat high numbers as better than low numbers?
+		@param {number} result The result value as a number
+		@param {string} [unit='ms'] The unit for the result
+		@param {boolean} [highestIsBest=false] Treat high numbers as better than low numbers?
 
 		@returns {woosh.Test}
 		
@@ -428,43 +428,43 @@
 	woosh._utils.extend(Result, Object, {
 		/**
 		@name woosh.Result#result
-		@type {number}
+		@type number
 		@description The result of the test, this will be time in milliseconds by default
 		*/
 		result: undefined,
 		/**
 		@name woosh.Result#unit
-		@type {string}
+		@type string
 		@description The unit of the result, 'ms' by default
 		*/
 		unit: 'ms',
 		/**
 		@name woosh.Result#highestIsBest
-		@type {boolean}
+		@type boolean
 		@description Is the highest result best? False by default.
 		*/
 		highestIsBest: false,
 		/**
 		@name woosh.Result#type
-		@type {string}
+		@type string
 		@description The type of test used, 'Test' or 'AsyncTest'
 		*/
 		type: undefined,
 		/**
 		@name woosh.Result#error
-		@type {Error}
+		@type Error
 		@description Error object thrown by the test, if any.
 		*/
 		error: null,
 		/**
 		@name woosh.Result#returnVal
-		@type {object}
+		@type object
 		@description Value returned by the test
 		*/
 		returnVal: undefined,
 		/**
 		@name woosh.Result#loopCount
-		@type {number}
+		@type number
 		@description Number of times the test looped
 		*/
 		loopCount: undefined,
@@ -554,13 +554,13 @@
 	woosh._utils.extend(LibraryResult, Object, {
 		/**
 		@name woosh.LibraryResult#results
-		@type {object}
+		@type object
 		@description An object of test results keyed by test name
 		*/
 		results: {},
 		/**
 		@name woosh.LibraryResult#name
-		@type {string}
+		@type string
 		@description Name of the library
 		*/
 		name: undefined,
@@ -634,56 +634,56 @@
 	woosh._utils.extend(ResultComparison, Object, {
 		/**
 		@name woosh.ResultComparison#loopsEqual
-		@type {boolean}
+		@type boolean
 		@description Were the loop counts of all tests equal?
 			Only available after all tests have ran
 		*/
 		loopsEqual: null,
 		/**
 		@name woosh.ResultComparison#returnValsEqual
-		@type {boolean}
+		@type boolean
 		@description Were the return values of all tests equal?
 			Only available after all tests have ran
 		*/
 		returnValsEqual: null,
 		/**
 		@name woosh.ResultComparison#unitsEqual
-		@type {boolean}
+		@type boolean
 		@description Were the units of all tests equal?
 			Only available after all tests have ran
 		*/
 		unitsEqual: null,
 		/**
 		@name woosh.ResultComparison#typesEqual
-		@type {boolean}
+		@type boolean
 		@description Were the types of all tests equal?
 			Only available after all tests have ran
 		*/
 		typesEqual: null,
 		/**
 		@name woosh.ResultComparison#maxResult
-		@type {number}
+		@type number
 		@description The maximum result from the tests
 			Only available after all tests have ran
 		*/
 		maxResult: null,
 		/**
 		@name woosh.ResultComparison#minResult
-		@type {number}
+		@type number
 		@description The minimum result from the tests
 			Only available after all tests have ran
 		*/
 		minResult: null,
 		/**
 		@name woosh.ResultComparison#highestIsBest
-		@type {boolean}
+		@type boolean
 		@description Is the highest result best?
 			Only available after all tests have ran
 		*/
 		highestIsBest: null,
 		/**
 		@name woosh.ResultComparison#results
-		@type {object}
+		@type object
 		@description The results being compared, keyed by library name (value may be undefined if there was no test for that library)
 		*/
 		results: {},
@@ -752,7 +752,7 @@
 (function() {
 	/**
 	@name woosh._savedLibraryResult
-	@type {woosh.LibraryResult}
+	@type woosh.LibraryResult
 	@description A resultset from a previous session
 		Currently this is unserialized into window.name
 	*/
@@ -834,26 +834,26 @@
 	LibraryTest.prototype = {
 		/**
 		@name woosh._LibraryTest#tests
-		@type {Object}
+		@type Object
 		@description Tests keyed by name
 		*/
 		tests: {},
 		/**
 		@name woosh._LibraryTest#testNames
-		@type {String[]}
+		@type string[]
 		@description Array of test names
 		*/
 		testNames: [],
 		/**
 		@name woosh._LibraryTest#libraryResult
-		@type {woosh.LibraryResult}
+		@type woosh.LibraryResult
 		@description Resultset for these tests
 		*/
 		libraryResult: null,
 		/**
 		@name woosh._LibraryTest#_prevTestName
 		@private
-		@type {String}
+		@type string
 		@description Name of the previously run test
 		*/
 		_prevTestName: undefined,
@@ -864,10 +864,10 @@
 			Overridden by constructor 'tests' param, used to
 			teardown / prepare of next test.
 			
-		@param {String} lastTestName Name of last test.
+		@param {string} lastTestName Name of last test.
 			Will be undefined for first test.
 			
-		@param {String} nextTestName Name of next test.
+		@param {string} nextTestName Name of next test.
 		*/
 		preTest: function(lastTestName, nextTestName) {},
 		/**
@@ -876,7 +876,7 @@
 		@description Run a particular test.
 			{@link woosh._LibraryTest#preTest} will be called before the test.
 			
-		@param {String} testName Name of test to run.
+		@param {string} testName Name of test to run.
 		@param {Function} onTestComplete Function to run when test complete
 			Test name is passed as the 1st param.
 			Result is passed in as the 2nd param.
@@ -963,7 +963,7 @@
 				}
 				/**
 				@name woosh._libraryTest
-				@type {woosh._LibraryTest}
+				@type woosh._LibraryTest
 				@description The library tests for this frame to test
 				*/
 				woosh._libraryTest = new LibraryTest(libraryName, tests);
@@ -973,7 +973,7 @@
 	}
 	/**
 	@name woosh._libsToConduct
-	@type {String[]}
+	@type string[]
 	@description Library names that should be conducted when {@link woosh._pageMode} is 'conducting'
 	*/
 	var libsToConduct = [],
@@ -1014,19 +1014,19 @@
 	woosh._utils.extend(TestRunner, Object, {
 		/**
 		@name woosh._TestRunner#libraryTest
-		@type {Object}
+		@type Object
 		@description Obj of woosh._LibraryTest instances keyed by library name
 		*/
 		libraryTest: {},
 		/**
 		@name woosh._TestRunner#libraryNames
-		@type {string[]}
+		@type string[]
 		@description Array of library names to test
 		*/
 		libraryNames: [],
 		/**
 		@name woosh._TestRunner#libraryResults
-		@type {woosh.LibraryResult[]}
+		@type woosh.LibraryResult[]
 		@description Array of result sets for previously ran tests
 		*/
 		libraryResults: [],
@@ -1094,7 +1094,7 @@
 	@private
 	@description An iframe for testing a particular library
 	
-	@param {String} libraryName Library to include for these tests.
+	@param {string} libraryName Library to include for these tests.
 		String must be a property name within {@link woosh.libs}
 		
 	@param {Function} onReady A function to call when the TestFrame is ready to use
@@ -1113,13 +1113,13 @@
 		function iframeonload() {
 			/**
 			@name woosh._TestFrame#window
-			@type {Window}
+			@type Window
 			@description The window object of the frame
 			*/
 			testFrame.window = iframe.contentWindow;
 			/**
 			@name woosh._TestFrame#libraryTest
-			@type {woosh._LibraryTest}
+			@type woosh._LibraryTest
 			@description The library tests created in this frame
 			*/
 			testFrame.libraryTest = testFrame.window.woosh._libraryTest;
@@ -1145,7 +1145,7 @@
 	@constructor
 	@description Conducts the testing, views hook into this to render results
 	
-	@param {String[]} libraryNames Names of libraries to be tested.
+	@param {string[]} libraryNames Names of libraries to be tested.
 	
 	@param {Function} onReady A function to call when the Conductor is ready to use.
 	*/
@@ -1196,44 +1196,44 @@
 	Conductor.prototype = {
 		/**
 		@name woosh.Conductor#testNames
-		@type {String[]}
+		@type string[]
 		@description Names of tests to run
 		*/
 		testNames: [],
 		/**
 		@name woosh.Conductor#libraryNames
-		@type {String[]}
+		@type string[]
 		@description Library names being tested
 		*/
 		libraryNames: [],
 		/**
 		@name woosh.Conductor#savedResultName
-		@type {string}
+		@type string
 		@description What's the name of the saved result, if any
 		*/
 		savedResultName: '',
 		/**
 		@name woosh.Conductor#testsToRun
-		@type {string[]}
+		@type string[]
 		@description Names of tests to run
 			If empty, all tests will run
 		*/
 		testsToRun: [],
 		/**
 		@name woosh.Conductor#_testRunner
-		@type {woosh._TestRunner}
+		@type woosh._TestRunner
 		@description Runner for the test sets
 		*/
 		_testRunner: undefined,
 		/**
 		@name woosh.Conductor#_libraryResults
-		@type {Object}
+		@type Object
 		@description woosh.LibraryResult objects keyed by library name
 		*/
 		_libraryResults: undefined,
 		/**
 		@name woosh.Conductor#_listeners
-		@type {Array[]}
+		@type Array[]
 		@description Array of arrays:
 			[
 				[listenerObj, thisVal],
@@ -1244,7 +1244,7 @@
 		/**
 		@name woosh.Conductor#_currentTestIndex
 		@private
-		@type {Number}
+		@type number
 		@description Index number for the current test.
 			Is -1 before tests have started.
 		*/
@@ -1252,7 +1252,7 @@
 		/**
 		@name woosh.Conductor#_testFrames
 		@private
-		@type {Object}
+		@type Object
 		@description Object of {@link woosh._TestFrame}s
 			The key is the name of the library being tested in the frame.
 		*/
@@ -1427,56 +1427,56 @@
 	Table.prototype = {
 		/**
 		@name woosh.views.Table#conductor
-		@type {woosh.Conductor}
+		@type woosh.Conductor
 		@description The instance conducting the test
 		*/
 		conductor: undefined,
 		/**
 		@name woosh.views.Table#_element
 		@private
-		@type {HTMLElement}
+		@type HTMLElement
 		@description Table element that can be appended to the document
 		*/
 		_element: undefined,
 		/**
 		@name woosh.views.Table#_testRows
-		@type {Object}
+		@type Object
 		@description Object of table rows keyed on test name
 		*/
 		_testRows: {},
 		/**
 		@name woosh.views.Table#_libColIndex
-		@type {Object}
+		@type Object
 		@description Column index for a library, keyed on library name
 		*/
 		_libColIndex: {},
 		/**
 		@name woosh.views.Table#_nextResultCell
-		@type {HTMLElement}
+		@type HTMLElement
 		@description The next cell to write to
 		*/
 		_nextResultCell: undefined,
 		/**
 		@name woosh.views.Table#_libraryResults
-		@type {Object}
+		@type Object
 		@description woosh.LibraryResult objects keyed on library name
 		*/
 		_libraryResults: {},
 		/**
 		@name woosh.views.Table#_selectAllCheckbox
-		@type {HTMLElement}
+		@type HTMLElement
 		@description The checkbox for selecting all / no tests
 		*/
 		_selectAllCheckbox: undefined,
 		/**
 		@name woosh.views.Table#_checkboxes
-		@type {HTMLElement[]}
+		@type HTMLElement[]
 		@description The checkboxs for selecting which tests to run
 		*/
 		_checkboxes: undefined,
 		/**
 		@name woosh.views.Table#_checkboxesChecked
-		@type {number}
+		@type number
 		@description The number of checkboxes checked
 		*/
 		_checkboxesChecked: 0,
@@ -1563,7 +1563,7 @@
 		},
 		/**
 		@name woosh.views.Table#_listener
-		@type {Object}
+		@type Object
 		@private
 		@description Listener to the conductor
 		*/
@@ -1847,7 +1847,7 @@
 	
 	/**
 	@name woosh.views.alert._container
-	@type {HTMLElement}
+	@type HTMLElement
 	@description Element containing the alerts
 	*/
 	alert._container = container;
@@ -1960,7 +1960,7 @@
 (function() {
 	/**
 	@name woosh._pageMode
-	@type {String}
+	@type string
 	@private
 	@description The mode the page is running in.
 		'conducting':  Will create frames for libraries to be tested
@@ -1979,7 +1979,7 @@
 		/**
 		@name woosh._libraryToTest
 		@private
-		@type {String}
+		@type string
 		@description Name of the library being tested in this frame
 		*/
 		woosh._libraryToTest = query.lib[0];
@@ -2001,7 +2001,7 @@
 			
 			/**
 			@name woosh._conductor
-			@type {woosh.Conductor}
+			@type woosh.Conductor
 			@private
 			@description The conductor for this page
 			*/
