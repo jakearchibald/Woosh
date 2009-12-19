@@ -159,7 +159,7 @@ var Nav = (function(undefined) {
 		var link;
 		
 		if (this.active == symbol) {
-			return '<li><span class="active">' + symbol.alias + (inner || '') + '</span></li>\n';
+			return '<li><span class="active">' + symbol.alias  + '</span>' + (inner || '') + '</li>\n';
 		} else {
 			link = new Link().toSymbol(symbol.alias);
 			return '<li>' + link + '\n' + (inner || '') + '</li>\n';
@@ -211,7 +211,7 @@ var Nav = (function(undefined) {
 			html += '<li><span class="active">Index</span></li>\n';
 		}
 		
-		html += '<li>Api\n';
+		html += '<li><h3>Api</h3>\n';
 		symbols = [this.rootSymbol].concat( members[this.rootSymbol.alias] ).filter(function(symbol) {
 			return nav._shouldDisplay(symbol);
 		});
@@ -379,6 +379,11 @@ function further(str) {
 
 // wrap lines in paragraphs unless they begin with a tag, resolve links
 function autoHtml(str) {
+	// return empty string if str is just whitespace
+	if ( !/\S/.test(str) ) {
+		return '';
+	}
+	
 	var paragraphs = str.split(/(\r\n\r\n|\n\n)/),
 		html;
 		
@@ -393,8 +398,8 @@ function autoHtml(str) {
 function makeSortby(attribute) {
 	return function(a, b) {
 		if (a[attribute] != undefined && b[attribute] != undefined) {
-			a = a[attribute].toLowerCase().replace(/_/g, '');
-			b = b[attribute].toLowerCase().replace(/_/g, '');
+			a = a[attribute].toLowerCase();
+			b = b[attribute].toLowerCase();
 			if (a < b) return -1;
 			if (a > b) return 1;
 			return 0;
