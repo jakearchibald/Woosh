@@ -3,7 +3,6 @@ body, html {
 	padding: 0;
 	background: #f3f1f1;
 	font-family: Calibri,Arial, sans-serif;
-	font-size: 0.9em;
 }
 
 #wooshOutput {
@@ -19,7 +18,7 @@ body, html {
 }
 #wooshBanner h1 {
 	color: #fff;
-	font-size: 2.5em;
+	font-size: 2.1em;
 	font-weight: bold;
 	margin: 0;
 }
@@ -38,7 +37,9 @@ body, html {
 	font-weight: bold;
 	-moz-box-shadow: 0 3px 6px 0px rgba(0, 0, 0, 0.4);
 	-webkit-box-shadow: 0 3px 6px 0px rgba(0, 0, 0, 0.4);
-	box-shadow: 0 3px 6px 0px rgba(0, 0, 0, 0.4);	
+	box-shadow: 0 3px 6px 0px rgba(0, 0, 0, 0.4);
+	position: relative;
+	z-index: 2;
 }
 
 #wooshModeSwitcher {
@@ -67,9 +68,11 @@ body, html {
 	border-radius: 10px;
 	border-top-left-radius: 0;
 	border-top-right-radius: 0;
-	font-size: 1.3em;
+	font-size: 1em;
 	font-weight: bold;
 	text-decoration: none;
+	position: relative;
+	z-index: 1;
 }
 
 #wooshModeSwitcher .active {
@@ -79,6 +82,7 @@ body, html {
 	background: #2B81AF;
 	color: #fff;
 	border: none;
+	z-index: 3;
 }
 
 #wooshModeSwitcher .notInMode {

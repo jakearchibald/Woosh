@@ -1732,7 +1732,7 @@
 			}
 		},
 		/**
-		@name woosh._views.Table#_selectAllClick
+		@name woosh.views.Table#_selectAllClick
 		@function
 		@private
 		@description Handles the user clicking the 'select all' checkbox
@@ -1752,7 +1752,7 @@
 			}
 		},
 		/**
-		@name woosh._views.Table#_checkboxClick
+		@name woosh.views.Table#_checkboxClick
 		@function
 		@private
 		@description Handles the user clicking a checkbox other than 'select all'
@@ -1774,7 +1774,7 @@
 			}
 		},
 		/**
-		@name woosh._views.Table#_setTestsToRun
+		@name woosh.views.Table#_setTestsToRun
 		@function
 		@private
 		@description Looks at the checkboxes and tells the conductor which tests to run
