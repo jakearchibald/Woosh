@@ -32,6 +32,7 @@ a:hover, a:active {
 	overflow: hidden;
 	position: relative;
 	min-height: 100%;
+	zoom: 1;
 }
 
 #docTypeHeading, #navHeading, #nav h3 {
@@ -190,6 +191,7 @@ a:hover, a:active {
 		float: left;
 		overflow: hidden;
 		margin: 0;
+		zoom: 1;
 	}
 	.apiList > dt a:hover {
 		text-decoration: none;
@@ -247,6 +249,7 @@ a:hover, a:active {
 /* api list detail */
 	.apiItemDetail {
 		overflow: hidden;
+		zoom: 1;
 		clear: both;
 		padding: 0 30px;
 		background: #D0C8C8;
@@ -263,7 +266,7 @@ a:hover, a:active {
 	}
 	
 	.apiItemDetail .signiture,
-	.apiItemDetail .description,
+	.apiItemDetail .symbolDescription,
 	.apiItemDetail .return,
 	.apiItemDetail .params,
 	.apiItemDetail .example,
@@ -271,6 +274,7 @@ a:hover, a:active {
 	{
 		background: #fff;
 		overflow: hidden;
+		zoom: 1;
 		padding: 0 16px;
 		margin: 0 0 10px 0;
 		-moz-box-shadow: 0 3px 9px 0 rgba(0, 0, 0, 0.4);
@@ -286,11 +290,36 @@ a:hover, a:active {
 		display: block;
 		margin: 10px 0;
 	}
+	/* description */
+		.apiItemDetail .description dl {
+			overflow: hidden;
+			zoom: 1;
+			margin: 1em 0;
+			padding-left: 20px;
+			max-width: 600px;
+			border-left: 10px solid #D0C8C8;
+		}
+		.apiItemDetail .description dt {
+			padding-top: 0.5em;
+			font-weight: bold;
+			width: 150px;
+			float: left;
+		}
+		.apiItemDetail .description dd {
+			border-top: 1px solid #D0C8C8;
+			padding: 0.5em 0 0 150px;
+			margin: 0;
+			margin-bottom: 0.5em;
+		}
+		.apiItemDetail .description dd:first-of-type {
+			border-top: none;
+		}
 	/* attributes */
 		.apiItemDetail .attributes {
 			margin: 10px 0;
 			font-size: 0.9em;
 			overflow: hidden;
+			zoom: 1;
 		}
 		.apiItemDetail .attributes > dt {
 			float: left;

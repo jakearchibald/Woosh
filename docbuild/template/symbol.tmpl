@@ -87,7 +87,7 @@
 														<dd>{+ h(param.defaultValue) +}</dd>
 													</if>
 												</dl>
-												<div>{+ autoHtml(param.desc) +}</div>
+												<div class="description">{+ autoHtml(param.desc) +}</div>
 											</dd>
 										</for>
 									</dl>
@@ -113,7 +113,7 @@
 									var furtherDesc = further(symbol.desc);
 								!}
 								<if test="hasOwnPage(symbol)">
-									<dt>{+ new Link().toSymbol(symbol.alias).toString().replace(/>[\s\S]*$/, '') +}<span>{+ h(symbol.name) +}</span></a></dt>
+									<dt>{+ new Link().toSymbol(symbol.alias).toString().replace(/>[\s\S]*$/, '>') +}<span>{+ h(symbol.name) +}</span></a></dt>
 								</if>
 								<if test="!hasOwnPage(symbol)">
 									<dt id="{+ Link.symbolNameToLinkName(symbol) +}" class="expandable"><span>{+ h(symbol.name) +}</span></dt>
@@ -142,7 +142,7 @@
 											<pre class="signiture prettyprint"><code>{+ makeSignature(symbol) +}</code></pre>
 											<if test="furtherDesc">
 												<h3>Description</h3>
-												<div class="description">{+ furtherDesc +}</div>
+												<div class="symbolDescription description">{+ furtherDesc +}</div>
 											</if>
 											<for each="returnItem" in="symbol.returns">
 												<h3>Returns</h3>
@@ -164,7 +164,7 @@
 																	<dd>{+ h(param.defaultValue) +}</dd>
 																</if>
 															</dl>
-															<div>{+ autoHtml(param.desc) +}</div>
+															<div class="description">{+ autoHtml(param.desc) +}</div>
 														</dd>
 													</for>
 												</dl>

@@ -4,7 +4,7 @@ var $ = glow.dom.get;
 
 glow.ready(function() {
 	enhanceExpandableDt();
-	showCurrent();
+	show( location.hash.replace(/\./g, '\\.') );
 	prettyPrint();
 });
 
@@ -33,13 +33,22 @@ function enhanceExpandableDt() {
 	});
 }
 
-function showCurrent() {
-	var dt = $( location.hash.replace(/\./g, '\\.') );
+function show(selector) {
+	var dt = $(selector);
 	
-	if (dt.length && dt.hasClass('expandable') ) {
+	if (dt.length && dt.hasClass('expandable') && !dt.hasClass('expanded') ) {
 		glow.events.fire(dt.get('a'), 'click');
 	}
 }
+
+// catch changes in the url
+var currentHash = location.hash;
+setInterval(function() {
+	if (location.hash != currentHash) {
+		show( location.hash.replace(/\./g, '\\.') );
+		currentHash = location.hash;
+	}
+}, 500);
 
 /* code prettify */
 window.PR_SHOULD_USE_CONTINUATION=true,window.PR_TAB_WIDTH=8,window.PR_normalizedHtml=window.PR=window.prettyPrintOne=window.prettyPrint=void

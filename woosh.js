@@ -17,10 +17,31 @@
 	@type Object
 	@writingTests
 	@description Libraries available to the system.
-		Feel free to add additional libraries. Values are arrays of
-		files that need to be included to use the library.
+		Libraries available by default:
 		
-		Paths must be relative to whoosh.js.
+		<dl>
+			<dt>dojo-140</dt>
+			<dd>Dojo 1.4.0</dd>
+			<dt>jq-132</dt>
+			<dd>jQuery 1.3.2</dd>
+			<dt>moo-122</dt>
+			<dd>MooTools 1.2.2</dd>
+			<dt>proto-1603</dt>
+			<dd>PrototypeJs 1.6.0.3</dd>
+			<dt>yui-270</dt>
+			<dd>YUI 2.7.0</dd>
+			<dt>yui-300</dt>
+			<dd>YUI 3.0.0</dd>
+			<dt>glow-170</dt>
+			<dd>Glow 1.7.0</dd>
+		</dl>
+		
+	@example
+		<!-- adding your own libraries for a test -->
+		<script src="path/to/woosh.js" type="text/javascript">
+			// Library paths are relative to woosh.js, all files in the array will be loaded in order
+			woosh.libs['myLibrary'] = ['../myLibrary/1.js', '../myLibrary/1.js'];
+		</script>
 	*/
 	var libs = {
 		'dojo-140': ['libs/dojo-140.js'],
@@ -219,16 +240,22 @@
 	@constructor
 	@writingTests
 	@description A test to be run
+		Test instances are created within a call to {@link woosh.addTests}.
 	
 	@param {number} loopCount Number of times to run the test
-		Tests that run longer have less margin for error.
+		Tests that run longer have less margin of error.
 	
 	@param {Function} test The test to run.
 		The instance of {@link woosh.Test} will be the first param
 		
 	@example
-		woosh.Test(1000, function() {
-			// do stuff
+		woosh.addTests('glow-170', {
+			'Test Name': new woosh.Test(1000, function() {
+				// do stuff
+				
+				// return a value (this will be checked against the results of other tests)
+				return returnVal;
+			})
 		});
 	*/
 	function Test(loopCount, testFunc) {
@@ -285,8 +312,8 @@
 		@function
 		@writingTests
 		@description Change the result of the test.
-			By default, the result is the time the test took to run in milliseconds,
-			however, you may want your test to measure something else like
+			By default the result is the time the test took to run in milliseconds.
+			However, you may want your test to measure something else like
 			frames-per-second. You can achieve that using this method.
 		
 		@param {number} result The result value as a number
@@ -296,12 +323,25 @@
 		@returns {woosh.Test}
 		
 		@example
-			woosh.Test(loopCount, function() {				
-				// set the result manually to a different set of units
-				this.result(123, 'fps', true);
+			// using an AsyncTest to measure framerate
+			woosh.addTests('glow-170', {
+				'Test Name': new woosh.AsyncTest(1, function(test) {
+					var framesRendered = 0;
 				
-				return // a value (this will be checked against the results of other tests)
-			})
+					var anim = new glow.anim.Animation(3, {
+						onFrame: function() {
+							framesRendered++;
+						},
+						onComplete: function() {
+							// set the frames per second as the result
+							test.result(framesRendered/3, 'fps', true);
+							test.endTest();
+						}
+					});
+					
+					anim.start();
+				})
+			});
 		*/
 		result: function(result, unit, highestIsBest) {
 			this._result = result - 0;
@@ -321,20 +361,25 @@
 	@writingTests
 	@augments woosh.Test
 	@description Like {@link woosh.Test}, but allows async tests.
+		Test instances are created within a call to {@link woosh.addTests}.
+		
 		This test waits for {@link woosh.AsyncTest#endTest} to be
 		called before the test is complete.
 	
 	@param {number} loopCount Number of times to run the test
-		Tests that run longer have less margin for error.
+		Tests that run longer have less margin of error.
 	
 	@param {Function} test The test to run.
 		The instance of {@link woosh.AsyncTest} will be the first param
 		
 	@example
-		woosh.AsyncTest(1000, function() {
-			// do stuff
-			
-			this.endTest(returnVal);
+		woosh.addTests('glow-170', {
+			'Test Name': new woosh.AsyncTest(1000, function(test) {
+				// do stuff
+				
+				// return a value (this will be checked against the results of other tests)
+				test.endTest(returnVal);
+			})
 		});
 	*/
 	function AsyncTest(loopCount, testFunc) {
@@ -355,8 +400,8 @@
 	@description Must be called within an async test to end the test
 	
 	@param {Object} returnVal The value to return.
-		In sync tests you can simply return a value, but here you must provide
-		the return value here.
+		In sync tests you can simply return a value, but in async tests you must provide
+		the return value via this method.
 	*/
 	asyncTestProto.endTest = function(returnVal) {
 		this._returnVal = returnVal;
@@ -907,9 +952,15 @@
 	@function
 	@writingTests
 	@description Add a set of tests for a particular framework
+		It's recommended to store each call to addTests in a separate
+		file.
+		
+		The list of tests will be determined by the first call to addTests.
+		If new test names appear in additional calls to addTests, they'll be
+		ignored.
 	
-	@param {string} libraryName Library to include for these tests.
-		String must be a property name within {@link woosh.libs})
+	@param {string} libraryName Library to test.
+		Must be a property name within {@link woosh.libs}.
 	
 	@param {Object} tests Object of tests to add for this framework.
 		Tests can either be functions, or instances of {@link woosh.Test} /
@@ -918,10 +969,15 @@
 		
 		Keys beginning "$" are considered special:
 		
-		'$preTest': This will be called before each test,
-					2 params will be passed in, the name of
-					the previous test and the name of the next. If your test
-					is looping, $preTest will still only run once.
+		<dl>
+			<dt>$preTest</dt>
+			<dd>
+				This will be called before each test,
+				2 params will be passed in, the name of
+				the previous test and the name of the next. This will only
+				call once per test, no matter what the loopCount is.
+			</dd>
+		</dl>
 		
 	@example
 		woosh.addTests("glow-170", {
@@ -930,18 +986,20 @@
 			},
 			'mySimpleTest': function() {
 				// do some stuff
-				return // a value (this will be checked against the results of other tests)
+				
+				// return a value (this will be checked against the results of other tests)
+				return returnVal;
 			},
-			'myComplexTest': woosh.Test(loopCount, function(test) {				
-				// set the result manually to a different set of units
-				test.result(123, 'fps', true);
+			'myComplexTest': woosh.Test(5000, function(test) {				
+				// do some stuff
 				
-				return // a value (this will be checked against the results of other tests)
+				// return a value (this will be checked against the results of other tests)
+				return returnVal;
 			}),
-			'myAsyncTest': woosh.AsyncTest(loopCount, function(test) {				
-				// do something async
+			'myAsyncTest': woosh.AsyncTest(5000, function(test) {				
+				// do some async stuff
 				
-				// return the result (this will be checked against the results of other tests)
+				// return a value (this will be checked against the results of other tests)
 				test.endTest(returnVal);
 			})
 		});
