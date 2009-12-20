@@ -371,9 +371,9 @@ function autoHtml(str) {
 		return '';
 	}
 	
-	var paragraphs = str.split(/(\r\n\r\n|\n\n)/),
+	var paragraphs = str.split(/\r\n\s*\r\n|\n\s*\n/),
 		html;
-		
+	
 	html = paragraphs.map(function(paragraph) {
 		return /^\s*</.test(paragraph) ? resolveLinks(paragraph) : '<p>' + h(paragraph) + '</p>';
 	}).join('\n\n');
