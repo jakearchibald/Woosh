@@ -25,6 +25,8 @@
 		<meta name="generator" content="JsDoc Toolkit">
 		<title>Woosh Documentation - {+ h(data.symbol.alias) +}</title>
 		<link rel="stylesheet" type="text/css" href="../../../assets/docstyle.css">
+		<script type="text/javascript" src="../../../libs/glow-170/core/core.js"></script>
+		<script type="text/javascript" src="../../../assets/docs.js"></script>
 	</head>
 	<body>
 		<div id="wooshOutput">
@@ -60,7 +62,7 @@
 				
 				<if test="data.symbol.is('CONSTRUCTOR')">
 					<dl class="apiList">
-						<dt><span>Constructor</span></dt>
+						<dt class="expandable"><span>Constructor</span></dt>
 						<dd>
 							<div class="summary"></div>
 							<div class="apiItemDetail">
@@ -100,12 +102,17 @@
 								{!
 									var furtherDesc = further(symbol.desc);
 								!}
-								<dt><span>{+ hasOwnPage(symbol) ? resolveLinks('{@link ' + symbol.alias + ' ' + symbol.name + '}') : h(symbol.name) +}</span></dt>
+								<if test="hasOwnPage(symbol)">
+									<dt><a href="{+ new Link().toSymbol(symbol.name).src +}"><span>{+ h(symbol.name) +}</span></a></dt>
+								</if>
+								<if test="!hasOwnPage(symbol)">
+									<dt class="expandable"><span>{+ h(symbol.name) +}</span></dt>
+								</if>
 								<dd>
 									<p class="summary">{+ summary(symbol.desc) +}</p>
 									<if test="!hasOwnPage(symbol)">
 										<div class="apiItemDetail">
-											<if test="symbol.type">
+											<if test="symbol.type && !symbol.is('FUNCTION')">
 												<dl class="attributes">
 													<dt>Type</dt>
 													<dd>{+ h(symbol.type) +}</dd>

@@ -186,13 +186,39 @@ a:hover, a:active {
 		overflow: hidden;
 		margin: 0;
 	}
-	.apiList > dt span:before {
-		content: '►';
+	.apiList > dt a:hover {
+		text-decoration: none;
+	}
+	.apiList > dt.expandable span.arrow {
 		display: inline-block;
 		margin-right: 5px;
-		color: #2B81AF;
+		-webkit-animation-name: rotateOut;
+		-webkit-animation-timing-function: ease-out;
 	}
-	.apiList > dt span {
+	
+	@-webkit-keyframes rotateIn {
+		from {
+			-webkit-transform: rotate(-90deg);
+		}
+		to {
+			-webkit-transform: rotate(0deg);
+		}
+	}
+	
+	@-webkit-keyframes rotateOut {
+		from {
+			-webkit-transform: rotate(90deg);
+		}
+		to {
+			-webkit-transform: rotate(0deg);
+		}
+	}
+	
+	.apiList > dt.expanded span.arrow {
+		-webkit-animation-name: rotateIn;
+	}
+	
+	.apiList > dt a > span {
 		display: block;
 		line-height: 1;
 		margin: 0;
@@ -216,10 +242,12 @@ a:hover, a:active {
 /* api list detail */
 	.apiItemDetail {
 		overflow: hidden;
-		/*height: 0;*/
 		clear: both;
 		padding: 0 30px;
 		background: #D0C8C8;
+	}
+	.js .apiItemDetail {
+		height: 0;
 	}
 	
 	.apiItemDetail code {
