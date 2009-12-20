@@ -3,7 +3,7 @@
 	{!
 		var modeNames = {
 			writingTests: 'Writing Tests',
-			writingViews: 'Writing Views',
+			writingPlugins: 'Writing Plugins',
 			fullApi: 'Full API'
 		};
 	!}
@@ -33,7 +33,76 @@
 			</div>
 			
 			<div id="content">
-				
+				<if test=" data.mode == 'writingTests' ">					
+					<h2>Create an HTML file to run tests again & view results in</h2>
+
+					<p>
+						Woosh is designed to be included within another project
+						to make speed testing easier.
+					</p>
+					<p>
+						Any HTML file will do, a good example can be found at
+						<a href="../../exampletests/template/index.html">exampletests/template/index.html</a>.
+						The only requirements are including woosh.js and a div
+						with ID 'wooshOutput'.
+					</p>
+					
+					<h2>Creating tests</h2>
+					
+					<p>
+						Tests can be created with a call to {+ new Link().toSymbol('woosh.addTests') +}
+						per library you want to test. See the API documentaion
+						for details and exampletests/template for a working example
+					</p>
+					
+					<h2>What can be tested?</h2>
+					
+					<p>
+						By default, the amount of time a function takes to execute
+						becomes the result of the test. However, you can record
+						a different result yourself (eg, framerate) and provide
+						that as the result. See {+ new Link().toSymbol('woosh.Test#result') +}
+						for details.
+					</p>
+					
+					<h2>Writing a good test</h2>
+					
+					<p>
+						Here are some quick tips for writing a good test:
+					</p>
+					
+					<h3>Make sure your test takes longer than 300ms to run</h3>
+					
+					<p>
+						JavaScript timers are only accurate to about 15ms, so
+						the longer your test runs the more accurate the result
+						is.
+					</p>
+					<p>
+						The best way to achieve this is via the loopCount parameter
+						of {+ new Link().toSymbol('woosh.Test') +}.
+					</p>
+					
+					<h3>Keep tests realistic</h3>
+					
+					<p>
+						Eg. don't test the speed of creating 10000 elements unless
+						that's a likely use of your code.
+					</p>
+					<p>
+						Browsers optimise for common uses, sometimes at the expense
+						of slowing down extreme cases. If you make an extreme test
+						the results are unlikely to reflect the results of normal use.
+					</p>
+					
+					<h3>Don't open debugging tools</h3>
+					
+					<p>
+						Tools like firebug and web inspector will affect test
+						results. Unless you're wanting to test the effect of
+						firebug / web inspector on your code, don't open them.
+					</p>
+				</if>
 			</div>
 		</div>
 	</body>

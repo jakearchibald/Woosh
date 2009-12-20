@@ -57,7 +57,7 @@ function publish(symbolSet) {
 		
 	// create the folders and subfolders to hold the output
 	IO.mkPath( (publish.conf.outDir+'writingTests/api').split('/') );
-	IO.mkPath( (publish.conf.outDir+'writingViews/api').split('/') );
+	IO.mkPath( (publish.conf.outDir+'writingPlugins/api').split('/') );
 	IO.mkPath( (publish.conf.outDir+'fullApi/api').split('/') );
 	
 	var mode,
@@ -115,7 +115,7 @@ var members = {};
 var modes = [],
 	modeNames = {
 		writingTests: 'Writing Tests',
-		writingViews: 'Writing Views',
+		writingPlugins: 'Writing Plugins',
 		fullApi: 'Full API'
 	};
 	
@@ -346,7 +346,7 @@ function shouldOutput(symbol, mode) {
 		case 'writingTests':
 			// look out for our custom tag
 			if ( !symbol.comment.getTag('writingTests')[0] ) { return false; }
-		case 'writingViews':
+		case 'writingPlugins':
 			// we don't want to display our privates (teehee)
 			if (symbol.isPrivate) { return false; }
 	}

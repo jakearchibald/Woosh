@@ -15,6 +15,11 @@ pre, code {
 	font-family: consolas, "courier new", courier, monospace;
 }
 
+#content p {
+	max-width: 600px;
+	line-height: 1.5;
+}
+
 a:link, a:visited {
 	color: #2B81AF;
 	text-decoration: none;
@@ -89,9 +94,9 @@ a:hover, a:active {
 	#wooshModeSwitcher a:link, #wooshModeSwitcher a:visited, #wooshModeSwitcher span {
 		display: inline;
 		float: right;
-		background: rgb(255, 254, 129);
-		color: rgb(111, 102, 0);
-		border: 1px solid rgb(111, 102, 0);
+		background: #C6E746;
+		color: #5E740B;
+		border: 1px solid #5E740B;
 		border-top: none;
 		padding: 0 19px 5px;
 		margin: 0 0 15px 5px;
@@ -233,7 +238,7 @@ a:hover, a:active {
 		border-width:1px 1px 0;
 		margin: 0;
 	}
-	.apiList .summary {
+	#content .apiList .summary {
 		line-height: 1;
 		margin: 0;
 		padding: 10px 5px;
@@ -245,6 +250,9 @@ a:hover, a:active {
 		clear: both;
 		padding: 0 30px;
 		background: #D0C8C8;
+		-moz-box-shadow: 0 3px 9px 0 rgba(0, 0, 0, 0.4) inset;
+		-webkit-box-shadow: 0 3px 9px 0 rgba(0, 0, 0, 0.4) inset;
+		box-shadow: 0 3px 9px 0 rgba(0, 0, 0, 0.4) inset;
 	}
 	.js .apiItemDetail {
 		height: 0;
@@ -265,6 +273,9 @@ a:hover, a:active {
 		overflow: hidden;
 		padding: 0 16px;
 		margin: 0 0 10px 0;
+		-moz-box-shadow: 0 3px 9px 0 rgba(0, 0, 0, 0.4);
+		-webkit-box-shadow: 0 3px 9px 0 rgba(0, 0, 0, 0.4);
+		box-shadow: 0 3px 9px 0 rgba(0, 0, 0, 0.4);
 	}
 	
 	.apiItemDetail h3 {
