@@ -116,7 +116,7 @@
 									<dt>{+ new Link().toSymbol(symbol.alias).toString().replace(/>[\s\S]*$/, '') +}<span>{+ h(symbol.name) +}</span></a></dt>
 								</if>
 								<if test="!hasOwnPage(symbol)">
-									<dt class="expandable"><span>{+ h(symbol.name) +}</span></dt>
+									<dt id="{+ Link.symbolNameToLinkName(symbol) +}" class="expandable"><span>{+ h(symbol.name) +}</span></dt>
 								</if>
 								<dd>
 									<p class="summary">{+ summary(symbol.desc) +}</p>

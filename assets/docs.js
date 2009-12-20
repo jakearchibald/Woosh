@@ -4,6 +4,7 @@ var $ = glow.dom.get;
 
 glow.ready(function() {
 	enhanceExpandableDt();
+	showCurrent();
 	prettyPrint();
 });
 
@@ -30,6 +31,14 @@ function enhanceExpandableDt() {
 		
 		return false;
 	});
+}
+
+function showCurrent() {
+	var dt = $( location.hash.replace(/\./g, '\\.') );
+	
+	if (dt.length && dt.hasClass('expandable') ) {
+		glow.events.fire(dt.get('a'), 'click');
+	}
 }
 
 /* code prettify */
