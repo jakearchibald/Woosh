@@ -54,21 +54,7 @@ function publish(symbolSet) {
 				lcAlias+"_"+filemapCounts[lcAlias] : lcAlias;
 		}
 	}
-	
-	// The grand plan:
-	//   Output 3 copies for one template
-	//   One for how to write tests, with the relevent API
-	//   One for how to write views, with the relevent API
-	//   One with the full API, for hacking / contributing
-	//   They all share an index template and a class template
-	//   Each has a left-hand nav which indicates the current page
-	//   LHN covers namespaces and classes that hang off woosh
-	//   LHN expands to show inner namespaces & classes for that item
-	//   Each page provides a switch to the view API & full API (link disabled if page doesn't exist)
-	//   This switch is a tab like woosh's start button
-	//   Pages are styled like the rest of woosh 
-	//
-	
+		
 	// create the folders and subfolders to hold the output
 	IO.mkPath( (publish.conf.outDir+'writingTests/api').split('/') );
 	IO.mkPath( (publish.conf.outDir+'writingViews/api').split('/') );
@@ -87,6 +73,7 @@ function publish(symbolSet) {
 	for (var i = 0, len = modes.length; i<len; i++) {
 		publish.conf.symbolsDir = 'api/';
 		mode = modes[i];
+		data.mode = mode;
 		data.nav.mode = mode;
 		data.nav.active = undefined;
 		data.modeSwitch.mode = mode;

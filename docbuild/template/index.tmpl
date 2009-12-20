@@ -1,24 +1,40 @@
 <!DOCTYPE html>
 <html lang="en-gb">
+	{!
+		var modeNames = {
+			writingTests: 'Writing Tests',
+			writingViews: 'Writing Views',
+			fullApi: 'Full API'
+		};
+	!}
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset={+IO.encoding+}">
 		<meta name="generator" content="JsDoc Toolkit">
-		<title>Woosh Documentation</title>
-
-		<style type="text/css">
-		</style>
+		<title>Woosh Documentation - {+ modeNames[data.mode] +}</title>
+		<link rel="stylesheet" type="text/css" href="../../assets/docstyle.css">
+		<script type="text/javascript" src="../../libs/glow-170/core/core.js"></script>
+		<script type="text/javascript" src="../../assets/docs.js"></script>
 	</head>
 	<body>
-		<div id="wooshBanner">
-			<h1>The Title</h1>
+		<div id="wooshOutput">
+			<div id="wooshBanner">
+				<h1>Documentation</h1>
+				<p>{+ modeNames[data.mode] +}</p>
+			</div>
+			<div id="wooshUa"></div>
+			<div id="wooshModeSwitcher">
+				<h2 id="docTypeHeading">Documentation Type</h2>
+				{+data.modeSwitch+}
+			</div>
+			
+			<div id="nav">
+				<h2 id="navHeading">Nav</h2>
+				{+data.nav+}
+			</div>
+			
+			<div id="content">
+				
+			</div>
 		</div>
-		<div id="wooshUa"></div>
-		<div id="wooshCommands"></div>
-		
-		<p>Here comes the mode switcher:</p>
-		{+data.modeSwitch+}
-		
-		<p>Here comes the nav:</p>
-		{+data.nav+}
 	</body>
 </html>

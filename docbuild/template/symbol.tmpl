@@ -49,9 +49,12 @@
 				{!
 					var furtherDesc = further(symbol.desc);
 				!}
-				<if test="furtherDesc">
+				<if test=" furtherDesc || symbol.augments[0] ">
 					<h2>Description</h2>
-					{+ further(symbol.desc) +}
+					<if test=" symbol.augments[0] ">
+						<p>Extends {+ new Link().toSymbol( symbol.augments[0] ) +}</p>
+					</if>
+					{+ furtherDesc +}
 				</if>
 				
 				<if test="symbol.see.length">
@@ -74,9 +77,16 @@
 										<for each="param" in="symbol.params">
 											<dt>{+ h(param.name) +}</dt>
 											<dd>
-												<div>{+ h(param.type) +}</div>
-												<div>{+ param.isOptional ? 'Optional' : '' +}</div>
-												<div>{+ h(param.defaultValue) +}</div>
+												<dl class="attributes">
+													<dt>Type</dt>
+													<dd>{+ h(param.type) +}<dd>
+													<dt>Required</dt>
+													<dd>{+ param.isOptional ? 'No' : 'Yes' +}</dd>
+													<if test="param.isOptional">
+														<dt>Default</dt>
+														<dd>{+ h(param.defaultValue) +}</dd>
+													</if>
+												</dl>
 												<div>{+ autoHtml(param.desc) +}</div>
 											</dd>
 										</for>
@@ -103,7 +113,7 @@
 									var furtherDesc = further(symbol.desc);
 								!}
 								<if test="hasOwnPage(symbol)">
-									<dt><a href="{+ new Link().toSymbol(symbol.name).src +}"><span>{+ h(symbol.name) +}</span></a></dt>
+									<dt>{+ new Link().toSymbol(symbol.alias).toString().replace(/>[\s\S]*$/, '') +}<span>{+ h(symbol.name) +}</span></a></dt>
 								</if>
 								<if test="!hasOwnPage(symbol)">
 									<dt class="expandable"><span>{+ h(symbol.name) +}</span></dt>
@@ -112,12 +122,22 @@
 									<p class="summary">{+ summary(symbol.desc) +}</p>
 									<if test="!hasOwnPage(symbol)">
 										<div class="apiItemDetail">
-											<if test="symbol.type && !symbol.is('FUNCTION')">
-												<dl class="attributes">
+											
+											<dl class="attributes">
+												<if test="symbol.isPrivate">
+													<dt>Private</dt>
+													<dd>Yes</dd>
+												</if>
+												<if test="symbol.memberOf != data.symbol.alias">
+													<dt>From</dt>
+													<dd>{+ new Link().toSymbol(symbol.memberOf) +}</dd>
+												</if>
+												<if test="symbol.type && !symbol.is('FUNCTION')">
 													<dt>Type</dt>
 													<dd>{+ h(symbol.type) +}</dd>
-												</dl>
-											</if>
+												</if>
+											</dl>
+											
 											<h3>Synopsis</h3>
 											<pre class="signiture prettyprint"><code>{+ makeSignature(symbol) +}</code></pre>
 											<if test="furtherDesc">
@@ -137,10 +157,12 @@
 															<dl class="attributes">
 																<dt>Type</dt>
 																<dd>{+ h(param.type) +}<dd>
-																<dt>Optional</dt>
-																<dd>{+ param.isOptional ? 'Yes' : 'No' +}</dd>
-																<dt>Default</dt>
-																<dd>{+ h(param.defaultValue) +}</dd>
+																<dt>Required</dt>
+																<dd>{+ param.isOptional ? 'No' : 'Yes' +}</dd>
+																<if test="param.isOptional">
+																	<dt>Default</dt>
+																	<dd>{+ h(param.defaultValue) +}</dd>
+																</if>
 															</dl>
 															<div>{+ autoHtml(param.desc) +}</div>
 														</dd>

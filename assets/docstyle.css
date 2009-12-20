@@ -275,6 +275,32 @@ a:hover, a:active {
 		display: block;
 		margin: 10px 0;
 	}
+	/* attributes */
+		.apiItemDetail .attributes {
+			margin: 10px 0;
+			font-size: 0.9em;
+			overflow: hidden;
+		}
+		.apiItemDetail .attributes > dt {
+			float: left;
+			font-weight: bold;
+			width: 5em;
+		}
+	/* params */
+		.apiItemDetail .params > dt,
+		.apiItemDetail .params > dd {
+			margin: 0;
+			padding: 0;
+		}
+		.apiItemDetail .params > dt {
+			border-top: 1px solid #D0C8C8;
+			padding-top: 10px;
+			color: #EE5757;
+			font-weight: bold;
+		}
+		.apiItemDetail .params > dt:first-child {
+			border-top: none;
+		}
 	
 /* code prettify */
 	.str,.atv{color:#080}.kwd,.tag{color:#008}.com{color:#800}.typ,.atn,.dec{color:#606}.lit{color:#066}.pun{color:#660}.pln{color:#000}@media print{.str{color:#060}.kwd,.tag{color:#006;font-weight:bold}.com{color:#600;font-style:italic}.typ{font-weight:bold}.lit{color:#044}.pun{color:#440}.atn,.typ{color:#404}.atv{color:#060}}

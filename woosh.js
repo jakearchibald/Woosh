@@ -911,7 +911,7 @@
 	@param {string} libraryName Library to include for these tests.
 		String must be a property name within {@link woosh.libs})
 	
-	@param {Object} Object of tests to add for this framework.
+	@param {Object} tests Object of tests to add for this framework.
 		Tests can either be functions, or instances of {@link woosh.Test} /
 		{@link woosh.AsyncTest}. The instance of the test will be passed
 		in as the first param of the function.
