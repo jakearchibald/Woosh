@@ -67,7 +67,7 @@
 							<div class="summary"></div>
 							<div class="apiItemDetail">
 								<h3>Synopsis</h3>
-								<pre class="signiture"><code>{+ makeSignature(symbol) +}</code></pre>
+								<pre class="signiture prettyprint"><code>{+ makeSignature(symbol) +}</code></pre>
 								<if test="symbol.params.length">
 									<h3>Parameters</h3>
 									<dl class="params">
@@ -85,7 +85,7 @@
 								<if test="symbol.example.length">
 									<h3>Examples</h3>
 									<for each="example" in="symbol.example">
-										<pre class="example"><code>{+ formatExample(example.desc) +}</code></pre>
+										<pre class="example prettyprint"><code>{+ formatExample(example.desc) +}</code></pre>
 									</for>
 								</if>
 							</div>
@@ -119,7 +119,7 @@
 												</dl>
 											</if>
 											<h3>Synopsis</h3>
-											<pre class="signiture"><code>{+ makeSignature(symbol) +}</code></pre>
+											<pre class="signiture prettyprint"><code>{+ makeSignature(symbol) +}</code></pre>
 											<if test="furtherDesc">
 												<h3>Description</h3>
 												<div class="description">{+ furtherDesc +}</div>
@@ -150,7 +150,7 @@
 											<if test="symbol.example.length">
 												<h3>Examples</h3>
 												<for each="example" in="symbol.example">
-													<pre class="example"><code>{+ formatExample(example.desc) +}</code></pre>
+													<pre class="example prettyprint"><code>{+ formatExample(example.desc) +}</code></pre>
 												</for>
 											</if>
 											<if test="symbol.see.length">
