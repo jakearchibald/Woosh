@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+	
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+		<meta name="generator" content="JsDoc Toolkit">
+		<title>Woosh Documentation - Writing Tests</title>
+		<link rel="stylesheet" type="text/css" href="../../assets/docstyle.css">
+		<script type="text/javascript" src="../../libs/glow-170/core/core.js"></script>
+		<script type="text/javascript" src="../../assets/docs.js"></script>
+	</head>
+	<body>
+		<div id="wooshOutput">
+			<div id="wooshBanner">
+				<h1>Documentation</h1>
+				<p>Writing Tests</p>
+			</div>
+			<div id="wooshUa"></div>
+			<div id="wooshModeSwitcher">
+				<h2 id="docTypeHeading">Documentation Type</h2>
+				<ul><li><span class="active">Writing Tests</span></li><li><a href="../writingPlugins/index.html">Writing Plugins</a></li>
+<li><a href="../fullApi/index.html">Full API</a></li>
+</ul>
+			</div>
+			
+			<div id="nav">
+				<h2 id="navHeading">Nav</h2>
+				<ol>
+<li><span class="active">Index</span></li>
+<li><h3>Api</h3>
+<ol>
+<li><a href="api/woosh.html">woosh</a>
+</li>
+<li><a href="api/woosh.AsyncTest.html">woosh.AsyncTest</a>
+</li>
+<li><a href="api/woosh.Test.html">woosh.Test</a>
+</li>
+</ol>
+</li>
+</ol>
+
+			</div>
+			
+			<div id="content">
+									
+					<h2>Create an HTML file to run tests &amp; view results</h2>
+					
+					<p>
+						Woosh is designed to be included within another project
+						to make speed testing easier.
+					</p>
+					<p>
+						Any HTML file will do, a good example can be found at
+						<a href="../../exampletests/template/index.html">exampletests/template/index.html</a>.
+						The only requirements are including woosh.js and a div
+						with ID 'wooshOutput'.
+					</p>
+					
+					<h2>Creating tests</h2>
+					
+					<p>
+						Tests can be created with a call to <a href="api/woosh.html#.addTests">woosh.addTests</a>
+						per library you want to test. See the API documentaion
+						for details and exampletests/template for a working example
+					</p>
+					
+					<h2>What can be tested?</h2>
+					
+					<p>
+						By default, the amount of time a function takes to execute
+						becomes the result of the test. However, you can record
+						a different result yourself (eg, framerate) and provide
+						that as the result. See <a href="api/woosh.Test.html#result">woosh.Test#result</a>
+						for details.
+					</p>
+					
+					<h2>Writing a good test</h2>
+					
+					<p>
+						Here are some quick tips for writing a good test:
+					</p>
+					
+					<h3>Make sure each test takes longer than 300ms to run</h3>
+					
+					<p>
+						JavaScript timers are only accurate to about 15ms, so
+						the longer your test runs the more accurate the result
+						is.
+					</p>
+					<p>
+						The best way to achieve this is via the loopCount parameter
+						of <a href="api/woosh.Test.html">woosh.Test</a>.
+					</p>
+					
+					<h3>Keep tests realistic</h3>
+					
+					<p>
+						Eg. don't test the speed of creating 10000 elements unless
+						that's a likely use of your code.
+					</p>
+					<p>
+						Browsers optimise for common uses, sometimes at the expense
+						of slowing down extreme cases. If you make an extreme test
+						the results are unlikely to reflect the results of normal use.
+					</p>
+					
+					<h3>Don't open debugging tools</h3>
+					
+					<p>
+						Tools like firebug and web inspector will affect test
+						results. Unless you're wanting to test the effect of
+						firebug / web inspector on your code, don't open them.
+					</p>
+				
+				
+				
+			</div>
+		</div>
+	</body>
+</html>

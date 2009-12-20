@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+	
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+		<meta name="generator" content="JsDoc Toolkit">
+		<title>Woosh Documentation - woosh</title>
+		<link rel="stylesheet" type="text/css" href="../../../assets/docstyle.css">
+		<script type="text/javascript" src="../../../libs/glow-170/core/core.js"></script>
+		<script type="text/javascript" src="../../../assets/docs.js"></script>
+	</head>
+	<body>
+		<div id="wooshOutput">
+			<div id="wooshBanner">
+				<h1>woosh</h1>
+				<p>For creating speed tests</p>
+			</div>
+			<div id="wooshUa"></div>
+			<div id="wooshModeSwitcher">
+				<h2 id="docTypeHeading">Documentation Type</h2>
+				<ul><li><a href="../../writingTests/api/woosh.html">Writing Tests</a></li>
+<li><span class="active">Writing Plugins</span></li><li><a href="../../fullApi/api/woosh.html">Full API</a></li>
+</ul>
+			</div>
+			
+			<div id="nav">
+				<h2 id="navHeading">Nav</h2>
+				<ol>
+<li><a href="../index.html">Index</a></li>
+<li><h3>Api</h3>
+<ol>
+<li><span class="active">woosh</span></li>
+<li><a href="woosh.AsyncTest.html">woosh.AsyncTest</a>
+</li>
+<li><a href="woosh.Conductor.html">woosh.Conductor</a>
+</li>
+<li><a href="woosh.LibraryResult.html">woosh.LibraryResult</a>
+</li>
+<li><a href="woosh.Result.html">woosh.Result</a>
+</li>
+<li><a href="woosh.ResultComparison.html">woosh.ResultComparison</a>
+</li>
+<li><a href="woosh.Test.html">woosh.Test</a>
+</li>
+<li><a href="woosh.views.html">woosh.views</a>
+</li>
+</ol>
+</li>
+</ol>
+
+			</div>
+			
+			<div id="content">
+				
+				
+				
+				
+				
+				
+				
+				
+					
+					
+						<h2>Properties</h2>
+						<dl class="apiList">
+							
+								
+								
+								
+									<dt id=".libs" class="expandable"><span>libs</span></dt>
+								
+								<dd>
+									<p class="summary">Libraries available to the system.
+</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+													<dt>Type</dt>
+													<dd>Object</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>woosh.libs</code></pre>
+											
+												<h3>Description</h3>
+												<div class="symbolDescription description"><p>		Libraries available by default:</p>
+
+		<dl>
+			<dt>dojo-140</dt>
+			<dd>Dojo 1.4.0</dd>
+			<dt>jq-132</dt>
+			<dd>jQuery 1.3.2</dd>
+			<dt>moo-122</dt>
+			<dd>MooTools 1.2.2</dd>
+			<dt>proto-1603</dt>
+			<dd>PrototypeJs 1.6.0.3</dd>
+			<dt>yui-270</dt>
+			<dd>YUI 2.7.0</dd>
+			<dt>yui-300</dt>
+			<dd>YUI 3.0.0</dd>
+			<dt>glow-170</dt>
+			<dd>Glow 1.7.0</dd>
+		</dl></div>
+											
+											
+											
+											
+												<h3>Examples</h3>
+												
+													<pre class="example prettyprint"><code>&lt;!-- adding your own libraries for a test --&gt;
+&lt;script src=&#34;path/to/woosh.js&#34; type=&#34;text/javascript&#34;&gt;
+    // Library paths are relative to woosh.js, all files in the array will be loaded in order
+    woosh.libs[&#39;myLibrary&#39;] = [&#39;../myLibrary/1.js&#39;, &#39;../myLibrary/1.js&#39;];
+&lt;/script&gt;</code></pre>
+												
+											
+											
+										</div>
+									
+								</dd>
+							
+						</dl>
+					
+				
+					
+					
+						<h2>Methods</h2>
+						<dl class="apiList">
+							
+								
+								
+								
+									<dt id=".addTests" class="expandable"><span>addTests</span></dt>
+								
+								<dd>
+									<p class="summary">Add a set of tests for a particular framework
+</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>woosh.addTests(libraryName, tests)</code></pre>
+											
+												<h3>Description</h3>
+												<div class="symbolDescription description"><p>		It&#39;s recommended to store each call to addTests in a separate
+		file.</p>
+
+<p>		The list of tests will be determined by the first call to addTests.
+		If new test names appear in additional calls to addTests, they&#39;ll be
+		ignored.</p></div>
+											
+											
+											
+												<h3>Parameters</h3>
+												<dl class="params">
+													
+														<dt>libraryName</dt>
+														<dd>
+															<dl class="attributes">
+																<dt>Type</dt>
+																<dd>string<dd>
+																<dt>Required</dt>
+																<dd>Yes</dd>
+																
+															</dl>
+															<div class="description"><p>Library to test.
+		Must be a property name within <a href="woosh.html#.libs">woosh.libs</a>.</p></div>
+														</dd>
+													
+														<dt>tests</dt>
+														<dd>
+															<dl class="attributes">
+																<dt>Type</dt>
+																<dd>Object<dd>
+																<dt>Required</dt>
+																<dd>Yes</dd>
+																
+															</dl>
+															<div class="description"><p>Object of tests to add for this framework.
+		Tests can either be functions, or instances of <a href="woosh.Test.html">woosh.Test</a> /
+		<a href="woosh.AsyncTest.html">woosh.AsyncTest</a>. The instance of the test will be passed
+		in as the first param of the function.</p>
+
+<p>		Keys beginning &#34;$&#34; are considered special:</p>
+
+		<dl>
+			<dt>$preTest</dt>
+			<dd>
+				This will be called before each test,
+				2 params will be passed in, the name of
+				the previous test and the name of the next. This will only
+				call once per test, no matter what the loopCount is.
+			</dd>
+		</dl></div>
+														</dd>
+													
+												</dl>
+											
+											
+												<h3>Examples</h3>
+												
+													<pre class="example prettyprint"><code>woosh.addTests(&#34;glow-170&#34;, {
+    &#39;$preTest&#39;: function(prevTest, nextTest) {
+        resetTestHtml();
+    },
+    &#39;mySimpleTest&#39;: function() {
+        // do some stuff
+        
+        // return a value (this will be checked against the results of other tests)
+        return returnVal;
+    },
+    &#39;myComplexTest&#39;: woosh.Test(5000, function(test) {                
+        // do some stuff
+        
+        // return a value (this will be checked against the results of other tests)
+        return returnVal;
+    }),
+    &#39;myAsyncTest&#39;: woosh.AsyncTest(5000, function(test) {                
+        // do some async stuff
+        
+        // return a value (this will be checked against the results of other tests)
+        test.endTest(returnVal);
+    })
+});</code></pre>
+												
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id=".deleteSavedLibraryResult" class="expandable"><span>deleteSavedLibraryResult</span></dt>
+								
+								<dd>
+									<p class="summary">Clear the saved result set</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>woosh.deleteSavedLibraryResult()</code></pre>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id=".ready" class="expandable"><span>ready</span></dt>
+								
+								<dd>
+									<p class="summary">Add a callback to run when woosh is ready</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>woosh.ready(callback)</code></pre>
+											
+											
+											
+												<h3>Parameters</h3>
+												<dl class="params">
+													
+														<dt>callback</dt>
+														<dd>
+															<dl class="attributes">
+																<dt>Type</dt>
+																<dd>Function<dd>
+																<dt>Required</dt>
+																<dd>Yes</dd>
+																
+															</dl>
+															<div class="description"><p>Function to call
+			The callback is given 2 params, the <a href="woosh.Conductor.html">woosh.Conductor</a> in
+			use and an element to output view elements to.</p></div>
+														</dd>
+													
+												</dl>
+											
+											
+												<h3>Examples</h3>
+												
+													<pre class="example prettyprint"><code>woosh.ready(function(conductor, outputElement) {
+    new BarChart(conductor, outputElement);
+});</code></pre>
+												
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id=".saveLibraryResult" class="expandable"><span>saveLibraryResult</span></dt>
+								
+								<dd>
+									<p class="summary">Save a resultset to a persistent location</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>woosh.saveLibraryResult(libraryResult)</code></pre>
+											
+											
+											
+												<h3>Parameters</h3>
+												<dl class="params">
+													
+														<dt>libraryResult</dt>
+														<dd>
+															<dl class="attributes">
+																<dt>Type</dt>
+																<dd>woosh.LibraryResult<dd>
+																<dt>Required</dt>
+																<dd>Yes</dd>
+																
+															</dl>
+															<div class="description"><p>Results to save</p></div>
+														</dd>
+													
+												</dl>
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+						</dl>
+					
+				
+					
+					
+				
+					
+					
+				
+					
+					
+						<h2>Constructors</h2>
+						<dl class="apiList">
+							
+								
+								
+									<dt><a href="woosh.AsyncTest.html"><span>AsyncTest</span></a></dt>
+								
+								
+								<dd>
+									<p class="summary">Like <a href="woosh.Test.html">woosh.Test</a>, but allows async tests.
+</p>
+									
+								</dd>
+							
+								
+								
+									<dt><a href="woosh.Conductor.html"><span>Conductor</span></a></dt>
+								
+								
+								<dd>
+									<p class="summary">Conducts the testing, views hook into this to render results</p>
+									
+								</dd>
+							
+								
+								
+									<dt><a href="woosh.LibraryResult.html"><span>LibraryResult</span></a></dt>
+								
+								
+								<dd>
+									<p class="summary">A collection of Result objects of tests performed on a library</p>
+									
+								</dd>
+							
+								
+								
+									<dt><a href="woosh.Result.html"><span>Result</span></a></dt>
+								
+								
+								<dd>
+									<p class="summary">Results from a test</p>
+									
+								</dd>
+							
+								
+								
+									<dt><a href="woosh.ResultComparison.html"><span>ResultComparison</span></a></dt>
+								
+								
+								<dd>
+									<p class="summary">Information about a single test ran against multiple libraries</p>
+									
+								</dd>
+							
+								
+								
+									<dt><a href="woosh.Test.html"><span>Test</span></a></dt>
+								
+								
+								<dd>
+									<p class="summary">A test to be run
+</p>
+									
+								</dd>
+							
+						</dl>
+					
+				
+					
+					
+						<h2>Namespaces</h2>
+						<dl class="apiList">
+							
+								
+								
+									<dt><a href="woosh.views.html"><span>views</span></a></dt>
+								
+								
+								<dd>
+									<p class="summary">Constructors for visual output of test results</p>
+									
+								</dd>
+							
+						</dl>
+					
+				
+			</div>
+		</div>
+	</body>
+</html>

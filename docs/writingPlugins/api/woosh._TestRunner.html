@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+	
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+		<meta name="generator" content="JsDoc Toolkit">
+		<title>Woosh Documentation - woosh._TestRunner</title>
+		<link rel="stylesheet" type="text/css" href="../../../assets/docstyle.css">
+		<script type="text/javascript" src="../../../libs/glow-170/core/core.js"></script>
+		<script type="text/javascript" src="../../../assets/docs.js"></script>
+	</head>
+	<body>
+		<div id="wooshOutput">
+			<div id="wooshBanner">
+				<h1>woosh._TestRunner</h1>
+				<p>Helper to run and analyse a set of tests of the same name (but against different libraries)</p>
+			</div>
+			<div id="wooshUa"></div>
+			<div id="wooshModeSwitcher">
+				<h2 id="docTypeHeading">Documentation Type</h2>
+				<ul><li><span class="notInMode">Writing Tests</span></li><li><span class="active">Writing Plugins</span></li><li><a href="../../fullApi/api/woosh._TestRunner.html">Full API</a></li>
+</ul>
+			</div>
+			
+			<div id="nav">
+				<h2 id="navHeading">Nav</h2>
+				<ol>
+<li><a href="../index.html">Index</a></li>
+<li><h3>Api</h3>
+<ol>
+<li><a href="woosh.html">woosh</a>
+</li>
+<li><a href="woosh.AsyncTest.html">woosh.AsyncTest</a>
+</li>
+<li><a href="woosh.Conductor.html">woosh.Conductor</a>
+</li>
+<li><a href="woosh.LibraryResult.html">woosh.LibraryResult</a>
+</li>
+<li><a href="woosh.Result.html">woosh.Result</a>
+</li>
+<li><a href="woosh.ResultComparison.html">woosh.ResultComparison</a>
+</li>
+<li><a href="woosh.Test.html">woosh.Test</a>
+</li>
+<li><a href="woosh.views.html">woosh.views</a>
+</li>
+</ol>
+</li>
+</ol>
+
+			</div>
+			
+			<div id="content">
+				
+				
+				
+				
+				
+				
+					<dl class="apiList">
+						<dt class="expandable"><span>Constructor</span></dt>
+						<dd>
+							<div class="summary"></div>
+							<div class="apiItemDetail">
+								<h3>Synopsis</h3>
+								<pre class="signiture prettyprint"><code>var my_TestRunner = new woosh._TestRunner(libraryTest, libraryResults)</code></pre>
+								
+									<h3>Parameters</h3>
+									<dl class="params">
+										
+											<dt>libraryTest</dt>
+											<dd>
+												<dl class="attributes">
+													<dt>Type</dt>
+													<dd>Object<dd>
+													<dt>Required</dt>
+													<dd>Yes</dd>
+													
+												</dl>
+												<div class="description"><p>Obj of woosh._LibraryTest instances keyed by library name</p></div>
+											</dd>
+										
+											<dt>libraryResults</dt>
+											<dd>
+												<dl class="attributes">
+													<dt>Type</dt>
+													<dd>woosh.LibraryResult[]<dd>
+													<dt>Required</dt>
+													<dd>Yes</dd>
+													
+												</dl>
+												<div class="description"><p>Array of LibraryResults to include in result building
+		They will fire the same events as other tests.</p></div>
+											</dd>
+										
+									</dl>
+								
+								
+							</div>
+						</dd>
+					</dl>
+				
+				
+				
+					
+					
+				
+					
+					
+				
+					
+					
+						<h2>Instance Properties</h2>
+						<dl class="apiList">
+							
+								
+								
+								
+									<dt id="libraryNames" class="expandable"><span>libraryNames</span></dt>
+								
+								<dd>
+									<p class="summary">Array of library names to test</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+													<dt>Type</dt>
+													<dd>string[]</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>my_TestRunner.libraryNames</code></pre>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="libraryResults" class="expandable"><span>libraryResults</span></dt>
+								
+								<dd>
+									<p class="summary">Array of result sets for previously ran tests</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+													<dt>Type</dt>
+													<dd>woosh.LibraryResult[]</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>my_TestRunner.libraryResults</code></pre>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="libraryTest" class="expandable"><span>libraryTest</span></dt>
+								
+								<dd>
+									<p class="summary">Obj of woosh._LibraryTest instances keyed by library name</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+													<dt>Type</dt>
+													<dd>Object</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>my_TestRunner.libraryTest</code></pre>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+						</dl>
+					
+				
+					
+					
+						<h2>Instance Methods</h2>
+						<dl class="apiList">
+							
+								
+								
+								
+									<dt id="run" class="expandable"><span>run</span></dt>
+								
+								<dd>
+									<p class="summary">Run the test of tests</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>my_TestRunner.run(testName, onTestComplete, onComplete)</code></pre>
+											
+											
+											
+												<h3>Parameters</h3>
+												<dl class="params">
+													
+														<dt>testName</dt>
+														<dd>
+															<dl class="attributes">
+																<dt>Type</dt>
+																<dd>string<dd>
+																<dt>Required</dt>
+																<dd>Yes</dd>
+																
+															</dl>
+															<div class="description"><p>Name of test to run</p></div>
+														</dd>
+													
+														<dt>onTestComplete</dt>
+														<dd>
+															<dl class="attributes">
+																<dt>Type</dt>
+																<dd>Function<dd>
+																<dt>Required</dt>
+																<dd>Yes</dd>
+																
+															</dl>
+															<div class="description"><p>Callback for when a test completes
+			Passed 2 params, the name of the library the test ran for &amp; the Test instance</p></div>
+														</dd>
+													
+														<dt>onComplete</dt>
+														<dd>
+															<dl class="attributes">
+																<dt>Type</dt>
+																<dd>Function<dd>
+																<dt>Required</dt>
+																<dd>Yes</dd>
+																
+															</dl>
+															<div class="description"><p>Callback for when all tests in the set complete
+			A woosh.ResultComparison is passed in as the first param</p></div>
+														</dd>
+													
+												</dl>
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+						</dl>
+					
+				
+					
+					
+				
+					
+					
+				
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+	
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+		<meta name="generator" content="JsDoc Toolkit">
+		<title>Woosh Documentation - woosh._utils</title>
+		<link rel="stylesheet" type="text/css" href="../../../assets/docstyle.css">
+		<script type="text/javascript" src="../../../libs/glow-170/core/core.js"></script>
+		<script type="text/javascript" src="../../../assets/docs.js"></script>
+	</head>
+	<body>
+		<div id="wooshOutput">
+			<div id="wooshBanner">
+				<h1>woosh._utils</h1>
+				<p>Some basic util functions</p>
+			</div>
+			<div id="wooshUa"></div>
+			<div id="wooshModeSwitcher">
+				<h2 id="docTypeHeading">Documentation Type</h2>
+				<ul><li><span class="notInMode">Writing Tests</span></li><li><span class="notInMode">Writing Plugins</span></li><li><span class="active">Full API</span></li></ul>
+			</div>
+			
+			<div id="nav">
+				<h2 id="navHeading">Nav</h2>
+				<ol>
+<li><a href="../index.html">Index</a></li>
+<li><h3>Api</h3>
+<ol>
+<li><a href="woosh.html">woosh</a>
+</li>
+<li><a href="woosh._LibraryTest.html">woosh._LibraryTest</a>
+</li>
+<li><a href="woosh._TestFrame.html">woosh._TestFrame</a>
+</li>
+<li><a href="woosh._TestRunner.html">woosh._TestRunner</a>
+</li>
+<li><span class="active">woosh._utils</span></li>
+<li><a href="woosh.AsyncTest.html">woosh.AsyncTest</a>
+</li>
+<li><a href="woosh.Conductor.html">woosh.Conductor</a>
+</li>
+<li><a href="woosh.LibraryResult.html">woosh.LibraryResult</a>
+</li>
+<li><a href="woosh.Result.html">woosh.Result</a>
+</li>
+<li><a href="woosh.ResultComparison.html">woosh.ResultComparison</a>
+</li>
+<li><a href="woosh.Test.html">woosh.Test</a>
+</li>
+<li><a href="woosh.views.html">woosh.views</a>
+</li>
+</ol>
+</li>
+</ol>
+
+			</div>
+			
+			<div id="content">
+				
+				
+				
+				
+				
+				
+				
+				
+					
+					
+				
+					
+					
+						<h2>Methods</h2>
+						<dl class="apiList">
+							
+								
+								
+								
+									<dt id=".apply" class="expandable"><span>apply</span></dt>
+								
+								<dd>
+									<p class="summary">Copies properties from one object to another</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>woosh._utils.apply(destination, source)</code></pre>
+											
+											
+												<h3>Returns</h3>
+												<div class="return"><p>Object </p></div>
+											
+											
+												<h3>Parameters</h3>
+												<dl class="params">
+													
+														<dt>destination</dt>
+														<dd>
+															<dl class="attributes">
+																<dt>Type</dt>
+																<dd>Object<dd>
+																<dt>Required</dt>
+																<dd>Yes</dd>
+																
+															</dl>
+															<div class="description"><p>Destination object</p></div>
+														</dd>
+													
+														<dt>source</dt>
+														<dd>
+															<dl class="attributes">
+																<dt>Type</dt>
+																<dd>Object<dd>
+																<dt>Required</dt>
+																<dd>Yes</dd>
+																
+															</dl>
+															<div class="description"><p>Properties of this object will be copied onto the destination</p></div>
+														</dd>
+													
+												</dl>
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id=".constructorName" class="expandable"><span>constructorName</span></dt>
+								
+								<dd>
+									<p class="summary">Gets the constructor name for a function</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>woosh._utils.constructorName(obj)</code></pre>
+											
+											
+												<h3>Returns</h3>
+												<div class="return"><p>string Constructor name</p></div>
+											
+											
+												<h3>Parameters</h3>
+												<dl class="params">
+													
+														<dt>obj</dt>
+														<dd>
+															<dl class="attributes">
+																<dt>Type</dt>
+																<dd>Object<dd>
+																<dt>Required</dt>
+																<dd>Yes</dd>
+																
+															</dl>
+															<div class="description"><p>Object to get the constructor name for</p></div>
+														</dd>
+													
+												</dl>
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id=".extend" class="expandable"><span>extend</span></dt>
+								
+								<dd>
+									<p class="summary">Copies the prototype of one object to another.
+</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>woosh._utils.extend(sub, base, additionalProperties)</code></pre>
+											
+												<h3>Description</h3>
+												<div class="symbolDescription description"><p>			The &#39;subclass&#39; can also access the &#39;base class&#39; via subclass.base</p></div>
+											
+											
+											
+												<h3>Parameters</h3>
+												<dl class="params">
+													
+														<dt>sub</dt>
+														<dd>
+															<dl class="attributes">
+																<dt>Type</dt>
+																<dd>Function<dd>
+																<dt>Required</dt>
+																<dd>Yes</dd>
+																
+															</dl>
+															<div class="description"><p>Class which inherits properties.</p></div>
+														</dd>
+													
+														<dt>base</dt>
+														<dd>
+															<dl class="attributes">
+																<dt>Type</dt>
+																<dd>Function<dd>
+																<dt>Required</dt>
+																<dd>Yes</dd>
+																
+															</dl>
+															<div class="description"><p>Class to inherit from.</p></div>
+														</dd>
+													
+														<dt>additionalProperties</dt>
+														<dd>
+															<dl class="attributes">
+																<dt>Type</dt>
+																<dd>Object<dd>
+																<dt>Required</dt>
+																<dd>Yes</dd>
+																
+															</dl>
+															<div class="description"><p>An object of properties and methods to add to the subclass.</p></div>
+														</dd>
+													
+												</dl>
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id=".urlDecode" class="expandable"><span>urlDecode</span></dt>
+								
+								<dd>
+									<p class="summary">Converts a urlencoded string into an object of arrays</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>woosh._utils.urlDecode()</code></pre>
+											
+											
+												<h3>Returns</h3>
+												<div class="return"><p>Object </p></div>
+											
+											
+											
+												<h3>Examples</h3>
+												
+													<pre class="example prettyprint"><code>woosh._utils.urlDecode(&#39;hello=world&amp;foo=bar&amp;foo=bunz&#39;);
+
+// returns:
+// {
+//    hello: [&#39;world&#39;],
+//    foo: [&#39;bar&#39;, &#39;bunz&#39;]
+// }</code></pre>
+												
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id=".urlEncode" class="expandable"><span>urlEncode</span></dt>
+								
+								<dd>
+									<p class="summary">Converts an object into a query string</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>woosh._utils.urlEncode()</code></pre>
+											
+											
+												<h3>Returns</h3>
+												<div class="return"><p>Object </p></div>
+											
+											
+											
+												<h3>Examples</h3>
+												
+													<pre class="example prettyprint"><code>woosh._utils.urlEncode({
+    hello: &#39;world&#39;,
+    foo: [&#39;bar&#39;, &#39;bunz&#39;]
+});
+
+// returns &#39;hello=world&amp;foo=bar&amp;foo=bunz&#39;</code></pre>
+												
+											
+											
+										</div>
+									
+								</dd>
+							
+						</dl>
+					
+				
+					
+					
+				
+					
+					
+				
+					
+					
+				
+					
+					
+				
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+	
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+		<meta name="generator" content="JsDoc Toolkit">
+		<title>Woosh Documentation - woosh.views.Table</title>
+		<link rel="stylesheet" type="text/css" href="../../../assets/docstyle.css">
+		<script type="text/javascript" src="../../../libs/glow-170/core/core.js"></script>
+		<script type="text/javascript" src="../../../assets/docs.js"></script>
+	</head>
+	<body>
+		<div id="wooshOutput">
+			<div id="wooshBanner">
+				<h1>woosh.views.Table</h1>
+				<p>Create a dynamically updating table to display results</p>
+			</div>
+			<div id="wooshUa"></div>
+			<div id="wooshModeSwitcher">
+				<h2 id="docTypeHeading">Documentation Type</h2>
+				<ul><li><span class="notInMode">Writing Tests</span></li><li><span class="notInMode">Writing Plugins</span></li><li><span class="active">Full API</span></li></ul>
+			</div>
+			
+			<div id="nav">
+				<h2 id="navHeading">Nav</h2>
+				<ol>
+<li><a href="../index.html">Index</a></li>
+<li><h3>Api</h3>
+<ol>
+<li><a href="woosh.html">woosh</a>
+</li>
+<li><a href="woosh._LibraryTest.html">woosh._LibraryTest</a>
+</li>
+<li><a href="woosh._TestFrame.html">woosh._TestFrame</a>
+</li>
+<li><a href="woosh._TestRunner.html">woosh._TestRunner</a>
+</li>
+<li><a href="woosh._utils.html">woosh._utils</a>
+</li>
+<li><a href="woosh.AsyncTest.html">woosh.AsyncTest</a>
+</li>
+<li><a href="woosh.Conductor.html">woosh.Conductor</a>
+</li>
+<li><a href="woosh.LibraryResult.html">woosh.LibraryResult</a>
+</li>
+<li><a href="woosh.Result.html">woosh.Result</a>
+</li>
+<li><a href="woosh.ResultComparison.html">woosh.ResultComparison</a>
+</li>
+<li><a href="woosh.Test.html">woosh.Test</a>
+</li>
+<li><a href="woosh.views.html">woosh.views</a>
+<ol>
+<li><a href="woosh.views.alert.html">woosh.views.alert</a>
+</li>
+<li><span class="active">woosh.views.Table</span></li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+
+			</div>
+			
+			<div id="content">
+				
+				
+				
+				
+				
+				
+					<dl class="apiList">
+						<dt class="expandable"><span>Constructor</span></dt>
+						<dd>
+							<div class="summary"></div>
+							<div class="apiItemDetail">
+								<h3>Synopsis</h3>
+								<pre class="signiture prettyprint"><code>var myTable = new woosh.views.Table(conductor, outputElement)</code></pre>
+								
+									<h3>Parameters</h3>
+									<dl class="params">
+										
+											<dt>conductor</dt>
+											<dd>
+												<dl class="attributes">
+													<dt>Type</dt>
+													<dd>woosh.Conductor<dd>
+													<dt>Required</dt>
+													<dd>Yes</dd>
+													
+												</dl>
+												<div class="description"><p>Test conductor to get results from</p></div>
+											</dd>
+										
+											<dt>outputElement</dt>
+											<dd>
+												<dl class="attributes">
+													<dt>Type</dt>
+													<dd>HTMLElement<dd>
+													<dt>Required</dt>
+													<dd>Yes</dd>
+													
+												</dl>
+												<div class="description"><p>Element to output to</p></div>
+											</dd>
+										
+									</dl>
+								
+								
+							</div>
+						</dd>
+					</dl>
+				
+				
+				
+					
+					
+				
+					
+					
+				
+					
+					
+						<h2>Instance Properties</h2>
+						<dl class="apiList">
+							
+								
+								
+								
+									<dt id="_checkboxes" class="expandable"><span>_checkboxes</span></dt>
+								
+								<dd>
+									<p class="summary">The checkboxs for selecting which tests to run</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+													<dt>Private</dt>
+													<dd>Yes</dd>
+												
+												
+												
+													<dt>Type</dt>
+													<dd>HTMLElement[]</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myTable._checkboxes</code></pre>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="_checkboxesChecked" class="expandable"><span>_checkboxesChecked</span></dt>
+								
+								<dd>
+									<p class="summary">The number of checkboxes checked</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+													<dt>Private</dt>
+													<dd>Yes</dd>
+												
+												
+												
+													<dt>Type</dt>
+													<dd>number</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myTable._checkboxesChecked</code></pre>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="_element" class="expandable"><span>_element</span></dt>
+								
+								<dd>
+									<p class="summary">Table element that can be appended to the document</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+													<dt>Private</dt>
+													<dd>Yes</dd>
+												
+												
+												
+													<dt>Type</dt>
+													<dd>HTMLElement</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myTable._element</code></pre>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="_libColIndex" class="expandable"><span>_libColIndex</span></dt>
+								
+								<dd>
+									<p class="summary">Column index for a library, keyed on library name</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+													<dt>Private</dt>
+													<dd>Yes</dd>
+												
+												
+												
+													<dt>Type</dt>
+													<dd>Object</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myTable._libColIndex</code></pre>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="_libraryResults" class="expandable"><span>_libraryResults</span></dt>
+								
+								<dd>
+									<p class="summary">woosh.LibraryResult objects keyed on library name</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+													<dt>Private</dt>
+													<dd>Yes</dd>
+												
+												
+												
+													<dt>Type</dt>
+													<dd>Object</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myTable._libraryResults</code></pre>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="_listener" class="expandable"><span>_listener</span></dt>
+								
+								<dd>
+									<p class="summary">Listener to the conductor</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+													<dt>Private</dt>
+													<dd>Yes</dd>
+												
+												
+												
+													<dt>Type</dt>
+													<dd>Object</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myTable._listener</code></pre>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="_nextResultCell" class="expandable"><span>_nextResultCell</span></dt>
+								
+								<dd>
+									<p class="summary">The next cell to write to</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+													<dt>Private</dt>
+													<dd>Yes</dd>
+												
+												
+												
+													<dt>Type</dt>
+													<dd>HTMLElement</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myTable._nextResultCell</code></pre>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="_selectAllCheckbox" class="expandable"><span>_selectAllCheckbox</span></dt>
+								
+								<dd>
+									<p class="summary">The checkbox for selecting all / no tests</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+													<dt>Private</dt>
+													<dd>Yes</dd>
+												
+												
+												
+													<dt>Type</dt>
+													<dd>HTMLElement</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myTable._selectAllCheckbox</code></pre>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="_testRows" class="expandable"><span>_testRows</span></dt>
+								
+								<dd>
+									<p class="summary">Object of table rows keyed on test name</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+													<dt>Private</dt>
+													<dd>Yes</dd>
+												
+												
+												
+													<dt>Type</dt>
+													<dd>Object</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myTable._testRows</code></pre>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="conductor" class="expandable"><span>conductor</span></dt>
+								
+								<dd>
+									<p class="summary">The instance conducting the test</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+													<dt>Type</dt>
+													<dd>woosh.Conductor</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myTable.conductor</code></pre>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+						</dl>
+					
+				
+					
+					
+						<h2>Instance Methods</h2>
+						<dl class="apiList">
+							
+								
+								
+								
+									<dt id="_addResult" class="expandable"><span>_addResult</span></dt>
+								
+								<dd>
+									<p class="summary">Add a result to the table in the position of the cursor</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+													<dt>Private</dt>
+													<dd>Yes</dd>
+												
+												
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myTable._addResult(libraryName, testName, result)</code></pre>
+											
+											
+											
+												<h3>Parameters</h3>
+												<dl class="params">
+													
+														<dt>libraryName</dt>
+														<dd>
+															<dl class="attributes">
+																<dt>Type</dt>
+																<dd>string<dd>
+																<dt>Required</dt>
+																<dd>Yes</dd>
+																
+															</dl>
+															<div class="description"></div>
+														</dd>
+													
+														<dt>testName</dt>
+														<dd>
+															<dl class="attributes">
+																<dt>Type</dt>
+																<dd>string<dd>
+																<dt>Required</dt>
+																<dd>Yes</dd>
+																
+															</dl>
+															<div class="description"></div>
+														</dd>
+													
+														<dt>result</dt>
+														<dd>
+															<dl class="attributes">
+																<dt>Type</dt>
+																<dd>woosh.Result<dd>
+																<dt>Required</dt>
+																<dd>Yes</dd>
+																
+															</dl>
+															<div class="description"></div>
+														</dd>
+													
+												</dl>
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="_checkboxClick" class="expandable"><span>_checkboxClick</span></dt>
+								
+								<dd>
+									<p class="summary">Handles the user clicking a checkbox other than &#39;select all&#39;</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+													<dt>Private</dt>
+													<dd>Yes</dd>
+												
+												
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myTable._checkboxClick(checkbox)</code></pre>
+											
+											
+											
+												<h3>Parameters</h3>
+												<dl class="params">
+													
+														<dt>checkbox</dt>
+														<dd>
+															<dl class="attributes">
+																<dt>Type</dt>
+																<dd>HTMLElement<dd>
+																<dt>Required</dt>
+																<dd>Yes</dd>
+																
+															</dl>
+															<div class="description"><p>The checkbox clicked</p></div>
+														</dd>
+													
+												</dl>
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="_checkResults" class="expandable"><span>_checkResults</span></dt>
+								
+								<dd>
+									<p class="summary">Checks a set of results for a particular test, updates the table with warnings etc</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+													<dt>Private</dt>
+													<dd>Yes</dd>
+												
+												
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myTable._checkResults(testName, resultComparison)</code></pre>
+											
+											
+											
+												<h3>Parameters</h3>
+												<dl class="params">
+													
+														<dt>testName</dt>
+														<dd>
+															<dl class="attributes">
+																<dt>Type</dt>
+																<dd>string<dd>
+																<dt>Required</dt>
+																<dd>Yes</dd>
+																
+															</dl>
+															<div class="description"></div>
+														</dd>
+													
+														<dt>resultComparison</dt>
+														<dd>
+															<dl class="attributes">
+																<dt>Type</dt>
+																<dd>woosh.ResultComparison<dd>
+																<dt>Required</dt>
+																<dd>Yes</dd>
+																
+															</dl>
+															<div class="description"><p>Data about the tests that ran</p></div>
+														</dd>
+													
+												</dl>
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="_selectAllClick" class="expandable"><span>_selectAllClick</span></dt>
+								
+								<dd>
+									<p class="summary">Handles the user clicking the &#39;select all&#39; checkbox</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+													<dt>Private</dt>
+													<dd>Yes</dd>
+												
+												
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myTable._selectAllClick()</code></pre>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="_setTestsToRun" class="expandable"><span>_setTestsToRun</span></dt>
+								
+								<dd>
+									<p class="summary">Looks at the checkboxes and tells the conductor which tests to run</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+													<dt>Private</dt>
+													<dd>Yes</dd>
+												
+												
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myTable._setTestsToRun()</code></pre>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="initAndIndex" class="expandable"><span>initAndIndex</span></dt>
+								
+								<dd>
+									<p class="summary">Populate the headings and index row element on <a href="woosh.views.Table.html#_testRows">woosh.views.Table#_testRows</a></p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+													<dt>Private</dt>
+													<dd>Yes</dd>
+												
+												
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myTable.initAndIndex()</code></pre>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+						</dl>
+					
+				
+					
+					
+				
+					
+					
+				
+			</div>
+		</div>
+	</body>
+</html>

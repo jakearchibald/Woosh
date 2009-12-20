@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+	
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+		<meta name="generator" content="JsDoc Toolkit">
+		<title>Woosh Documentation - woosh.AsyncTest</title>
+		<link rel="stylesheet" type="text/css" href="../../../assets/docstyle.css">
+		<script type="text/javascript" src="../../../libs/glow-170/core/core.js"></script>
+		<script type="text/javascript" src="../../../assets/docs.js"></script>
+	</head>
+	<body>
+		<div id="wooshOutput">
+			<div id="wooshBanner">
+				<h1>woosh.AsyncTest</h1>
+				<p>Like <a href="woosh.Test.html">woosh.Test</a>, but allows async tests.
+</p>
+			</div>
+			<div id="wooshUa"></div>
+			<div id="wooshModeSwitcher">
+				<h2 id="docTypeHeading">Documentation Type</h2>
+				<ul><li><a href="../../writingTests/api/woosh.AsyncTest.html">Writing Tests</a></li>
+<li><span class="active">Writing Plugins</span></li><li><a href="../../fullApi/api/woosh.AsyncTest.html">Full API</a></li>
+</ul>
+			</div>
+			
+			<div id="nav">
+				<h2 id="navHeading">Nav</h2>
+				<ol>
+<li><a href="../index.html">Index</a></li>
+<li><h3>Api</h3>
+<ol>
+<li><a href="woosh.html">woosh</a>
+</li>
+<li><span class="active">woosh.AsyncTest</span></li>
+<li><a href="woosh.Conductor.html">woosh.Conductor</a>
+</li>
+<li><a href="woosh.LibraryResult.html">woosh.LibraryResult</a>
+</li>
+<li><a href="woosh.Result.html">woosh.Result</a>
+</li>
+<li><a href="woosh.ResultComparison.html">woosh.ResultComparison</a>
+</li>
+<li><a href="woosh.Test.html">woosh.Test</a>
+</li>
+<li><a href="woosh.views.html">woosh.views</a>
+</li>
+</ol>
+</li>
+</ol>
+
+			</div>
+			
+			<div id="content">
+				
+				
+					<h2>Description</h2>
+					
+						<p>Extends <a href="woosh.Test.html">woosh.Test</a></p>
+					
+					<p>		Test instances are created within a call to <a href="woosh.html#.addTests">woosh.addTests</a>.</p>
+
+<p>		This test waits for <a href="woosh.AsyncTest.html#endTest">woosh.AsyncTest#endTest</a> to be
+		called before the test is complete.</p>
+				
+				
+				
+				
+				
+					<dl class="apiList">
+						<dt class="expandable"><span>Constructor</span></dt>
+						<dd>
+							<div class="summary"></div>
+							<div class="apiItemDetail">
+								<h3>Synopsis</h3>
+								<pre class="signiture prettyprint"><code>var myAsyncTest = new woosh.AsyncTest(loopCount, test)</code></pre>
+								
+									<h3>Parameters</h3>
+									<dl class="params">
+										
+											<dt>loopCount</dt>
+											<dd>
+												<dl class="attributes">
+													<dt>Type</dt>
+													<dd>number<dd>
+													<dt>Required</dt>
+													<dd>Yes</dd>
+													
+												</dl>
+												<div class="description"><p>Number of times to run the test
+		Tests that run longer have less margin of error.</p></div>
+											</dd>
+										
+											<dt>test</dt>
+											<dd>
+												<dl class="attributes">
+													<dt>Type</dt>
+													<dd>Function<dd>
+													<dt>Required</dt>
+													<dd>Yes</dd>
+													
+												</dl>
+												<div class="description"><p>The test to run.
+		The instance of <a href="woosh.AsyncTest.html">woosh.AsyncTest</a> will be the first param</p></div>
+											</dd>
+										
+									</dl>
+								
+								
+									<h3>Examples</h3>
+									
+										<pre class="example prettyprint"><code>woosh.addTests(&#39;glow-170&#39;, {
+    &#39;Test Name&#39;: new woosh.AsyncTest(1000, function(test) {
+        // do stuff
+        
+        // return a value (this will be checked against the results of other tests)
+        test.endTest(returnVal);
+    })
+});</code></pre>
+									
+								
+							</div>
+						</dd>
+					</dl>
+				
+				
+				
+					
+					
+				
+					
+					
+				
+					
+					
+				
+					
+					
+						<h2>Instance Methods</h2>
+						<dl class="apiList">
+							
+								
+								
+								
+									<dt id="endTest" class="expandable"><span>endTest</span></dt>
+								
+								<dd>
+									<p class="summary">Must be called within an async test to end the test</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myAsyncTest.endTest(returnVal)</code></pre>
+											
+											
+											
+												<h3>Parameters</h3>
+												<dl class="params">
+													
+														<dt>returnVal</dt>
+														<dd>
+															<dl class="attributes">
+																<dt>Type</dt>
+																<dd>Object<dd>
+																<dt>Required</dt>
+																<dd>Yes</dd>
+																
+															</dl>
+															<div class="description"><p>The value to return.
+		In sync tests you can simply return a value, but in async tests you must provide
+		the return value via this method.</p></div>
+														</dd>
+													
+												</dl>
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="result" class="expandable"><span>result</span></dt>
+								
+								<dd>
+									<p class="summary">Change the result of the test.
+</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+													<dt>From</dt>
+													<dd><a href="woosh.Test.html">woosh.Test</a></dd>
+												
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myTest.result(result, unit, highestIsBest)</code></pre>
+											
+												<h3>Description</h3>
+												<div class="symbolDescription description"><p>			By default the result is the time the test took to run in milliseconds.
+			However, you may want your test to measure something else like
+			frames-per-second. You can achieve that using this method.</p></div>
+											
+											
+												<h3>Returns</h3>
+												<div class="return"><p>woosh.Test </p></div>
+											
+											
+												<h3>Parameters</h3>
+												<dl class="params">
+													
+														<dt>result</dt>
+														<dd>
+															<dl class="attributes">
+																<dt>Type</dt>
+																<dd>number<dd>
+																<dt>Required</dt>
+																<dd>Yes</dd>
+																
+															</dl>
+															<div class="description"><p>The result value as a number</p></div>
+														</dd>
+													
+														<dt>unit</dt>
+														<dd>
+															<dl class="attributes">
+																<dt>Type</dt>
+																<dd>string<dd>
+																<dt>Required</dt>
+																<dd>No</dd>
+																
+																	<dt>Default</dt>
+																	<dd>&#39;ms&#39;</dd>
+																
+															</dl>
+															<div class="description"><p>The unit for the result</p></div>
+														</dd>
+													
+														<dt>highestIsBest</dt>
+														<dd>
+															<dl class="attributes">
+																<dt>Type</dt>
+																<dd>boolean<dd>
+																<dt>Required</dt>
+																<dd>No</dd>
+																
+																	<dt>Default</dt>
+																	<dd>false</dd>
+																
+															</dl>
+															<div class="description"><p>Treat high numbers as better than low numbers?</p></div>
+														</dd>
+													
+												</dl>
+											
+											
+												<h3>Examples</h3>
+												
+													<pre class="example prettyprint"><code>// using an AsyncTest to measure framerate
+woosh.addTests(&#39;glow-170&#39;, {
+    &#39;Test Name&#39;: new woosh.AsyncTest(1, function(test) {
+        var framesRendered = 0;
+    
+        var anim = new glow.anim.Animation(3, {
+            onFrame: function() {
+                framesRendered++;
+            },
+            onComplete: function() {
+                // set the frames per second as the result
+                test.result(framesRendered/3, &#39;fps&#39;, true);
+                test.endTest();
+            }
+        });
+        
+        anim.start();
+    })
+});</code></pre>
+												
+											
+											
+										</div>
+									
+								</dd>
+							
+						</dl>
+					
+				
+					
+					
+				
+					
+					
+				
+			</div>
+		</div>
+	</body>
+</html>

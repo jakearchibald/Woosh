@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+	
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+		<meta name="generator" content="JsDoc Toolkit">
+		<title>Woosh Documentation - woosh.ResultComparison</title>
+		<link rel="stylesheet" type="text/css" href="../../../assets/docstyle.css">
+		<script type="text/javascript" src="../../../libs/glow-170/core/core.js"></script>
+		<script type="text/javascript" src="../../../assets/docs.js"></script>
+	</head>
+	<body>
+		<div id="wooshOutput">
+			<div id="wooshBanner">
+				<h1>woosh.ResultComparison</h1>
+				<p>Information about a single test ran against multiple libraries</p>
+			</div>
+			<div id="wooshUa"></div>
+			<div id="wooshModeSwitcher">
+				<h2 id="docTypeHeading">Documentation Type</h2>
+				<ul><li><span class="notInMode">Writing Tests</span></li><li><span class="active">Writing Plugins</span></li><li><a href="../../fullApi/api/woosh.ResultComparison.html">Full API</a></li>
+</ul>
+			</div>
+			
+			<div id="nav">
+				<h2 id="navHeading">Nav</h2>
+				<ol>
+<li><a href="../index.html">Index</a></li>
+<li><h3>Api</h3>
+<ol>
+<li><a href="woosh.html">woosh</a>
+</li>
+<li><a href="woosh.AsyncTest.html">woosh.AsyncTest</a>
+</li>
+<li><a href="woosh.Conductor.html">woosh.Conductor</a>
+</li>
+<li><a href="woosh.LibraryResult.html">woosh.LibraryResult</a>
+</li>
+<li><a href="woosh.Result.html">woosh.Result</a>
+</li>
+<li><span class="active">woosh.ResultComparison</span></li>
+<li><a href="woosh.Test.html">woosh.Test</a>
+</li>
+<li><a href="woosh.views.html">woosh.views</a>
+</li>
+</ol>
+</li>
+</ol>
+
+			</div>
+			
+			<div id="content">
+				
+				
+				
+				
+				
+				
+					<dl class="apiList">
+						<dt class="expandable"><span>Constructor</span></dt>
+						<dd>
+							<div class="summary"></div>
+							<div class="apiItemDetail">
+								<h3>Synopsis</h3>
+								<pre class="signiture prettyprint"><code>var myResultComparison = new woosh.ResultComparison(results)</code></pre>
+								
+									<h3>Parameters</h3>
+									<dl class="params">
+										
+											<dt>results</dt>
+											<dd>
+												<dl class="attributes">
+													<dt>Type</dt>
+													<dd>object<dd>
+													<dt>Required</dt>
+													<dd>Yes</dd>
+													
+												</dl>
+												<div class="description"><p>A object of woosh.Result, keyed by library name</p></div>
+											</dd>
+										
+									</dl>
+								
+								
+							</div>
+						</dd>
+					</dl>
+				
+				
+				
+					
+					
+				
+					
+					
+				
+					
+					
+						<h2>Instance Properties</h2>
+						<dl class="apiList">
+							
+								
+								
+								
+									<dt id="highestIsBest" class="expandable"><span>highestIsBest</span></dt>
+								
+								<dd>
+									<p class="summary">Is the highest result best?
+</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+													<dt>Type</dt>
+													<dd>boolean</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myResultComparison.highestIsBest</code></pre>
+											
+												<h3>Description</h3>
+												<div class="symbolDescription description"><p>			Only available after all tests have ran</p></div>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="loopsEqual" class="expandable"><span>loopsEqual</span></dt>
+								
+								<dd>
+									<p class="summary">Were the loop counts of all tests equal?
+</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+													<dt>Type</dt>
+													<dd>boolean</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myResultComparison.loopsEqual</code></pre>
+											
+												<h3>Description</h3>
+												<div class="symbolDescription description"><p>			Only available after all tests have ran</p></div>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="maxResult" class="expandable"><span>maxResult</span></dt>
+								
+								<dd>
+									<p class="summary">The maximum result from the tests
+</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+													<dt>Type</dt>
+													<dd>number</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myResultComparison.maxResult</code></pre>
+											
+												<h3>Description</h3>
+												<div class="symbolDescription description"><p>			Only available after all tests have ran</p></div>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="minResult" class="expandable"><span>minResult</span></dt>
+								
+								<dd>
+									<p class="summary">The minimum result from the tests
+</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+													<dt>Type</dt>
+													<dd>number</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myResultComparison.minResult</code></pre>
+											
+												<h3>Description</h3>
+												<div class="symbolDescription description"><p>			Only available after all tests have ran</p></div>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="results" class="expandable"><span>results</span></dt>
+								
+								<dd>
+									<p class="summary">The results being compared, keyed by library name (value may be undefined if there was no test for that library)</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+													<dt>Type</dt>
+													<dd>object</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myResultComparison.results</code></pre>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="returnValsEqual" class="expandable"><span>returnValsEqual</span></dt>
+								
+								<dd>
+									<p class="summary">Were the return values of all tests equal?
+</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+													<dt>Type</dt>
+													<dd>boolean</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myResultComparison.returnValsEqual</code></pre>
+											
+												<h3>Description</h3>
+												<div class="symbolDescription description"><p>			Only available after all tests have ran</p></div>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="typesEqual" class="expandable"><span>typesEqual</span></dt>
+								
+								<dd>
+									<p class="summary">Were the types of all tests equal?
+</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+													<dt>Type</dt>
+													<dd>boolean</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myResultComparison.typesEqual</code></pre>
+											
+												<h3>Description</h3>
+												<div class="symbolDescription description"><p>			Only available after all tests have ran</p></div>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="unitsEqual" class="expandable"><span>unitsEqual</span></dt>
+								
+								<dd>
+									<p class="summary">Were the units of all tests equal?
+</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+													<dt>Type</dt>
+													<dd>boolean</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myResultComparison.unitsEqual</code></pre>
+											
+												<h3>Description</h3>
+												<div class="symbolDescription description"><p>			Only available after all tests have ran</p></div>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+						</dl>
+					
+				
+					
+					
+				
+					
+					
+				
+					
+					
+				
+			</div>
+		</div>
+	</body>
+</html>

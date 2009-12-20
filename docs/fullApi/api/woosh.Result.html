@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+	
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+		<meta name="generator" content="JsDoc Toolkit">
+		<title>Woosh Documentation - woosh.Result</title>
+		<link rel="stylesheet" type="text/css" href="../../../assets/docstyle.css">
+		<script type="text/javascript" src="../../../libs/glow-170/core/core.js"></script>
+		<script type="text/javascript" src="../../../assets/docs.js"></script>
+	</head>
+	<body>
+		<div id="wooshOutput">
+			<div id="wooshBanner">
+				<h1>woosh.Result</h1>
+				<p>Results from a test</p>
+			</div>
+			<div id="wooshUa"></div>
+			<div id="wooshModeSwitcher">
+				<h2 id="docTypeHeading">Documentation Type</h2>
+				<ul><li><span class="notInMode">Writing Tests</span></li><li><a href="../../writingPlugins/api/woosh.Result.html">Writing Plugins</a></li>
+<li><span class="active">Full API</span></li></ul>
+			</div>
+			
+			<div id="nav">
+				<h2 id="navHeading">Nav</h2>
+				<ol>
+<li><a href="../index.html">Index</a></li>
+<li><h3>Api</h3>
+<ol>
+<li><a href="woosh.html">woosh</a>
+</li>
+<li><a href="woosh._LibraryTest.html">woosh._LibraryTest</a>
+</li>
+<li><a href="woosh._TestFrame.html">woosh._TestFrame</a>
+</li>
+<li><a href="woosh._TestRunner.html">woosh._TestRunner</a>
+</li>
+<li><a href="woosh._utils.html">woosh._utils</a>
+</li>
+<li><a href="woosh.AsyncTest.html">woosh.AsyncTest</a>
+</li>
+<li><a href="woosh.Conductor.html">woosh.Conductor</a>
+</li>
+<li><a href="woosh.LibraryResult.html">woosh.LibraryResult</a>
+</li>
+<li><span class="active">woosh.Result</span></li>
+<li><a href="woosh.ResultComparison.html">woosh.ResultComparison</a>
+</li>
+<li><a href="woosh.Test.html">woosh.Test</a>
+</li>
+<li><a href="woosh.views.html">woosh.views</a>
+</li>
+</ol>
+</li>
+</ol>
+
+			</div>
+			
+			<div id="content">
+				
+				
+				
+				
+				
+				
+					<dl class="apiList">
+						<dt class="expandable"><span>Constructor</span></dt>
+						<dd>
+							<div class="summary"></div>
+							<div class="apiItemDetail">
+								<h3>Synopsis</h3>
+								<pre class="signiture prettyprint"><code>var myResult = new woosh.Result</code></pre>
+								
+								
+							</div>
+						</dd>
+					</dl>
+				
+				
+				
+					
+					
+				
+					
+					
+				
+					
+					
+						<h2>Instance Properties</h2>
+						<dl class="apiList">
+							
+								
+								
+								
+									<dt id="error" class="expandable"><span>error</span></dt>
+								
+								<dd>
+									<p class="summary">Error object thrown by the test, if any.</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+													<dt>Type</dt>
+													<dd>Error</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myResult.error</code></pre>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="highestIsBest" class="expandable"><span>highestIsBest</span></dt>
+								
+								<dd>
+									<p class="summary">Is the highest result best? False by default.</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+													<dt>Type</dt>
+													<dd>boolean</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myResult.highestIsBest</code></pre>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="loopCount" class="expandable"><span>loopCount</span></dt>
+								
+								<dd>
+									<p class="summary">Number of times the test looped</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+													<dt>Type</dt>
+													<dd>number</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myResult.loopCount</code></pre>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="result" class="expandable"><span>result</span></dt>
+								
+								<dd>
+									<p class="summary">The result of the test, this will be time in milliseconds by default</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+													<dt>Type</dt>
+													<dd>number</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myResult.result</code></pre>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="returnVal" class="expandable"><span>returnVal</span></dt>
+								
+								<dd>
+									<p class="summary">Value returned by the test</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+													<dt>Type</dt>
+													<dd>object</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myResult.returnVal</code></pre>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="type" class="expandable"><span>type</span></dt>
+								
+								<dd>
+									<p class="summary">The type of test used, &#39;Test&#39; or &#39;AsyncTest&#39;</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+													<dt>Type</dt>
+													<dd>string</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myResult.type</code></pre>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="unit" class="expandable"><span>unit</span></dt>
+								
+								<dd>
+									<p class="summary">The unit of the result, &#39;ms&#39; by default</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+													<dt>Type</dt>
+													<dd>string</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myResult.unit</code></pre>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+						</dl>
+					
+				
+					
+					
+						<h2>Instance Methods</h2>
+						<dl class="apiList">
+							
+								
+								
+								
+									<dt id="populateFromTest" class="expandable"><span>populateFromTest</span></dt>
+								
+								<dd>
+									<p class="summary">Populates values from a completed test object</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myResult.populateFromTest(test)</code></pre>
+											
+											
+												<h3>Returns</h3>
+												<div class="return"><p> this</p></div>
+											
+											
+												<h3>Parameters</h3>
+												<dl class="params">
+													
+														<dt>test</dt>
+														<dd>
+															<dl class="attributes">
+																<dt>Type</dt>
+																<dd>woosh.Test<dd>
+																<dt>Required</dt>
+																<dd>Yes</dd>
+																
+															</dl>
+															<div class="description"><p>Test object to populate from</p></div>
+														</dd>
+													
+												</dl>
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="serialize" class="expandable"><span>serialize</span></dt>
+								
+								<dd>
+									<p class="summary">Convert the results object into a urlencoded string that can be later unserialized
+</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myResult.serialize()</code></pre>
+											
+												<h3>Description</h3>
+												<div class="symbolDescription description"><p>			Errors are serialized into a string containing their message.</p></div>
+											
+											
+												<h3>Returns</h3>
+												<div class="return"><p>string </p></div>
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="unserialize" class="expandable"><span>unserialize</span></dt>
+								
+								<dd>
+									<p class="summary">Populate object using a string generated by <a href="woosh.Result.html#serialize">woosh.Result#serialize</a></p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myResult.unserialize(serial)</code></pre>
+											
+											
+												<h3>Returns</h3>
+												<div class="return"><p> this</p></div>
+											
+											
+												<h3>Parameters</h3>
+												<dl class="params">
+													
+														<dt>serial</dt>
+														<dd>
+															<dl class="attributes">
+																<dt>Type</dt>
+																<dd>string<dd>
+																<dt>Required</dt>
+																<dd>Yes</dd>
+																
+															</dl>
+															<div class="description"><p>Serialized string</p></div>
+														</dd>
+													
+												</dl>
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+						</dl>
+					
+				
+					
+					
+				
+					
+					
+				
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+	
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+		<meta name="generator" content="JsDoc Toolkit">
+		<title>Woosh Documentation - woosh._LibraryTest</title>
+		<link rel="stylesheet" type="text/css" href="../../../assets/docstyle.css">
+		<script type="text/javascript" src="../../../libs/glow-170/core/core.js"></script>
+		<script type="text/javascript" src="../../../assets/docs.js"></script>
+	</head>
+	<body>
+		<div id="wooshOutput">
+			<div id="wooshBanner">
+				<h1>woosh._LibraryTest</h1>
+				<p>A set of tests to run against a library</p>
+			</div>
+			<div id="wooshUa"></div>
+			<div id="wooshModeSwitcher">
+				<h2 id="docTypeHeading">Documentation Type</h2>
+				<ul><li><span class="notInMode">Writing Tests</span></li><li><span class="notInMode">Writing Plugins</span></li><li><span class="active">Full API</span></li></ul>
+			</div>
+			
+			<div id="nav">
+				<h2 id="navHeading">Nav</h2>
+				<ol>
+<li><a href="../index.html">Index</a></li>
+<li><h3>Api</h3>
+<ol>
+<li><a href="woosh.html">woosh</a>
+</li>
+<li><span class="active">woosh._LibraryTest</span></li>
+<li><a href="woosh._TestFrame.html">woosh._TestFrame</a>
+</li>
+<li><a href="woosh._TestRunner.html">woosh._TestRunner</a>
+</li>
+<li><a href="woosh._utils.html">woosh._utils</a>
+</li>
+<li><a href="woosh.AsyncTest.html">woosh.AsyncTest</a>
+</li>
+<li><a href="woosh.Conductor.html">woosh.Conductor</a>
+</li>
+<li><a href="woosh.LibraryResult.html">woosh.LibraryResult</a>
+</li>
+<li><a href="woosh.Result.html">woosh.Result</a>
+</li>
+<li><a href="woosh.ResultComparison.html">woosh.ResultComparison</a>
+</li>
+<li><a href="woosh.Test.html">woosh.Test</a>
+</li>
+<li><a href="woosh.views.html">woosh.views</a>
+</li>
+</ol>
+</li>
+</ol>
+
+			</div>
+			
+			<div id="content">
+				
+				
+				
+				
+				
+				
+					<dl class="apiList">
+						<dt class="expandable"><span>Constructor</span></dt>
+						<dd>
+							<div class="summary"></div>
+							<div class="apiItemDetail">
+								<h3>Synopsis</h3>
+								<pre class="signiture prettyprint"><code>var my_LibraryTest = new woosh._LibraryTest(libraryName, tests)</code></pre>
+								
+									<h3>Parameters</h3>
+									<dl class="params">
+										
+											<dt>libraryName</dt>
+											<dd>
+												<dl class="attributes">
+													<dt>Type</dt>
+													<dd>string<dd>
+													<dt>Required</dt>
+													<dd>Yes</dd>
+													
+												</dl>
+												<div class="description"><p>Name of the library</p></div>
+											</dd>
+										
+											<dt>tests</dt>
+											<dd>
+												<dl class="attributes">
+													<dt>Type</dt>
+													<dd>Object<dd>
+													<dt>Required</dt>
+													<dd>Yes</dd>
+													
+												</dl>
+												<div class="description"><p>Obj of functions / woosh.Test instances
+		Keys beginning $ have special meaning.</p></div>
+											</dd>
+										
+									</dl>
+								
+								
+							</div>
+						</dd>
+					</dl>
+				
+				
+				
+					
+					
+				
+					
+					
+				
+					
+					
+						<h2>Instance Properties</h2>
+						<dl class="apiList">
+							
+								
+								
+								
+									<dt id="_prevTestName" class="expandable"><span>_prevTestName</span></dt>
+								
+								<dd>
+									<p class="summary">Name of the previously run test</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+													<dt>Private</dt>
+													<dd>Yes</dd>
+												
+												
+												
+													<dt>Type</dt>
+													<dd>string</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>my_LibraryTest._prevTestName</code></pre>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="libraryResult" class="expandable"><span>libraryResult</span></dt>
+								
+								<dd>
+									<p class="summary">Resultset for these tests</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+													<dt>Type</dt>
+													<dd>woosh.LibraryResult</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>my_LibraryTest.libraryResult</code></pre>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="testNames" class="expandable"><span>testNames</span></dt>
+								
+								<dd>
+									<p class="summary">Array of test names</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+													<dt>Type</dt>
+													<dd>string[]</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>my_LibraryTest.testNames</code></pre>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="tests" class="expandable"><span>tests</span></dt>
+								
+								<dd>
+									<p class="summary">Tests keyed by name</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+													<dt>Type</dt>
+													<dd>Object</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>my_LibraryTest.tests</code></pre>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+						</dl>
+					
+				
+					
+					
+						<h2>Instance Methods</h2>
+						<dl class="apiList">
+							
+								
+								
+								
+									<dt id="preTest" class="expandable"><span>preTest</span></dt>
+								
+								<dd>
+									<p class="summary">Called before each test.
+</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>my_LibraryTest.preTest(lastTestName, nextTestName)</code></pre>
+											
+												<h3>Description</h3>
+												<div class="symbolDescription description"><p>			Overridden by constructor &#39;tests&#39; param, used to
+			teardown / prepare of next test.</p></div>
+											
+											
+											
+												<h3>Parameters</h3>
+												<dl class="params">
+													
+														<dt>lastTestName</dt>
+														<dd>
+															<dl class="attributes">
+																<dt>Type</dt>
+																<dd>string<dd>
+																<dt>Required</dt>
+																<dd>Yes</dd>
+																
+															</dl>
+															<div class="description"><p>Name of last test.
+			Will be undefined for first test.</p></div>
+														</dd>
+													
+														<dt>nextTestName</dt>
+														<dd>
+															<dl class="attributes">
+																<dt>Type</dt>
+																<dd>string<dd>
+																<dt>Required</dt>
+																<dd>Yes</dd>
+																
+															</dl>
+															<div class="description"><p>Name of next test.</p></div>
+														</dd>
+													
+												</dl>
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="run" class="expandable"><span>run</span></dt>
+								
+								<dd>
+									<p class="summary">Run a particular test.
+</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>my_LibraryTest.run(testName, onTestComplete)</code></pre>
+											
+												<h3>Description</h3>
+												<div class="symbolDescription description"><p>			<a href="woosh._LibraryTest.html#preTest">woosh._LibraryTest#preTest</a> will be called before the test.</p></div>
+											
+											
+											
+												<h3>Parameters</h3>
+												<dl class="params">
+													
+														<dt>testName</dt>
+														<dd>
+															<dl class="attributes">
+																<dt>Type</dt>
+																<dd>string<dd>
+																<dt>Required</dt>
+																<dd>Yes</dd>
+																
+															</dl>
+															<div class="description"><p>Name of test to run.</p></div>
+														</dd>
+													
+														<dt>onTestComplete</dt>
+														<dd>
+															<dl class="attributes">
+																<dt>Type</dt>
+																<dd>Function<dd>
+																<dt>Required</dt>
+																<dd>Yes</dd>
+																
+															</dl>
+															<div class="description"><p>Function to run when test complete
+			Test name is passed as the 1st param.
+			Result is passed in as the 2nd param.</p></div>
+														</dd>
+													
+												</dl>
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+						</dl>
+					
+				
+					
+					
+				
+					
+					
+				
+			</div>
+		</div>
+	</body>
+</html>

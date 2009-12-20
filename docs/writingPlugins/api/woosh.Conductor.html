@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+	
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+		<meta name="generator" content="JsDoc Toolkit">
+		<title>Woosh Documentation - woosh.Conductor</title>
+		<link rel="stylesheet" type="text/css" href="../../../assets/docstyle.css">
+		<script type="text/javascript" src="../../../libs/glow-170/core/core.js"></script>
+		<script type="text/javascript" src="../../../assets/docs.js"></script>
+	</head>
+	<body>
+		<div id="wooshOutput">
+			<div id="wooshBanner">
+				<h1>woosh.Conductor</h1>
+				<p>Conducts the testing, views hook into this to render results</p>
+			</div>
+			<div id="wooshUa"></div>
+			<div id="wooshModeSwitcher">
+				<h2 id="docTypeHeading">Documentation Type</h2>
+				<ul><li><span class="notInMode">Writing Tests</span></li><li><span class="active">Writing Plugins</span></li><li><a href="../../fullApi/api/woosh.Conductor.html">Full API</a></li>
+</ul>
+			</div>
+			
+			<div id="nav">
+				<h2 id="navHeading">Nav</h2>
+				<ol>
+<li><a href="../index.html">Index</a></li>
+<li><h3>Api</h3>
+<ol>
+<li><a href="woosh.html">woosh</a>
+</li>
+<li><a href="woosh.AsyncTest.html">woosh.AsyncTest</a>
+</li>
+<li><span class="active">woosh.Conductor</span></li>
+<li><a href="woosh.LibraryResult.html">woosh.LibraryResult</a>
+</li>
+<li><a href="woosh.Result.html">woosh.Result</a>
+</li>
+<li><a href="woosh.ResultComparison.html">woosh.ResultComparison</a>
+</li>
+<li><a href="woosh.Test.html">woosh.Test</a>
+</li>
+<li><a href="woosh.views.html">woosh.views</a>
+</li>
+</ol>
+</li>
+</ol>
+
+			</div>
+			
+			<div id="content">
+				
+				
+				
+				
+				
+				
+					<dl class="apiList">
+						<dt class="expandable"><span>Constructor</span></dt>
+						<dd>
+							<div class="summary"></div>
+							<div class="apiItemDetail">
+								<h3>Synopsis</h3>
+								<pre class="signiture prettyprint"><code>var myConductor = new woosh.Conductor(libraryNames, onReady)</code></pre>
+								
+									<h3>Parameters</h3>
+									<dl class="params">
+										
+											<dt>libraryNames</dt>
+											<dd>
+												<dl class="attributes">
+													<dt>Type</dt>
+													<dd>string[]<dd>
+													<dt>Required</dt>
+													<dd>Yes</dd>
+													
+												</dl>
+												<div class="description"><p>Names of libraries to be tested.</p></div>
+											</dd>
+										
+											<dt>onReady</dt>
+											<dd>
+												<dl class="attributes">
+													<dt>Type</dt>
+													<dd>Function<dd>
+													<dt>Required</dt>
+													<dd>Yes</dd>
+													
+												</dl>
+												<div class="description"><p>A function to call when the Conductor is ready to use.</p></div>
+											</dd>
+										
+									</dl>
+								
+								
+							</div>
+						</dd>
+					</dl>
+				
+				
+				
+					
+					
+				
+					
+					
+				
+					
+					
+						<h2>Instance Properties</h2>
+						<dl class="apiList">
+							
+								
+								
+								
+									<dt id="libraryNames" class="expandable"><span>libraryNames</span></dt>
+								
+								<dd>
+									<p class="summary">Library names being tested</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+													<dt>Type</dt>
+													<dd>string[]</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myConductor.libraryNames</code></pre>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="savedResultName" class="expandable"><span>savedResultName</span></dt>
+								
+								<dd>
+									<p class="summary">What&#39;s the name of the saved result, if any</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+													<dt>Type</dt>
+													<dd>string</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myConductor.savedResultName</code></pre>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="testNames" class="expandable"><span>testNames</span></dt>
+								
+								<dd>
+									<p class="summary">Names of tests to run</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+													<dt>Type</dt>
+													<dd>string[]</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myConductor.testNames</code></pre>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="testsToRun" class="expandable"><span>testsToRun</span></dt>
+								
+								<dd>
+									<p class="summary">Names of tests to run
+</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+													<dt>Type</dt>
+													<dd>string[]</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myConductor.testsToRun</code></pre>
+											
+												<h3>Description</h3>
+												<div class="symbolDescription description"><p>			If empty, all tests will run</p></div>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+						</dl>
+					
+				
+					
+					
+						<h2>Instance Methods</h2>
+						<dl class="apiList">
+							
+								
+								
+								
+									<dt id="addListener" class="expandable"><span>addListener</span></dt>
+								
+								<dd>
+									<p class="summary">Add an object to listen for conductor events. Conductor fires the following:
+</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myConductor.addListener(listener, thisVal)</code></pre>
+											
+												<h3>Description</h3>
+												<div class="symbolDescription description"><p>			listener.ready()
+				- When the conductor is able to start</p>
+
+<p>			listener.start()
+				- When the conductor starts</p>
+
+<p>			listener.testSetComplete(testName, resultComparison)
+				- Called when the same test name is completed in each <a href="woosh._TestFrame.html">woosh._TestFrame</a>
+				- testName is the name of the test
+				- resultComparison is the <a href="woosh.ResultComparison.html">woosh.ResultComparison</a> used to run the tests</p>
+
+<p>			listener.testComplete(libraryName, testName, results)
+				- Called when a test completes for a particular library
+				- libraryName is the name of the library the test was completed for
+				- testName is the name of the test
+				- results is an instance of woosh.Results. Will be udefined if the test was missing.</p>
+
+<p>			listener.allTestsComplete(libraryResults, resultComparisons)
+				- Called when all queued tests have completed
+				- libraryResults is an object of woosh.LibraryResult keyed by library name
+				- resultComparisons is an object of woosh.ResultComparisons keyed by test name</p></div>
+											
+											
+											
+												<h3>Parameters</h3>
+												<dl class="params">
+													
+														<dt>listener</dt>
+														<dd>
+															<dl class="attributes">
+																<dt>Type</dt>
+																<dd>object<dd>
+																<dt>Required</dt>
+																<dd>Yes</dd>
+																
+															</dl>
+															<div class="description"><p>Object to fire events on</p></div>
+														</dd>
+													
+														<dt>thisVal</dt>
+														<dd>
+															<dl class="attributes">
+																<dt>Type</dt>
+																<dd>object<dd>
+																<dt>Required</dt>
+																<dd>Yes</dd>
+																
+															</dl>
+															<div class="description"><p>What &#39;this&#39; should equal in the callbacks</p></div>
+														</dd>
+													
+												</dl>
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="start" class="expandable"><span>start</span></dt>
+								
+								<dd>
+									<p class="summary">Start running tests</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myConductor.start()</code></pre>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+						</dl>
+					
+				
+					
+					
+				
+					
+					
+				
+			</div>
+		</div>
+	</body>
+</html>
