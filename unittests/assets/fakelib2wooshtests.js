@@ -8,7 +8,7 @@ woosh.addTests('fakeLib2', {
 		})
 	}),
 	'customResultTest': new woosh.Test(100, function(test) {
-		test.result(456, 'fps', true);
+		test.setResult(456, 'fps', true);
 		return 'fakeLib2 customResultTest';
 	}),
 	'onlyInFakelib2': function() {

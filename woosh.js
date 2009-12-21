@@ -272,7 +272,6 @@
 	var undefined;
 	
 	woosh._utils.extend(Test, Object, {
-		// what kind of unit should the results be measured in
 		_unit: 'ms',
 		// what is the result?
 		_result: undefined,
@@ -309,10 +308,10 @@
 			onComplete && onComplete( new woosh.Result().populateFromTest(this) );
 		},
 		/**
-		@name woosh.Test#result
+		@name woosh.Test#setResult
 		@function
 		@writingTests
-		@description Change the result of the test.
+		@description Manually set the result of the test.
 			By default the result is the time the test took to run in milliseconds.
 			However, you may want your test to measure something else like
 			frames-per-second. You can achieve that using this method.
@@ -335,7 +334,7 @@
 						},
 						onComplete: function() {
 							// set the frames per second as the result
-							test.result(framesRendered/3, 'fps', true);
+							test.setResult(framesRendered/3, 'fps', true);
 							test.endTest();
 						}
 					});
@@ -344,7 +343,7 @@
 				})
 			});
 		*/
-		result: function(result, unit, highestIsBest) {
+		setResult: function(result, unit, highestIsBest) {
 			this._result = result - 0;
 			this._unit = unit || this._unit;
 			this._highestIsBest = !!highestIsBest;
@@ -800,7 +799,7 @@
 	@name woosh._savedLibraryResult
 	@type woosh.LibraryResult
 	@description A resultset from a previous session
-		Currently this is unserialized into window.name
+		Currently this is unserialized from window.name
 	*/
 	var savedLibraryResult;
 	

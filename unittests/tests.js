@@ -178,18 +178,18 @@ test('Handling errors in a sync test', 11, function() {
 test('Overriding results and units', 10, function() {
 
 	var test1 = new woosh.Test(1, function() {
-		equals(typeof this.result, 'function', 'woosh.Test#result is function');
-		this.result(123);
+		equals(typeof this.setResult, 'function', 'woosh.Test#setResult is function');
+		this.setResult(123);
 		return 'Hello';
 	});
 	
 	var test2 = new woosh.Test(1, function() {
-		this.result(456, 'cm');
+		this.setResult(456, 'cm');
 		return 'Hello';
 	});
 	
 	var test3 = new woosh.Test(1, function() {
-		this.result(789, 'fps', true);
+		this.setResult(789, 'fps', true);
 		return 'Hello';
 	});
 	
@@ -486,7 +486,7 @@ test('creating all equal woosh._TestRunner', 16, function() {
 	var nullLib1LibrarySet = new woosh._LibraryTest('nullLib1', {
 		'test1': new woosh.Test(1, function(test) {
 			nullLib1TestRan = true;
-			test.result(5, 'fps', true);
+			test.setResult(5, 'fps', true);
 			return 50;
 		})
 	});
@@ -494,7 +494,7 @@ test('creating all equal woosh._TestRunner', 16, function() {
 	var nullLib2LibrarySet = new woosh._LibraryTest('nullLib2', {
 		'test1': new woosh.Test(1, function(test) {
 			nullLib2TestRan = true;
-			test.result(1, 'fps', true);
+			test.setResult(1, 'fps', true);
 			return 50;
 		})
 	});
