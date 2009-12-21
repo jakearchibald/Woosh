@@ -7,7 +7,7 @@ body, html {
 }
 body {
 	/* fix font sizes for fixed width fonts */
-	font-size: 12pt;
+	font-size: 14px;
 	*font-size: 1em;
 }
 
@@ -246,6 +246,10 @@ a:hover, a:active {
 		padding: 10px 5px;
 		margin:1px 0 0 1px;
 	}
+	#content pre {
+		overflow: auto;
+		max-height: 300px
+	}
 /* api list detail */
 	.apiItemDetail {
 		overflow: hidden;
@@ -288,7 +292,7 @@ a:hover, a:active {
 	}
 	.apiItemDetail pre code {
 		display: block;
-		margin: 10px 0;
+		padding: 10px 0;
 	}
 	/* description */
 		.apiItemDetail .description dl {
