@@ -263,31 +263,43 @@
 		if ( !(this instanceof Test) ) {
 			return new Test(loopCount, testFunc);
 		}
-		
-		this._loopCount = loopCount;
-		this._type = woosh._utils.constructorName(this);
+		this._result = new woosh.Result();
+		this._result.loopCount = this._loopCount = loopCount;
+		this._result.type = woosh._utils.constructorName(this);
 		this._testFunc  = testFunc;
 	}
 	
 	var undefined;
 	
 	woosh._utils.extend(Test, Object, {
-		_unit: 'ms',
-		// what is the result?
-		_result: undefined,
-		// are high results good?
-		_highestIsBest: false,
-		// errors are held
-		_error: null,
-		// the function containing the test actions
+		/**
+			@name woosh.Test#_loopCount
+			@type number
+			@description Number of times to call _testFunc
+		*/
+		_loopCount: 0,
+		/**
+			@name woosh.Test#_testFunc
+			@type Function
+			@description The function containing the test actions
+		*/
 		_testFunc: null,
-		// times to loop testFunc
-		_loopCount: null,
-		// test type (constructor name)
-		_type: null,
-		// value returned by test
-		_returnVal: undefined,
-		// start the test running, onComplete (optional) called when all itterations have ran with a woosh.Result object as first param
+		/**
+			@name woosh.Test#_result
+			@type woosh.Result
+			@description Results for this test
+				Won't be populated until after the test has _run
+		*/
+		_result: null,
+		/**
+			@name woosh.Test#_run
+			@function
+			@description Runs the test
+			
+			@param {function} [onComplete] Called then the test is complete.
+				An instance of {@link woosh.Result} is passed as the
+				first parameter.
+		*/
 		_run: function(onComplete) {
 			try {
 				var i = this._loopCount,
@@ -300,12 +312,12 @@
 				}
 				
 				duration = new Date() - start;
-				this._result = this._result || duration;
+				this._result.result = this._result.result || duration;
 			} catch (e) {
-				this._error = e;
+				this._result.error = e;
 			}
-			this._returnVal = returnVal;
-			onComplete && onComplete( new woosh.Result().populateFromTest(this) );
+			this._result.returnVal = returnVal;
+			onComplete && onComplete(this._result);
 		},
 		/**
 		@name woosh.Test#setResult
@@ -344,9 +356,9 @@
 			});
 		*/
 		setResult: function(result, unit, highestIsBest) {
-			this._result = result - 0;
-			this._unit = unit || this._unit;
-			this._highestIsBest = !!highestIsBest;
+			this._result.result = result - 0;
+			this._result.unit = unit || this._result.unit;
+			this._result.highestIsBest = !!highestIsBest;
 			return this;
 		}
 	});
@@ -404,7 +416,7 @@
 		the return value via this method.
 	*/
 	asyncTestProto.endTest = function(returnVal) {
-		this._returnVal = returnVal;
+		this._result.returnVal = returnVal;
 		this._onEndTest();
 	};
 	
@@ -414,7 +426,7 @@
 		function complete(test, onComplete) {
 			window.onerror = test._oldErrorListener;
 			test._onEndTest = function() {};
-			onComplete( new woosh.Result().populateFromTest(test) );
+			onComplete(test._result);
 		};
 		
 		// run the test in an async way. onComplete is called when test is complete
@@ -432,7 +444,7 @@
 					if (test._oldErrorListener) {
 						test._oldErrorListener.apply(this, arguments);
 					}
-					test._error = new Error(msg);
+					test._result.error = new Error(msg);
 					complete(test, onComplete);
 				}
 				
@@ -440,7 +452,7 @@
 					if (--i) {
 						test._testFunc(test);
 					} else {
-						test._result = test._result || ( new Date() - start );
+						test._result.result = test._result.result || ( new Date() - start );
 						complete(test, onComplete);
 					}
 				}
@@ -448,7 +460,7 @@
 				start = new Date();
 				test._testFunc(test);
 			} catch (e) {
-				this._error = e;
+				this._result.error = e;
 				complete(test, onComplete);
 			}
 		};
@@ -513,24 +525,6 @@
 		@description Number of times the test looped
 		*/
 		loopCount: undefined,
-		/**
-		@name woosh.Result#populateFromTest
-		@function
-		@description Populates values from a completed test object
-		
-		@param {woosh.Test} test Test object to populate from
-		@returns this
-		*/
-		populateFromTest: function(test) {
-			this.result = test._result;
-			this.unit   = test._unit;
-			this.type   = test._type;
-			this.error  = test._error;
-			this.loopCount = test._loopCount;
-			this.returnVal = test._returnVal;
-			this.highestIsBest = test._highestIsBest;
-			return this;
-		},
 		/**
 		@name woosh.Result#serialize
 		@function

@@ -115,7 +115,7 @@ test('Creating instances', 5, function() {
 	equals(test2._testFunc, func, '_testFunc set');
 });
 
-test('Running a sync test', 12, function() {
+test('Running a sync test', 11, function() {
 	var testRunCount = 0,
 		onCompleteFiredCount = 0,
 		result;
@@ -137,17 +137,16 @@ test('Running a sync test', 12, function() {
 	
 	equals(testRunCount, 1000000, '_testFunc was called correct number of times');
 	equals(onCompleteFiredCount, 1, '_onComplete was called correct number of times');
-	equals(test._returnVal, 'Hello', '_returnVal set');
-	equals(typeof test._result, 'number', '_result is number (' + test._result + ')');
+	equals(test._result.returnVal, 'Hello', '_returnVal set');
+	equals(typeof test._result.result, 'number', '_result is number (' + test._result + ')');
 	ok(result instanceof woosh.Result, 'Result object provided');
-	equals(result.result, test._result, 'Result object has result');
-	equals(result.returnVal, test._returnVal, 'Result object has returnVal');
+	equals(result.returnVal, 'Hello', 'Result object has returnVal');
 	equals(result.loopCount, 1000000, 'Result object has loopCount');
 	equals(result.type, 'Test', 'Result object has test');
 	ok(result.result >= 0, 'result is a positive number (or 0)');
 });
 
-test('Handling errors in a sync test', 11, function() {
+test('Handling errors in a sync test', 9, function() {
 	var undefined,
 		onCompleteFiredCount = 0,
 		testRunCount = 0,
@@ -164,15 +163,13 @@ test('Handling errors in a sync test', 11, function() {
 	});
 	equals(testRunCount, 1, '_testFunc was called only once since it errored');
 	equals(onCompleteFiredCount, 1, '_onComplete was called correct number of times');
-	equals(test._returnVal, undefined, '_returnVal is undefined');
-	equals(test._result, undefined, '_result is undefined');
-	ok(test._error instanceof Error, '_error is Error');
+	equals(test._result.returnVal, undefined, '_returnVal is undefined');
+	equals(test._result.result, undefined, '_result is undefined');
+	ok(test._result.error instanceof Error, '_error is Error');
 	ok(result instanceof woosh.Result, 'Result object provided');
-	equals(result.result, test._result, 'Result object has result');
 	equals(result.returnVal, test._returnVal, 'Result object has returnVal');
 	equals(result.loopCount, 1000000, 'Result object has loopCount');
 	equals(result.type, 'Test', 'Result object has test');
-	equals(result.error, test._error, 'Result object has error');
 });
 
 test('Overriding results and units', 10, function() {
