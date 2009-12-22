@@ -2014,8 +2014,12 @@
 	@type string
 	@private
 	@description The mode the page is running in.
-		'conducting':  Will create frames for libraries to be tested
-		   'testing':  Will load a library onto the page and create a LibraryTest object
+		<dl>
+			<dt>'conducting'</dt>
+			<dd>Will create frames for libraries to be tested</dd>
+			<dt>'testing'</dt>
+			<dd>Will load a library onto the page and create a LibraryTest object</dd>
+		</dl>
 	*/
 	woosh._pageMode = 'conducting';
 
