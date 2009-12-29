@@ -609,14 +609,14 @@ test('woosh.Conductor running only particular tests', 1, function() {
 			allTestsComplete: function(libraryResults, resultComparisons) {
 				log.push('onAllTestsComplete');
 				
-				deepEqual(log, [
+				same(log, [
 					'onStart',
 					'onTestComplete: customResultTest, fakeLib1',
 					'onTestSetComplete: customResultTest',
 					'onTestComplete: onlyInFakeLib1, fakeLib1',
 					'onTestSetComplete: onlyInFakeLib1',
 					'onAllTestsComplete'
-				], 'Events happened in correct order')
+				], 'Events happened in correct order');
 				
 				start();
 			}
