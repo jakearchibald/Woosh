@@ -243,7 +243,7 @@
 	@description A test to be run
 		Test instances are created within a call to {@link woosh.addTests}.
 	
-	@param {number} loopCount Number of times to run the test
+	@param {number} loopCount Number of times to run the test.
 		Tests that run longer have less margin of error.
 	
 	@param {Function} test The test to run.
@@ -251,7 +251,7 @@
 		
 	@example
 		woosh.addTests('glow-170', {
-			'Test Name': new woosh.Test(1000, function() {
+			'Test Name': new woosh.Test(1000, function(test) {
 				// do stuff
 				
 				// return a value (this will be checked against the results of other tests)
@@ -378,7 +378,7 @@
 		This test waits for {@link woosh.AsyncTest#endTest} to be
 		called before the test is complete.
 	
-	@param {number} loopCount Number of times to run the test
+	@param {number} loopCount Number of times to run the test.
 		Tests that run longer have less margin of error.
 	
 	@param {Function} test The test to run.
@@ -1190,8 +1190,10 @@
 	/**
 	@name woosh.Conductor
 	@constructor
-	@description Conducts the testing, views hook into this to render results
-	
+	@description Conducts the testing and provides feedback via events.
+		When writing plugins you don't need to construct one of these,
+		you'll be provided an instance via {@link woosh.ready}.
+		
 	@param {string[]} libraryNames Names of libraries to be tested.
 	
 	@param {Function} onReady A function to call when the Conductor is ready to use.
@@ -1248,7 +1250,7 @@
 		/**
 		@name woosh.Conductor#testNames
 		@type string[]
-		@description Names of tests to run
+		@description The names of all tests provided
 		*/
 		testNames: [],
 		/**
@@ -1266,7 +1268,10 @@
 		/**
 		@name woosh.Conductor#testsToRun
 		@type string[]
-		@description Names of tests to run
+		@description Subset of tests to run
+			The user may not choose to run all tests. This value will
+			be final once the 'start' event fires.
+		
 			If empty, all tests will run
 		*/
 		testsToRun: [],

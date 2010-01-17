@@ -87,7 +87,10 @@
 														<dd>{+ h(param.defaultValue) +}</dd>
 													</if>
 												</dl>
-												<div class="description">{+ autoHtml(param.desc) +}</div>
+												<div class="description">
+													<p>{+ summary(param.desc) +}</p>
+													{+ further(param.desc) +}
+												</div>
 											</dd>
 										</for>
 									</dl>
@@ -164,7 +167,10 @@
 																	<dd>{+ h(param.defaultValue) +}</dd>
 																</if>
 															</dl>
-															<div class="description">{+ autoHtml(param.desc) +}</div>
+															<div class="description">
+																<p>{+ summary(param.desc) +}</p>
+																{+ further(param.desc) +}
+															</div>
 														</dd>
 													</for>
 												</dl>
