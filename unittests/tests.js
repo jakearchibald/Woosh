@@ -115,7 +115,7 @@ test('Creating instances', 5, function() {
 	equals(test2._testFunc, func, '_testFunc set');
 });
 
-test('Running a sync test', 11, function() {
+test('Running a sync test', 12, function() {
 	var testRunCount = 0,
 		onCompleteFiredCount = 0,
 		result;
@@ -125,7 +125,10 @@ test('Running a sync test', 11, function() {
 			equals(testParam, test, 'Test is passed in as parameter');
 		}
 		testRunCount++;
-		return 'Hello';
+		if (testParam.lastLoop) {
+			equals(testRunCount, 1000000, 'lastLoop set');
+			return 'Hello';
+		}
 	});
 	
 	equals(typeof test._run, 'function', 'woosh.Test#_run exists');
@@ -232,7 +235,7 @@ test('Creating instances', 6, function() {
 	equals(test2._testFunc, func, '_testFunc set');
 });
 
-test('Running an async test', 9, function() {
+test('Running an async test', 10, function() {
 	stop();
 	
 	var testRunCount = 0,
@@ -244,6 +247,9 @@ test('Running an async test', 9, function() {
 			equals(testParam, test, 'Test is passed in as parameter');
 		}
 		testRunCount++;
+		if (testParam.lastLoop) {
+			equals(testRunCount, 10, 'lastLoop set');
+		}
 		setTimeout(function() {
 			setTimeoutCallbackRunCount++;
 			test.endTest('Hello');

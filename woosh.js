@@ -247,7 +247,15 @@
 		Tests that run longer have less margin of error.
 	
 	@param {Function} test The test to run.
-		The instance of {@link woosh.Test} will be the first param
+		The following params will be passed into the test function:
+		
+		<dl>
+			<dt>test</dt>
+			<dd>
+				The instance of {@link woosh.Test}, provided so you can easily
+				call instance methods on it.
+			</dd>
+		</dl>
 		
 	@example
 		woosh.addTests('glow-170', {
@@ -256,6 +264,18 @@
 				
 				// return a value (this will be checked against the results of other tests)
 				return returnVal;
+			})
+		});
+	
+	@example
+		woosh.addTests('jq-140', {
+			'Appending elms': new woosh.Test(1000, function(test) {
+				$('<strong/>').appendTo(document.body);
+				
+				// restrict the element counting to the last loop
+				if (test.lastLoop) {
+					return $('strong').length;
+				}
 			})
 		});
 	*/
@@ -308,6 +328,7 @@
 					start = new Date();
 			
 				while (i--) {
+					this.lastLoop = !i;
 					returnVal = this._testFunc(this);
 				}
 				
@@ -319,6 +340,14 @@
 			this._result.returnVal = returnVal;
 			onComplete && onComplete(this._result);
 		},
+		/**
+			@name woosh.Test#lastLoop
+			@type number
+			@description True if the test is running its last loop
+				You can use this to restrict calculating the return
+				value to the last loop.
+		*/
+		lastLoop: false,
 		/**
 		@name woosh.Test#setResult
 		@function
@@ -450,6 +479,7 @@
 				
 				this._onEndTest = function() {
 					if (--i) {
+						test.lastLoop = !i;
 						test._testFunc(test);
 					} else {
 						test._result.result = test._result.result || ( new Date() - start );
