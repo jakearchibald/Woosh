@@ -1828,6 +1828,7 @@
 				}
 				infoDefs = {
 					'Loop Count': result.loopCount,
+					'Duration': result.duration + 'ms',
 					'Return Value': result.returnVal,
 					'Test Type': result.type
 				};
