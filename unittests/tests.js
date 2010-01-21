@@ -115,7 +115,7 @@ test('Creating instances', 5, function() {
 	equals(test2._testFunc, func, '_testFunc set');
 });
 
-test('Running a sync test', 12, function() {
+test('Running a sync test', 13, function() {
 	var testRunCount = 0,
 		onCompleteFiredCount = 0,
 		result;
@@ -147,6 +147,7 @@ test('Running a sync test', 12, function() {
 	equals(result.loopCount, 1000000, 'Result object has loopCount');
 	equals(result.type, 'Test', 'Result object has test');
 	ok(result.result >= 0, 'result is a positive number (or 0)');
+	ok(result.duration >= 0, 'duration is a positive number (or 0)');
 });
 
 test('Handling errors in a sync test', 9, function() {
@@ -218,6 +219,87 @@ test('Overriding results and units', 10, function() {
 	equals(result3.highestIsBest, true, 'result3.highestIsBest');
 });
 
+module('woosh.TimeTest');
+
+test('Creating instances', 6, function() {
+	var func = function() {};
+	
+	equals(typeof woosh.TimeTest, 'function', 'woosh.TimeTest exists');
+	
+	var test = new woosh.TimeTest(1, func);
+	ok(test instanceof woosh.TimeTest, '(new) is instance of woosh.TimeTest');
+	
+	var test2 = woosh.TimeTest(10, func);
+	ok(test2 instanceof woosh.TimeTest, '(no new) is instance of woosh.TimeTest');
+	equals(test2._loopCount, 0, '_loopCount left at 0');
+	equals(test2._result.duration, 10000, 'result _duration set');
+	equals(test2._testFunc, func, '_testFunc set');
+});
+
+test('Running a time test', 14, function() {
+	var testRunCount = 0,
+		onCompleteFiredCount = 0,
+		startTime,
+		result;
+	
+	var test = new woosh.TimeTest(2, function(testParam) {
+		if (!testRunCount) {
+			startTime = new Date;
+			equals(testParam, test, 'Test is passed in as parameter');
+		}
+		testRunCount++;
+		if (testParam.lastLoop) {
+			ok(new Date - startTime >= 2000, 'lastLoop set & test longer than 2 seconds');
+			return 'Hello';
+		}
+	});
+	
+	equals(typeof test._run, 'function', 'woosh.TimeTest#_run exists');
+	
+	test._run(function(r) {
+		result = r;
+		onCompleteFiredCount++;
+	});
+	
+	ok(testRunCount > 1, '_testFunc called more than once');
+	equals(onCompleteFiredCount, 1, '_onComplete was called correct number of times');
+	equals(test._result.returnVal, 'Hello', '_returnVal set');
+	equals(typeof test._result.result, 'number', '_result is number (' + test._result + ')');
+	ok(result instanceof woosh.Result, 'Result object provided');
+	equals(result.returnVal, 'Hello', 'Result object has returnVal');
+	ok(result.loopCount > 0, 'Result object has loopCount');
+	equals(result.type, 'TimeTest', 'Result object has test');
+	equals(result.unit, 'calls', 'Result object has calls unit');
+	equals(result.highestIsBest, true, 'Result object has highestIsBest');
+	ok(result.result >= 0, 'result is a positive number (or 0)');
+});
+
+test('Handling errors in a time test', 9, function() {
+	var undefined,
+		onCompleteFiredCount = 0,
+		testRunCount = 0,
+		result;
+	
+	var test = new woosh.TimeTest(3, function() {
+		testRunCount++
+		return undefined();
+	});
+	
+	test._run(function(r) {
+		onCompleteFiredCount++;
+		result = r;
+	});
+	equals(testRunCount, 1, '_testFunc was called only once since it errored');
+	equals(onCompleteFiredCount, 1, '_onComplete was called correct number of times');
+	equals(test._result.returnVal, undefined, '_returnVal is undefined');
+	equals(test._result.result, undefined, '_result is undefined');
+	ok(test._result.error instanceof Error, '_error is Error');
+	ok(result instanceof woosh.Result, 'Result object provided');
+	equals(result.returnVal, test._returnVal, 'Result object has returnVal');
+	equals(result.loopCount, 0, 'Result object has loopCount');
+	equals(result.type, 'TimeTest', 'Result object has test type');
+});
+
 module('woosh.AsyncTest');
 
 test('Creating instances', 6, function() {
@@ -235,7 +317,7 @@ test('Creating instances', 6, function() {
 	equals(test2._testFunc, func, '_testFunc set');
 });
 
-test('Running an async test', 10, function() {
+test('Running an async test', 11, function() {
 	stop();
 	
 	var testRunCount = 0,
@@ -267,7 +349,8 @@ test('Running an async test', 10, function() {
 		equals(onCompleteFiredCount, 1, '_onComplete was called correct number of times');
 		equals(result.returnVal, 'Hello', 'returnVal set via endTest');
 		equals(typeof result.result, 'number', 'result is number (' + test._result + ')');
-		ok(result.result >= 500, 'result indicates setTimeout callbacks have been waited for');
+		ok(result.duration >= 500, 'duration indicates setTimeout callbacks have been waited for');
+		ok(result.result >= 0, 'result greater than zero');
 		start();
 	});
 });
@@ -304,7 +387,7 @@ test('Handling errors in an async test', 6, function() {
 
 module('woosh.Result & woosh.LibraryResult');
 
-test('woosh.Result serializing & unserializing', 12, function() {
+test('woosh.Result serializing & unserializing', 13, function() {
 	var result = new woosh.Result();
 	result.result = 123;
 	result.unit   = 'fps';
@@ -312,6 +395,7 @@ test('woosh.Result serializing & unserializing', 12, function() {
 	result.error  = new Error('All went wrong');
 	result.loopCount = 100;
 	result.returnVal = 60;
+	result.duration = 3000;
 	result.highestIsBest = false;
 	var serial = result.serialize();
 	
@@ -322,6 +406,7 @@ test('woosh.Result serializing & unserializing', 12, function() {
 	equals(anotherResult.type, 'Test', 'type');
 	equals(anotherResult.error.message, 'All went wrong', 'error.message');
 	equals(anotherResult.loopCount, 100, 'loopCount');
+	equals(anotherResult.duration, 3000, 'duration');
 	equals(typeof anotherResult.returnVal, 'number', 'returnVal type');
 	equals(anotherResult.returnVal, 60, 'returnVal');
 	equals(anotherResult.highestIsBest, false, 'highestIsBest');

@@ -332,8 +332,10 @@
 					returnVal = this._testFunc(this);
 				}
 				
-				duration = new Date() - start;
-				this._result.result = this._result.result || duration;
+				this._result.duration = duration = new Date() - start;
+				if (this._result.result === undefined) {
+					this._result.result = (duration / this._loopCount);
+				}
 			} catch (e) {
 				this._result.error = e;
 			}
@@ -411,7 +413,15 @@
 		Tests that run longer have less margin of error.
 	
 	@param {Function} test The test to run.
-		The instance of {@link woosh.AsyncTest} will be the first param
+		The following params will be passed into the test function:
+		
+		<dl>
+			<dt>test</dt>
+			<dd>
+				The instance of {@link woosh.AsyncTest}, provided so you can easily
+				call instance methods on it.
+			</dd>
+		</dl>
 		
 	@example
 		woosh.addTests('glow-170', {
@@ -446,7 +456,7 @@
 	*/
 	asyncTestProto.endTest = function(returnVal) {
 		this._result.returnVal = returnVal;
-		this._onEndTest();
+		this._runNextItteration();
 	};
 	
 	(function(){
@@ -454,7 +464,7 @@
 		
 		function complete(test, onComplete) {
 			window.onerror = test._oldErrorListener;
-			test._onEndTest = function() {};
+			test._runNextItteration = function() {};
 			onComplete(test._result);
 		};
 		
@@ -477,18 +487,21 @@
 					complete(test, onComplete);
 				}
 				
-				this._onEndTest = function() {
-					if (--i) {
+				this._runNextItteration = function() {
+					if (i--) {
 						test.lastLoop = !i;
 						test._testFunc(test);
 					} else {
-						test._result.result = test._result.result || ( new Date() - start );
+						test._result.duration = ( new Date() - start );
+						if (test._result.result === undefined) {
+							test._result.result = (test._result.duration / test._result.loopCount);
+						}
 						complete(test, onComplete);
 					}
 				}
 				
 				start = new Date();
-				test._testFunc(test);
+				this._runNextItteration();
 			} catch (e) {
 				this._result.error = e;
 				complete(test, onComplete);
@@ -497,10 +510,98 @@
 	})();
 	
 	// overidden by woosh.AsyncTest#_run
-	asyncTestProto._onEndTest = function() {};
+	asyncTestProto._runNextItteration = function() {};
 	
 	// export
 	window.woosh.AsyncTest = AsyncTest;
+})();
+// woosh.TimeTest
+(function() {
+	/**
+	@name woosh.TimeTest
+	@constructor
+	@writingTests
+	@augments woosh.Test
+	@description Like {@link woosh.Test}, but runs for a fixed amount of time and counts the itterations.
+		Test instances are created within a call to {@link woosh.addTests}.
+	
+	@param {number} duration Seconds to run the test for
+		Values larger than 0.5 are recommended.
+		
+		Your test will complete when a loop is completed and the duration
+		has exceeded. The test will not stop half way through a loop.
+	
+	@param {Function} test The test to run.
+		The following params will be passed into the test function:
+		
+		<dl>
+			<dt>test</dt>
+			<dd>
+				The instance of {@link woosh.TimeTest}, provided so you can easily
+				call instance methods on it.
+			</dd>
+		</dl>
+		
+	@example
+		woosh.addTests('glow-170', {
+			'Test Name': new woosh.TimeTest(2, function(test) {
+				// do stuff
+				
+				// return a value (this will be checked against the results of other tests)
+				return returnVal;
+			})
+		});
+	*/
+	function TimeTest(duration, testFunc) {
+		if ( !(this instanceof TimeTest) ) {
+			return new TimeTest(duration, testFunc);
+		}
+		woosh.Test.call(this, 0, testFunc);
+		
+		this._result.duration = duration * 1000;
+	}
+	
+	woosh._utils.extend(TimeTest, woosh.Test);
+	var timeTestProto = TimeTest.prototype;
+	
+	/**
+		@name woosh.TimeTest#_run
+		@function
+		@description Runs the test
+		
+		@param {function} [onComplete] Called then the test is complete.
+			An instance of {@link woosh.Result} is passed as the
+			first parameter.
+	*/
+	timeTestProto._run = function(onComplete) {
+		try {
+			var loopCount = -1,
+				returnVal,
+				duration = this._result.duration,
+				start = new Date();
+		
+			while ( (new Date - start) < duration ) {
+				loopCount++;
+				this._testFunc(this);
+			}
+			
+			// call again to get the return value
+			this.lastLoop = true;
+			returnVal = this._testFunc(this);
+			
+			this._result.loopCount = loopCount;
+			if (this._result.result === undefined) {
+				this.setResult(loopCount, 'calls', true);
+			}
+		} catch (e) {
+			this._result.error = e;
+		}
+		this._result.returnVal = returnVal;
+		onComplete && onComplete(this._result);
+	}
+	
+	// export
+	woosh.TimeTest = TimeTest;
 })();
 // woosh.Result
 (function() {
@@ -516,7 +617,9 @@
 		/**
 		@name woosh.Result#result
 		@type number
-		@description The result of the test, this will be time in milliseconds by default
+		@description The result of the test, this will be time in milliseconds by default.
+			For {@link woosh.TimeTest}, this will be the number of times the test called
+			within the given time.
 		*/
 		result: undefined,
 		/**
@@ -534,7 +637,7 @@
 		/**
 		@name woosh.Result#type
 		@type string
-		@description The type of test used, 'Test' or 'AsyncTest'
+		@description The type of test used, 'Test', 'AsyncTest' or 'TimeTest'
 		*/
 		type: undefined,
 		/**
@@ -556,6 +659,13 @@
 		*/
 		loopCount: undefined,
 		/**
+		@name woosh.Result#duration
+		@type number
+		@description Amount of time in ms the test took.
+			This is the amount of time taken to run all loops together.
+		*/
+		duration: undefined,
+		/**
 		@name woosh.Result#serialize
 		@function
 		@description Convert the results object into a urlencoded string that can be later unserialized
@@ -570,6 +680,7 @@
 				type: this.type,
 				error: (this.error || '') && this.error.message,
 				loopCount: this.loopCount,
+				duration: this.duration,
 				returnVal: this.returnVal,
 				returnValType: woosh._utils.constructorName(this.returnVal),
 				highestIsBest: this.highestIsBest
@@ -594,6 +705,7 @@
 			this.type   = (obj.type && obj.type[0]) || undefined;
 			this.error  = ( obj.error && obj.error[0] && new Error(obj.error[0]) ) || null;
 			this.loopCount = ( obj.loopCount && Number(obj.loopCount[0]) ) || undefined;
+			this.duration = ( obj.duration && Number(obj.duration[0]) ) || undefined;
 			// attempt to cast the return val back to its original type
 			this.returnVal = returnValFunc && obj.returnVal ? returnValFunc(obj.returnVal[0]) : undefined;
 			this.highestIsBest = (obj.highestIsBest && obj.highestIsBest[0]) == 'true' ? true : false;
@@ -743,9 +855,20 @@
 		@name woosh.ResultComparison#loopsEqual
 		@type boolean
 		@description Were the loop counts of all tests equal?
-			Only available after all tests have ran
+			Only available after all tests have ran.
+			
+			TimeTests probably won't have equal loops, this is expected.
 		*/
 		loopsEqual: null,
+		/**
+		@name woosh.ResultComparison#durationsEqual
+		@type boolean
+		@description Were the durations of all tests equal?
+			Only available after all tests have ran.
+			
+			Other than TimeTests, this is expected to be false.
+		*/
+		durationsEqual: null,
 		/**
 		@name woosh.ResultComparison#returnValsEqual
 		@type boolean
@@ -805,6 +928,7 @@
 				firstReturnVal, returnValsEqual = true,
 				firstUnit, unitsEqual = true,
 				firstType, typesEqual = true,
+				firstDuration, durationsEqual = true,
 				resultVals = [],
 				resultValsLen = 0,
 				maxResult,
@@ -821,6 +945,7 @@
 				if (firstResult) {
 					highestIsBest = result.highestIsBest;
 					firstLoopCount = result.loopCount;
+					firstDuration = result.duration;
 					firstReturnVal = result.returnVal;
 					firstUnit = result.unit;
 					firstType = result.type;
@@ -832,6 +957,7 @@
 					// check the values are the same as first
 					if ( !firstResult ) {
 						loopsEqual = loopsEqual && (firstLoopCount == result.loopCount);
+						durationsEqual = durationsEqual && (firstDuration == result.duration);
 						returnValsEqual = returnValsEqual && (firstReturnVal == result.returnVal);
 						unitsEqual = unitsEqual && (firstUnit == result.unit);
 						typesEqual = typesEqual && ( firstType == result.type );
@@ -843,10 +969,12 @@
 			
 			// set properties
 			this.loopsEqual = loopsEqual;
+			this.durationsEqual = durationsEqual;
 			this.unitsEqual = unitsEqual;
 			this.typesEqual = typesEqual;
 			this.maxResult  = maxResult;
 			this.minResult  = minResult;
+			this.type       = typesEqual ? firstType : '';
 			this.highestIsBest   = highestIsBest;
 			this.returnValsEqual = returnValsEqual;
 		}
@@ -1692,9 +1820,9 @@
 				infoNode.appendChild( document.createTextNode(result.error.message) )
 			}
 			else if (result) {
-				// divide the result by number of loops for ms tests
+				// round the result value
 				if (result.unit == 'ms') {
-					resultText = Math.round((result.result / result.loopCount) * 10000) / 10000 + result.unit;
+					resultText = Math.round(result.result * 10000) / 10000 + result.unit;
 				} else {
 					resultText = result.result + result.unit;
 				}
@@ -1756,8 +1884,9 @@
 				testCell = resultRow.childNodes[ this._libColIndex[libraryName] ];
 				resultDifference = resultComparison.maxResult - resultComparison.minResult;
 				
+				// the result difference is 0 if all results are the same or there's only one result
 				if (resultDifference === 0) {
-					resultPercent = 0;
+					resultPercent = Number(resultComparison.highestIsBest);
 				}
 				else {
 					resultPercent = ( (result.result - resultComparison.minResult) / (resultComparison.maxResult - resultComparison.minResult) );
@@ -1806,7 +1935,8 @@
 				}
 			}
 			if ( !(resultComparison.loopsEqual && resultComparison.returnValsEqual && resultComparison.unitsEqual && resultComparison.typesEqual) ) {
-				!resultComparison.loopsEqual && 		(warningMsg += ' Tests have differing loop counts.');
+				!resultComparison.loopsEqual && resultComparison.type != 'TimeTest' (warningMsg += ' Tests have differing loop counts.');
+				!resultComparison.durationsEqual && resultComparison.type == 'TimeTest' (warningMsg += ' Tests have differing durations.');
 				!resultComparison.returnValsEqual &&	(warningMsg += ' Tests have differing return values.');
 				!resultComparison.unitsEqual && 		(warningMsg += ' Test results are of differing units.');
 				!resultComparison.typesEqual &&			(warningMsg += ' Tests are of differing types.');
