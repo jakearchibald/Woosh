@@ -1,5 +1,5 @@
 // First param is the library name, as defined in woosh.libs
-woosh.addTests('jq-132', {
+woosh.addTests('jq-140', {
 	// You can provide a test as a function:
 	'Create 100 elements': function() {
 		$('#testContainer').html( new Array(101).join('<div></div>') );
