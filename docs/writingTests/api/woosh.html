@@ -34,6 +34,8 @@
 </li>
 <li><a href="woosh.Test.html">woosh.Test</a>
 </li>
+<li><a href="woosh.TimeTest.html">woosh.TimeTest</a>
+</li>
 </ol>
 </li>
 </ol>
@@ -164,8 +166,11 @@
 																<dd>Yes</dd>
 																
 															</dl>
-															<div class="description"><p>Library to test.
-		Must be a property name within <a href="woosh.html#.libs">woosh.libs</a>.</p></div>
+															<div class="description">
+																<p>Library to test.
+</p>
+																<p>		Must be a property name within <a href="woosh.html#.libs">woosh.libs</a>.</p>
+															</div>
 														</dd>
 													
 														<dt>tests</dt>
@@ -177,8 +182,10 @@
 																<dd>Yes</dd>
 																
 															</dl>
-															<div class="description"><p>Object of tests to add for this framework.
-		Tests can either be functions, or instances of <a href="woosh.Test.html">woosh.Test</a> /
+															<div class="description">
+																<p>Object of tests to add for this framework.
+</p>
+																<p>		Tests can either be functions, or instances of <a href="woosh.Test.html">woosh.Test</a> /
 		<a href="woosh.AsyncTest.html">woosh.AsyncTest</a>. The instance of the test will be passed
 		in as the first param of the function.</p>
 
@@ -192,7 +199,8 @@
 				the previous test and the name of the next. This will only
 				call once per test, no matter what the loopCount is.
 			</dd>
-		</dl></div>
+		</dl>
+															</div>
 														</dd>
 													
 												</dl>
@@ -262,6 +270,17 @@
 								
 								<dd>
 									<p class="summary">A test to be run
+</p>
+									
+								</dd>
+							
+								
+								
+									<dt><a href="woosh.TimeTest.html"><span>TimeTest</span></a></dt>
+								
+								
+								<dd>
+									<p class="summary">Like <a href="woosh.Test.html">woosh.Test</a>, but runs for a fixed amount of time and counts the itterations.
 </p>
 									
 								</dd>

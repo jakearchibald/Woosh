@@ -13,7 +13,8 @@
 		<div id="wooshOutput">
 			<div id="wooshBanner">
 				<h1>woosh.Conductor</h1>
-				<p>Conducts the testing, views hook into this to render results</p>
+				<p>Conducts the testing and provides feedback via events.
+</p>
 			</div>
 			<div id="wooshUa"></div>
 			<div id="wooshModeSwitcher">
@@ -41,6 +42,8 @@
 </li>
 <li><a href="woosh.Test.html">woosh.Test</a>
 </li>
+<li><a href="woosh.TimeTest.html">woosh.TimeTest</a>
+</li>
 <li><a href="woosh.views.html">woosh.views</a>
 </li>
 </ol>
@@ -51,6 +54,11 @@
 			
 			<div id="content">
 				
+				
+					<h2>Description</h2>
+					
+					<p>		When writing plugins you don&#39;t need to construct one of these,
+		you&#39;ll be provided an instance via <a href="woosh.html#.ready">woosh.ready</a>.</p>
 				
 				
 				
@@ -76,7 +84,10 @@
 													<dd>Yes</dd>
 													
 												</dl>
-												<div class="description"><p>Names of libraries to be tested.</p></div>
+												<div class="description">
+													<p>Names of libraries to be tested.</p>
+													
+												</div>
 											</dd>
 										
 											<dt>onReady</dt>
@@ -88,7 +99,10 @@
 													<dd>Yes</dd>
 													
 												</dl>
-												<div class="description"><p>A function to call when the Conductor is ready to use.</p></div>
+												<div class="description">
+													<p>A function to call when the Conductor is ready to use.</p>
+													
+												</div>
 											</dd>
 										
 									</dl>
@@ -177,7 +191,7 @@
 									<dt id="testNames" class="expandable"><span>testNames</span></dt>
 								
 								<dd>
-									<p class="summary">Names of tests to run</p>
+									<p class="summary">The names of all tests provided</p>
 									
 										<div class="apiItemDetail">
 											
@@ -207,7 +221,7 @@
 									<dt id="testsToRun" class="expandable"><span>testsToRun</span></dt>
 								
 								<dd>
-									<p class="summary">Names of tests to run
+									<p class="summary">Subset of tests to run
 </p>
 									
 										<div class="apiItemDetail">
@@ -225,7 +239,10 @@
 											<pre class="signiture prettyprint"><code>myConductor.testsToRun</code></pre>
 											
 												<h3>Description</h3>
-												<div class="symbolDescription description"><p>			If empty, all tests will run</p></div>
+												<div class="symbolDescription description"><p>			The user may not choose to run all tests. This value will
+			be final once the &#39;start&#39; event fires.</p>
+
+<p>			If empty, all tests will run</p></div>
 											
 											
 											
@@ -300,7 +317,10 @@
 																<dd>Yes</dd>
 																
 															</dl>
-															<div class="description"><p>Object to fire events on</p></div>
+															<div class="description">
+																<p>Object to fire events on</p>
+																
+															</div>
 														</dd>
 													
 														<dt>thisVal</dt>
@@ -312,7 +332,10 @@
 																<dd>Yes</dd>
 																
 															</dl>
-															<div class="description"><p>What &#39;this&#39; should equal in the callbacks</p></div>
+															<div class="description">
+																<p>What &#39;this&#39; should equal in the callbacks</p>
+																
+															</div>
 														</dd>
 													
 												</dl>

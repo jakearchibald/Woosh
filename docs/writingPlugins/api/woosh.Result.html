@@ -41,6 +41,8 @@
 </li>
 <li><a href="woosh.Test.html">woosh.Test</a>
 </li>
+<li><a href="woosh.TimeTest.html">woosh.TimeTest</a>
+</li>
 <li><a href="woosh.views.html">woosh.views</a>
 </li>
 </ol>
@@ -81,6 +83,40 @@
 					
 						<h2>Instance Properties</h2>
 						<dl class="apiList">
+							
+								
+								
+								
+									<dt id="duration" class="expandable"><span>duration</span></dt>
+								
+								<dd>
+									<p class="summary">Amount of time in ms the test took.
+</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+													<dt>Type</dt>
+													<dd>number</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myResult.duration</code></pre>
+											
+												<h3>Description</h3>
+												<div class="symbolDescription description"><p>			This is the amount of time taken to run all loops together.</p></div>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
 							
 								
 								
@@ -178,7 +214,8 @@
 									<dt id="result" class="expandable"><span>result</span></dt>
 								
 								<dd>
-									<p class="summary">The result of the test, this will be time in milliseconds by default</p>
+									<p class="summary">The result of the test, this will be time in milliseconds by default.
+</p>
 									
 										<div class="apiItemDetail">
 											
@@ -193,6 +230,10 @@
 											
 											<h3>Synopsis</h3>
 											<pre class="signiture prettyprint"><code>myResult.result</code></pre>
+											
+												<h3>Description</h3>
+												<div class="symbolDescription description"><p>			For <a href="woosh.TimeTest.html">woosh.TimeTest</a>, this will be the number of times the test called
+			within the given time.</p></div>
 											
 											
 											
@@ -238,7 +279,7 @@
 									<dt id="type" class="expandable"><span>type</span></dt>
 								
 								<dd>
-									<p class="summary">The type of test used, &#39;Test&#39; or &#39;AsyncTest&#39;</p>
+									<p class="summary">The type of test used, &#39;Test&#39;, &#39;AsyncTest&#39; or &#39;TimeTest&#39;</p>
 									
 										<div class="apiItemDetail">
 											
@@ -299,53 +340,6 @@
 					
 						<h2>Instance Methods</h2>
 						<dl class="apiList">
-							
-								
-								
-								
-									<dt id="populateFromTest" class="expandable"><span>populateFromTest</span></dt>
-								
-								<dd>
-									<p class="summary">Populates values from a completed test object</p>
-									
-										<div class="apiItemDetail">
-											
-											<dl class="attributes">
-												
-												
-												
-											</dl>
-											
-											<h3>Synopsis</h3>
-											<pre class="signiture prettyprint"><code>myResult.populateFromTest(test)</code></pre>
-											
-											
-												<h3>Returns</h3>
-												<div class="return"><p> this</p></div>
-											
-											
-												<h3>Parameters</h3>
-												<dl class="params">
-													
-														<dt>test</dt>
-														<dd>
-															<dl class="attributes">
-																<dt>Type</dt>
-																<dd>woosh.Test<dd>
-																<dt>Required</dt>
-																<dd>Yes</dd>
-																
-															</dl>
-															<div class="description"><p>Test object to populate from</p></div>
-														</dd>
-													
-												</dl>
-											
-											
-											
-										</div>
-									
-								</dd>
 							
 								
 								
@@ -417,7 +411,10 @@
 																<dd>Yes</dd>
 																
 															</dl>
-															<div class="description"><p>Serialized string</p></div>
+															<div class="description">
+																<p>Serialized string</p>
+																
+															</div>
 														</dd>
 													
 												</dl>

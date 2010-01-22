@@ -49,6 +49,8 @@
 <li><span class="active">woosh.ResultComparison</span></li>
 <li><a href="woosh.Test.html">woosh.Test</a>
 </li>
+<li><a href="woosh.TimeTest.html">woosh.TimeTest</a>
+</li>
 <li><a href="woosh.views.html">woosh.views</a>
 </li>
 </ol>
@@ -84,7 +86,10 @@
 													<dd>Yes</dd>
 													
 												</dl>
-												<div class="description"><p>A object of woosh.Result, keyed by library name</p></div>
+												<div class="description">
+													<p>A object of woosh.Result, keyed by library name</p>
+													
+												</div>
 											</dd>
 										
 									</dl>
@@ -106,6 +111,42 @@
 					
 						<h2>Instance Properties</h2>
 						<dl class="apiList">
+							
+								
+								
+								
+									<dt id="durationsEqual" class="expandable"><span>durationsEqual</span></dt>
+								
+								<dd>
+									<p class="summary">Were the durations of all tests equal?
+</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+												
+													<dt>Type</dt>
+													<dd>boolean</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myResultComparison.durationsEqual</code></pre>
+											
+												<h3>Description</h3>
+												<div class="symbolDescription description"><p>			Only available after all tests have ran.</p>
+
+<p>			Other than TimeTests, this is expected to be false.</p></div>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
 							
 								
 								
@@ -165,7 +206,9 @@
 											<pre class="signiture prettyprint"><code>myResultComparison.loopsEqual</code></pre>
 											
 												<h3>Description</h3>
-												<div class="symbolDescription description"><p>			Only available after all tests have ran</p></div>
+												<div class="symbolDescription description"><p>			Only available after all tests have ran.</p>
+
+<p>			TimeTests probably won&#39;t have equal loops, this is expected.</p></div>
 											
 											
 											

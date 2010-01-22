@@ -13,7 +13,8 @@
 		<div id="wooshOutput">
 			<div id="wooshBanner">
 				<h1>woosh.Conductor</h1>
-				<p>Conducts the testing, views hook into this to render results</p>
+				<p>Conducts the testing and provides feedback via events.
+</p>
 			</div>
 			<div id="wooshUa"></div>
 			<div id="wooshModeSwitcher">
@@ -35,6 +36,8 @@
 </li>
 <li><a href="woosh.Test.html">woosh.Test</a>
 </li>
+<li><a href="woosh.TimeTest.html">woosh.TimeTest</a>
+</li>
 </ol>
 </li>
 </ol>
@@ -43,6 +46,11 @@
 			
 			<div id="content">
 				
+				
+					<h2>Description</h2>
+					
+					<p>		When writing plugins you don&#39;t need to construct one of these,
+		you&#39;ll be provided an instance via <a href="woosh.html#.ready">woosh.ready</a>.</p>
 				
 				
 				
@@ -68,7 +76,10 @@
 													<dd>Yes</dd>
 													
 												</dl>
-												<div class="description"><p>Names of libraries to be tested.</p></div>
+												<div class="description">
+													<p>Names of libraries to be tested.</p>
+													
+												</div>
 											</dd>
 										
 											<dt>onReady</dt>
@@ -80,7 +91,10 @@
 													<dd>Yes</dd>
 													
 												</dl>
-												<div class="description"><p>A function to call when the Conductor is ready to use.</p></div>
+												<div class="description">
+													<p>A function to call when the Conductor is ready to use.</p>
+													
+												</div>
 											</dd>
 										
 									</dl>

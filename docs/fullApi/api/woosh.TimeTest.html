@@ -4,7 +4,7 @@
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8">
 		<meta name="generator" content="JsDoc Toolkit">
-		<title>Woosh Documentation - woosh.AsyncTest</title>
+		<title>Woosh Documentation - woosh.TimeTest</title>
 		<link rel="stylesheet" type="text/css" href="../../../assets/docstyle.css">
 		<script type="text/javascript" src="../../../libs/glow-170/core/core.js"></script>
 		<script type="text/javascript" src="../../../assets/docs.js"></script>
@@ -12,15 +12,15 @@
 	<body>
 		<div id="wooshOutput">
 			<div id="wooshBanner">
-				<h1>woosh.AsyncTest</h1>
-				<p>Like <a href="woosh.Test.html">woosh.Test</a>, but allows async tests.
+				<h1>woosh.TimeTest</h1>
+				<p>Like <a href="woosh.Test.html">woosh.Test</a>, but runs for a fixed amount of time and counts the itterations.
 </p>
 			</div>
 			<div id="wooshUa"></div>
 			<div id="wooshModeSwitcher">
 				<h2 id="docTypeHeading">Documentation Type</h2>
-				<ul><li><a href="../../writingTests/api/woosh.AsyncTest.html">Writing Tests</a></li>
-<li><a href="../../writingPlugins/api/woosh.AsyncTest.html">Writing Plugins</a></li>
+				<ul><li><a href="../../writingTests/api/woosh.TimeTest.html">Writing Tests</a></li>
+<li><a href="../../writingPlugins/api/woosh.TimeTest.html">Writing Plugins</a></li>
 <li><span class="active">Full API</span></li></ul>
 			</div>
 			
@@ -40,7 +40,8 @@
 </li>
 <li><a href="woosh._utils.html">woosh._utils</a>
 </li>
-<li><span class="active">woosh.AsyncTest</span></li>
+<li><a href="woosh.AsyncTest.html">woosh.AsyncTest</a>
+</li>
 <li><a href="woosh.Conductor.html">woosh.Conductor</a>
 </li>
 <li><a href="woosh.LibraryResult.html">woosh.LibraryResult</a>
@@ -51,8 +52,7 @@
 </li>
 <li><a href="woosh.Test.html">woosh.Test</a>
 </li>
-<li><a href="woosh.TimeTest.html">woosh.TimeTest</a>
-</li>
+<li><span class="active">woosh.TimeTest</span></li>
 <li><a href="woosh.views.html">woosh.views</a>
 </li>
 </ol>
@@ -69,9 +69,6 @@
 						<p>Extends <a href="woosh.Test.html">woosh.Test</a></p>
 					
 					<p>		Test instances are created within a call to <a href="woosh.html#.addTests">woosh.addTests</a>.</p>
-
-<p>		This test waits for <a href="woosh.AsyncTest.html#endTest">woosh.AsyncTest#endTest</a> to be
-		called before the test is complete.</p>
 				
 				
 				
@@ -83,12 +80,12 @@
 							<div class="summary"></div>
 							<div class="apiItemDetail">
 								<h3>Synopsis</h3>
-								<pre class="signiture prettyprint"><code>var myAsyncTest = new woosh.AsyncTest(loopCount, test)</code></pre>
+								<pre class="signiture prettyprint"><code>var myTimeTest = new woosh.TimeTest(duration, test)</code></pre>
 								
 									<h3>Parameters</h3>
 									<dl class="params">
 										
-											<dt>loopCount</dt>
+											<dt>duration</dt>
 											<dd>
 												<dl class="attributes">
 													<dt>Type</dt>
@@ -98,9 +95,12 @@
 													
 												</dl>
 												<div class="description">
-													<p>Number of times to run the test.
+													<p>Seconds to run the test for
 </p>
-													<p>		Tests that run longer have less margin of error.</p>
+													<p>		Values larger than 0.5 are recommended.</p>
+
+<p>		Your test will complete when a loop is completed and the duration
+		has exceeded. The test will not stop half way through a loop.</p>
 												</div>
 											</dd>
 										
@@ -121,7 +121,7 @@
 		<dl>
 			<dt>test</dt>
 			<dd>
-				The instance of <a href="woosh.AsyncTest.html">woosh.AsyncTest</a>, provided so you can easily
+				The instance of <a href="woosh.TimeTest.html">woosh.TimeTest</a>, provided so you can easily
 				call instance methods on it.
 			</dd>
 		</dl>
@@ -134,11 +134,11 @@
 									<h3>Examples</h3>
 									
 										<pre class="example prettyprint"><code>woosh.addTests(&#39;glow-170&#39;, {
-    &#39;Test Name&#39;: new woosh.AsyncTest(1000, function(test) {
+    &#39;Test Name&#39;: new woosh.TimeTest(2, function(test) {
         // do stuff
         
         // return a value (this will be checked against the results of other tests)
-        test.endTest(returnVal);
+        return returnVal;
     })
 });</code></pre>
 									
@@ -321,113 +321,6 @@
 								
 								
 								
-									<dt id="endTest" class="expandable"><span>endTest</span></dt>
-								
-								<dd>
-									<p class="summary">Must be called within an async test to end the test</p>
-									
-										<div class="apiItemDetail">
-											
-											<dl class="attributes">
-												
-												
-												
-											</dl>
-											
-											<h3>Synopsis</h3>
-											<pre class="signiture prettyprint"><code>myAsyncTest.endTest(returnVal)</code></pre>
-											
-											
-											
-												<h3>Parameters</h3>
-												<dl class="params">
-													
-														<dt>returnVal</dt>
-														<dd>
-															<dl class="attributes">
-																<dt>Type</dt>
-																<dd>Object<dd>
-																<dt>Required</dt>
-																<dd>Yes</dd>
-																
-															</dl>
-															<div class="description">
-																<p>The value to return.
-</p>
-																<p>		In sync tests you can simply return a value, but in async tests you must provide
-		the return value via this method.</p>
-															</div>
-														</dd>
-													
-												</dl>
-											
-											
-											
-										</div>
-									
-								</dd>
-							
-								
-								
-								
-									<dt id="_run" class="expandable"><span>_run</span></dt>
-								
-								<dd>
-									<p class="summary">Runs the test</p>
-									
-										<div class="apiItemDetail">
-											
-											<dl class="attributes">
-												
-													<dt>Private</dt>
-													<dd>Yes</dd>
-												
-												
-													<dt>From</dt>
-													<dd><a href="woosh.Test.html">woosh.Test</a></dd>
-												
-												
-											</dl>
-											
-											<h3>Synopsis</h3>
-											<pre class="signiture prettyprint"><code>myTest._run(onComplete)</code></pre>
-											
-											
-											
-												<h3>Parameters</h3>
-												<dl class="params">
-													
-														<dt>onComplete</dt>
-														<dd>
-															<dl class="attributes">
-																<dt>Type</dt>
-																<dd>function<dd>
-																<dt>Required</dt>
-																<dd>No</dd>
-																
-																	<dt>Default</dt>
-																	<dd></dd>
-																
-															</dl>
-															<div class="description">
-																<p>Called then the test is complete.
-</p>
-																<p>				An instance of <a href="woosh.Result.html">woosh.Result</a> is passed as the
-				first parameter.</p>
-															</div>
-														</dd>
-													
-												</dl>
-											
-											
-											
-										</div>
-									
-								</dd>
-							
-								
-								
-								
 									<dt id="setResult" class="expandable"><span>setResult</span></dt>
 								
 								<dd>
@@ -537,6 +430,61 @@ woosh.addTests(&#39;glow-170&#39;, {
     })
 });</code></pre>
 												
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
+									<dt id="_run" class="expandable"><span>_run</span></dt>
+								
+								<dd>
+									<p class="summary">Runs the test</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+													<dt>Private</dt>
+													<dd>Yes</dd>
+												
+												
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myTimeTest._run(onComplete)</code></pre>
+											
+											
+											
+												<h3>Parameters</h3>
+												<dl class="params">
+													
+														<dt>onComplete</dt>
+														<dd>
+															<dl class="attributes">
+																<dt>Type</dt>
+																<dd>function<dd>
+																<dt>Required</dt>
+																<dd>No</dd>
+																
+																	<dt>Default</dt>
+																	<dd></dd>
+																
+															</dl>
+															<div class="description">
+																<p>Called then the test is complete.
+</p>
+																<p>			An instance of <a href="woosh.Result.html">woosh.Result</a> is passed as the
+			first parameter.</p>
+															</div>
+														</dd>
+													
+												</dl>
+											
 											
 											
 										</div>

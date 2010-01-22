@@ -50,6 +50,8 @@
 </li>
 <li><a href="woosh.Test.html">woosh.Test</a>
 </li>
+<li><a href="woosh.TimeTest.html">woosh.TimeTest</a>
+</li>
 <li><a href="woosh.views.html">woosh.views</a>
 </li>
 </ol>
@@ -231,8 +233,12 @@
 											<pre class="signiture prettyprint"><code>woosh._pageMode</code></pre>
 											
 												<h3>Description</h3>
-												<div class="symbolDescription description"><p>		&#39;conducting&#39;:  Will create frames for libraries to be tested
-		   &#39;testing&#39;:  Will load a library onto the page and create a LibraryTest object</p></div>
+												<div class="symbolDescription description">		<dl>
+			<dt>'conducting'</dt>
+			<dd>Will create frames for libraries to be tested</dd>
+			<dt>'testing'</dt>
+			<dd>Will load a library onto the page and create a LibraryTest object</dd>
+		</dl></div>
 											
 											
 											
@@ -266,43 +272,6 @@
 											
 											<h3>Synopsis</h3>
 											<pre class="signiture prettyprint"><code>woosh._root</code></pre>
-											
-											
-											
-											
-											
-										</div>
-									
-								</dd>
-							
-								
-								
-								
-									<dt id="._savedLibraryResult" class="expandable"><span>_savedLibraryResult</span></dt>
-								
-								<dd>
-									<p class="summary">A resultset from a previous session
-</p>
-									
-										<div class="apiItemDetail">
-											
-											<dl class="attributes">
-												
-													<dt>Private</dt>
-													<dd>Yes</dd>
-												
-												
-												
-													<dt>Type</dt>
-													<dd>woosh.LibraryResult</dd>
-												
-											</dl>
-											
-											<h3>Synopsis</h3>
-											<pre class="signiture prettyprint"><code>woosh._savedLibraryResult</code></pre>
-											
-												<h3>Description</h3>
-												<div class="symbolDescription description"><p>		Currently this is unserialized into window.name</p></div>
 											
 											
 											
@@ -416,7 +385,10 @@
 																<dd>Yes</dd>
 																
 															</dl>
-															<div class="description"><p>The conductor running the test</p></div>
+															<div class="description">
+																<p>The conductor running the test</p>
+																
+															</div>
 														</dd>
 													
 														<dt>outputElement</dt>
@@ -428,7 +400,10 @@
 																<dd>Yes</dd>
 																
 															</dl>
-															<div class="description"><p>An element to output to</p></div>
+															<div class="description">
+																<p>An element to output to</p>
+																
+															</div>
 														</dd>
 													
 												</dl>
@@ -481,8 +456,11 @@
 																<dd>Yes</dd>
 																
 															</dl>
-															<div class="description"><p>Library to test.
-		Must be a property name within <a href="woosh.html#.libs">woosh.libs</a>.</p></div>
+															<div class="description">
+																<p>Library to test.
+</p>
+																<p>		Must be a property name within <a href="woosh.html#.libs">woosh.libs</a>.</p>
+															</div>
 														</dd>
 													
 														<dt>tests</dt>
@@ -494,8 +472,10 @@
 																<dd>Yes</dd>
 																
 															</dl>
-															<div class="description"><p>Object of tests to add for this framework.
-		Tests can either be functions, or instances of <a href="woosh.Test.html">woosh.Test</a> /
+															<div class="description">
+																<p>Object of tests to add for this framework.
+</p>
+																<p>		Tests can either be functions, or instances of <a href="woosh.Test.html">woosh.Test</a> /
 		<a href="woosh.AsyncTest.html">woosh.AsyncTest</a>. The instance of the test will be passed
 		in as the first param of the function.</p>
 
@@ -509,7 +489,8 @@
 				the previous test and the name of the next. This will only
 				call once per test, no matter what the loopCount is.
 			</dd>
-		</dl></div>
+		</dl>
+															</div>
 														</dd>
 													
 												</dl>
@@ -550,33 +531,6 @@
 								
 								
 								
-									<dt id=".deleteSavedLibraryResult" class="expandable"><span>deleteSavedLibraryResult</span></dt>
-								
-								<dd>
-									<p class="summary">Clear the saved result set</p>
-									
-										<div class="apiItemDetail">
-											
-											<dl class="attributes">
-												
-												
-												
-											</dl>
-											
-											<h3>Synopsis</h3>
-											<pre class="signiture prettyprint"><code>woosh.deleteSavedLibraryResult()</code></pre>
-											
-											
-											
-											
-											
-										</div>
-									
-								</dd>
-							
-								
-								
-								
 									<dt id=".ready" class="expandable"><span>ready</span></dt>
 								
 								<dd>
@@ -607,9 +561,12 @@
 																<dd>Yes</dd>
 																
 															</dl>
-															<div class="description"><p>Function to call
-			The callback is given 2 params, the <a href="woosh.Conductor.html">woosh.Conductor</a> in
-			use and an element to output view elements to.</p></div>
+															<div class="description">
+																<p>Function to call
+</p>
+																<p>			The callback is given 2 params, the <a href="woosh.Conductor.html">woosh.Conductor</a> in
+			use and an element to output view elements to.</p>
+															</div>
 														</dd>
 													
 												</dl>
@@ -621,50 +578,6 @@
     new BarChart(conductor, outputElement);
 });</code></pre>
 												
-											
-											
-										</div>
-									
-								</dd>
-							
-								
-								
-								
-									<dt id=".saveLibraryResult" class="expandable"><span>saveLibraryResult</span></dt>
-								
-								<dd>
-									<p class="summary">Save a resultset to a persistent location</p>
-									
-										<div class="apiItemDetail">
-											
-											<dl class="attributes">
-												
-												
-												
-											</dl>
-											
-											<h3>Synopsis</h3>
-											<pre class="signiture prettyprint"><code>woosh.saveLibraryResult(libraryResult)</code></pre>
-											
-											
-											
-												<h3>Parameters</h3>
-												<dl class="params">
-													
-														<dt>libraryResult</dt>
-														<dd>
-															<dl class="attributes">
-																<dt>Type</dt>
-																<dd>woosh.LibraryResult<dd>
-																<dt>Required</dt>
-																<dd>Yes</dd>
-																
-															</dl>
-															<div class="description"><p>Results to save</p></div>
-														</dd>
-													
-												</dl>
-											
 											
 											
 										</div>
@@ -732,7 +645,8 @@
 								
 								
 								<dd>
-									<p class="summary">Conducts the testing, views hook into this to render results</p>
+									<p class="summary">Conducts the testing and provides feedback via events.
+</p>
 									
 								</dd>
 							
@@ -773,6 +687,17 @@
 								
 								<dd>
 									<p class="summary">A test to be run
+</p>
+									
+								</dd>
+							
+								
+								
+									<dt><a href="woosh.TimeTest.html"><span>TimeTest</span></a></dt>
+								
+								
+								<dd>
+									<p class="summary">Like <a href="woosh.Test.html">woosh.Test</a>, but runs for a fixed amount of time and counts the itterations.
 </p>
 									
 								</dd>

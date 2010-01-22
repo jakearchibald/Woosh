@@ -4,7 +4,7 @@
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8">
 		<meta name="generator" content="JsDoc Toolkit">
-		<title>Woosh Documentation - woosh.Test</title>
+		<title>Woosh Documentation - woosh.TimeTest</title>
 		<link rel="stylesheet" type="text/css" href="../../../assets/docstyle.css">
 		<script type="text/javascript" src="../../../libs/glow-170/core/core.js"></script>
 		<script type="text/javascript" src="../../../assets/docs.js"></script>
@@ -12,15 +12,15 @@
 	<body>
 		<div id="wooshOutput">
 			<div id="wooshBanner">
-				<h1>woosh.Test</h1>
-				<p>A test to be run
+				<h1>woosh.TimeTest</h1>
+				<p>Like <a href="woosh.Test.html">woosh.Test</a>, but runs for a fixed amount of time and counts the itterations.
 </p>
 			</div>
 			<div id="wooshUa"></div>
 			<div id="wooshModeSwitcher">
 				<h2 id="docTypeHeading">Documentation Type</h2>
-				<ul><li><span class="active">Writing Tests</span></li><li><a href="../../writingPlugins/api/woosh.Test.html">Writing Plugins</a></li>
-<li><a href="../../fullApi/api/woosh.Test.html">Full API</a></li>
+				<ul><li><span class="active">Writing Tests</span></li><li><a href="../../writingPlugins/api/woosh.TimeTest.html">Writing Plugins</a></li>
+<li><a href="../../fullApi/api/woosh.TimeTest.html">Full API</a></li>
 </ul>
 			</div>
 			
@@ -34,9 +34,9 @@
 </li>
 <li><a href="woosh.AsyncTest.html">woosh.AsyncTest</a>
 </li>
-<li><span class="active">woosh.Test</span></li>
-<li><a href="woosh.TimeTest.html">woosh.TimeTest</a>
+<li><a href="woosh.Test.html">woosh.Test</a>
 </li>
+<li><span class="active">woosh.TimeTest</span></li>
 </ol>
 </li>
 </ol>
@@ -47,6 +47,8 @@
 				
 				
 					<h2>Description</h2>
+					
+						<p>Extends <a href="woosh.Test.html">woosh.Test</a></p>
 					
 					<p>		Test instances are created within a call to <a href="woosh.html#.addTests">woosh.addTests</a>.</p>
 				
@@ -60,12 +62,12 @@
 							<div class="summary"></div>
 							<div class="apiItemDetail">
 								<h3>Synopsis</h3>
-								<pre class="signiture prettyprint"><code>var myTest = new woosh.Test(loopCount, test)</code></pre>
+								<pre class="signiture prettyprint"><code>var myTimeTest = new woosh.TimeTest(duration, test)</code></pre>
 								
 									<h3>Parameters</h3>
 									<dl class="params">
 										
-											<dt>loopCount</dt>
+											<dt>duration</dt>
 											<dd>
 												<dl class="attributes">
 													<dt>Type</dt>
@@ -75,9 +77,12 @@
 													
 												</dl>
 												<div class="description">
-													<p>Number of times to run the test.
+													<p>Seconds to run the test for
 </p>
-													<p>		Tests that run longer have less margin of error.</p>
+													<p>		Values larger than 0.5 are recommended.</p>
+
+<p>		Your test will complete when a loop is completed and the duration
+		has exceeded. The test will not stop half way through a loop.</p>
 												</div>
 											</dd>
 										
@@ -98,7 +103,7 @@
 		<dl>
 			<dt>test</dt>
 			<dd>
-				The instance of <a href="woosh.Test.html">woosh.Test</a>, provided so you can easily
+				The instance of <a href="woosh.TimeTest.html">woosh.TimeTest</a>, provided so you can easily
 				call instance methods on it.
 			</dd>
 		</dl>
@@ -111,22 +116,11 @@
 									<h3>Examples</h3>
 									
 										<pre class="example prettyprint"><code>woosh.addTests(&#39;glow-170&#39;, {
-    &#39;Test Name&#39;: new woosh.Test(1000, function(test) {
+    &#39;Test Name&#39;: new woosh.TimeTest(2, function(test) {
         // do stuff
         
         // return a value (this will be checked against the results of other tests)
         return returnVal;
-    })
-});</code></pre>
-									
-										<pre class="example prettyprint"><code>woosh.addTests(&#39;jq-140&#39;, {
-    &#39;Appending elms&#39;: new woosh.Test(1000, function(test) {
-        $(&#39;&lt;strong/&gt;&#39;).appendTo(document.body);
-        
-        // restrict the element counting to the last loop
-        if (test.lastLoop) {
-            return $(&#39;strong&#39;).length;
-        }
     })
 });</code></pre>
 									
@@ -164,6 +158,9 @@
 											
 											<dl class="attributes">
 												
+												
+													<dt>From</dt>
+													<dd><a href="woosh.Test.html">woosh.Test</a></dd>
 												
 												
 											</dl>

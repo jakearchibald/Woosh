@@ -43,6 +43,8 @@
 </li>
 <li><a href="woosh.Test.html">woosh.Test</a>
 </li>
+<li><a href="woosh.TimeTest.html">woosh.TimeTest</a>
+</li>
 <li><a href="woosh.views.html">woosh.views</a>
 </li>
 </ol>
@@ -87,8 +89,11 @@
 													<dd>Yes</dd>
 													
 												</dl>
-												<div class="description"><p>Number of times to run the test
-		Tests that run longer have less margin of error.</p></div>
+												<div class="description">
+													<p>Number of times to run the test.
+</p>
+													<p>		Tests that run longer have less margin of error.</p>
+												</div>
 											</dd>
 										
 											<dt>test</dt>
@@ -100,8 +105,19 @@
 													<dd>Yes</dd>
 													
 												</dl>
-												<div class="description"><p>The test to run.
-		The instance of <a href="woosh.AsyncTest.html">woosh.AsyncTest</a> will be the first param</p></div>
+												<div class="description">
+													<p>The test to run.
+</p>
+													<p>		The following params will be passed into the test function:</p>
+
+		<dl>
+			<dt>test</dt>
+			<dd>
+				The instance of <a href="woosh.AsyncTest.html">woosh.AsyncTest</a>, provided so you can easily
+				call instance methods on it.
+			</dd>
+		</dl>
+												</div>
 											</dd>
 										
 									</dl>
@@ -132,6 +148,49 @@
 					
 				
 					
+					
+						<h2>Instance Properties</h2>
+						<dl class="apiList">
+							
+								
+								
+								
+									<dt id="lastLoop" class="expandable"><span>lastLoop</span></dt>
+								
+								<dd>
+									<p class="summary">True if the test is running its last loop
+</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+												
+													<dt>From</dt>
+													<dd><a href="woosh.Test.html">woosh.Test</a></dd>
+												
+												
+													<dt>Type</dt>
+													<dd>number</dd>
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myTest.lastLoop</code></pre>
+											
+												<h3>Description</h3>
+												<div class="symbolDescription description"><p>				You can use this to restrict calculating the return
+				value to the last loop.</p></div>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+						</dl>
 					
 				
 					
@@ -172,9 +231,12 @@
 																<dd>Yes</dd>
 																
 															</dl>
-															<div class="description"><p>The value to return.
-		In sync tests you can simply return a value, but in async tests you must provide
-		the return value via this method.</p></div>
+															<div class="description">
+																<p>The value to return.
+</p>
+																<p>		In sync tests you can simply return a value, but in async tests you must provide
+		the return value via this method.</p>
+															</div>
 														</dd>
 													
 												</dl>
@@ -188,10 +250,10 @@
 								
 								
 								
-									<dt id="result" class="expandable"><span>result</span></dt>
+									<dt id="setResult" class="expandable"><span>setResult</span></dt>
 								
 								<dd>
-									<p class="summary">Change the result of the test.
+									<p class="summary">Manually set the result of the test.
 </p>
 									
 										<div class="apiItemDetail">
@@ -206,7 +268,7 @@
 											</dl>
 											
 											<h3>Synopsis</h3>
-											<pre class="signiture prettyprint"><code>myTest.result(result, unit, highestIsBest)</code></pre>
+											<pre class="signiture prettyprint"><code>myTest.setResult(result, unit, highestIsBest)</code></pre>
 											
 												<h3>Description</h3>
 												<div class="symbolDescription description"><p>			By default the result is the time the test took to run in milliseconds.
@@ -230,7 +292,10 @@
 																<dd>Yes</dd>
 																
 															</dl>
-															<div class="description"><p>The result value as a number</p></div>
+															<div class="description">
+																<p>The result value as a number</p>
+																
+															</div>
 														</dd>
 													
 														<dt>unit</dt>
@@ -245,7 +310,10 @@
 																	<dd>&#39;ms&#39;</dd>
 																
 															</dl>
-															<div class="description"><p>The unit for the result</p></div>
+															<div class="description">
+																<p>The unit for the result</p>
+																
+															</div>
 														</dd>
 													
 														<dt>highestIsBest</dt>
@@ -260,7 +328,10 @@
 																	<dd>false</dd>
 																
 															</dl>
-															<div class="description"><p>Treat high numbers as better than low numbers?</p></div>
+															<div class="description">
+																<p>Treat high numbers as better than low numbers?</p>
+																
+															</div>
 														</dd>
 													
 												</dl>
@@ -279,7 +350,7 @@ woosh.addTests(&#39;glow-170&#39;, {
             },
             onComplete: function() {
                 // set the frames per second as the result
-                test.result(framesRendered/3, &#39;fps&#39;, true);
+                test.setResult(framesRendered/3, &#39;fps&#39;, true);
                 test.endTest();
             }
         });
