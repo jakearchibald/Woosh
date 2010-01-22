@@ -1935,7 +1935,15 @@
 					testCell.style.fontWeight = 'bold';
 				}
 			}
-			if ( !(resultComparison.loopsEqual && resultComparison.returnValsEqual && resultComparison.unitsEqual && resultComparison.typesEqual) ) {
+			if (
+				!(
+					(resultComparison.type == 'TimeTest' || resultComparison.loopsEqual) &&
+					(resultComparison.type != 'TimeTest' || resultComparison.durationsEqual) &&
+					resultComparison.returnValsEqual &&
+					resultComparison.unitsEqual &&
+					resultComparison.typesEqual
+				)
+			) {	
 				!resultComparison.loopsEqual && resultComparison.type != 'TimeTest' && (warningMsg += ' Tests have differing loop counts.');
 				!resultComparison.durationsEqual && resultComparison.type == 'TimeTest' && (warningMsg += ' Tests have differing durations.');
 				!resultComparison.returnValsEqual &&	(warningMsg += ' Tests have differing return values.');
