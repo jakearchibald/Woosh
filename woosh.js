@@ -1936,8 +1936,8 @@
 				}
 			}
 			if ( !(resultComparison.loopsEqual && resultComparison.returnValsEqual && resultComparison.unitsEqual && resultComparison.typesEqual) ) {
-				!resultComparison.loopsEqual && resultComparison.type != 'TimeTest' (warningMsg += ' Tests have differing loop counts.');
-				!resultComparison.durationsEqual && resultComparison.type == 'TimeTest' (warningMsg += ' Tests have differing durations.');
+				!resultComparison.loopsEqual && resultComparison.type != 'TimeTest' && (warningMsg += ' Tests have differing loop counts.');
+				!resultComparison.durationsEqual && resultComparison.type == 'TimeTest' && (warningMsg += ' Tests have differing durations.');
 				!resultComparison.returnValsEqual &&	(warningMsg += ' Tests have differing return values.');
 				!resultComparison.unitsEqual && 		(warningMsg += ' Test results are of differing units.');
 				!resultComparison.typesEqual &&			(warningMsg += ' Tests are of differing types.');
