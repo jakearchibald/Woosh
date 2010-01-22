@@ -345,6 +345,7 @@
 		/**
 			@name woosh.Test#lastLoop
 			@type number
+			@writingTests
 			@description True if the test is running its last loop
 				You can use this to restrict calculating the return
 				value to the last loop.
