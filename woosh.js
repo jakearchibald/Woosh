@@ -1317,6 +1317,11 @@
 			
 		iframe.className = 'wooshCreated';
 		function iframeonload() {
+			// NetFront on the PS3 fires onload twice, thanks.
+			if (iframeonload._hasCalled) {
+				return;
+			}
+			iframeonload._hasCalled = true;
 			/**
 			@name woosh._TestFrame#window
 			@type Window
