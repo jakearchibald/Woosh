@@ -630,7 +630,7 @@
 	*/
 	function DummyTest(type, loopCount, duration, returnVal, result, unit, highestIsBest) {
 		if ( !(this instanceof DummyTest) ) {
-			return new DummyTest(result, unit, highestIsBest);
+			return new DummyTest(type, loopCount, duration, returnVal, result, unit, highestIsBest);
 		}
 		
 		var dummyTest = this;
@@ -646,23 +646,20 @@
 			error: (typeof result == 'string') && new Error(result)
 		};
 		
-		woosh.Test.call(this, 1, function(test) {
-			test.setResult(dummyTest._dummyData.result, dummyTest._dummyData.unit, dummyTest._dummyData.highestIsBest);
-			return returnVal;
-		});
+		woosh.Test.call(this, 1, function() {});
 	}
 	
 	woosh._utils.extend(DummyTest, woosh.Test);
 	var dummyTestProto = DummyTest.prototype;
 	
 	/**
-		@name woosh.TimeTest#_dummyData
+		@name woosh.DummyTest#_dummyData
 		@description Data set when the object was constructed
 	*/
 	dummyTestProto._dummyData = undefined;
 	
 	/**
-		@name woosh.TimeTest#_run
+		@name woosh.DummyTest#_run
 		@function
 		@description Runs the test
 		

@@ -4,7 +4,7 @@
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8">
 		<meta name="generator" content="JsDoc Toolkit">
-		<title>Woosh Documentation - woosh.TimeTest</title>
+		<title>Woosh Documentation - woosh.DummyTest</title>
 		<link rel="stylesheet" type="text/css" href="../../../assets/docstyle.css">
 		<script type="text/javascript" src="../../../libs/glow-170/core/core.js"></script>
 		<script type="text/javascript" src="../../../assets/docs.js"></script>
@@ -12,15 +12,14 @@
 	<body>
 		<div id="wooshOutput">
 			<div id="wooshBanner">
-				<h1>woosh.TimeTest</h1>
-				<p>Like <a href="woosh.Test.html">woosh.Test</a>, but runs for a fixed amount of time and counts the itterations.
-</p>
+				<h1>woosh.DummyTest</h1>
+				<p>A test with a static result</p>
 			</div>
 			<div id="wooshUa"></div>
 			<div id="wooshModeSwitcher">
 				<h2 id="docTypeHeading">Documentation Type</h2>
-				<ul><li><a href="../../writingTests/api/woosh.TimeTest.html">Writing Tests</a></li>
-<li><a href="../../writingPlugins/api/woosh.TimeTest.html">Writing Plugins</a></li>
+				<ul><li><a href="../../writingTests/api/woosh.DummyTest.html">Writing Tests</a></li>
+<li><a href="../../writingPlugins/api/woosh.DummyTest.html">Writing Plugins</a></li>
 <li><span class="active">Full API</span></li></ul>
 			</div>
 			
@@ -44,8 +43,7 @@
 </li>
 <li><a href="woosh.Conductor.html">woosh.Conductor</a>
 </li>
-<li><a href="woosh.DummyTest.html">woosh.DummyTest</a>
-</li>
+<li><span class="active">woosh.DummyTest</span></li>
 <li><a href="woosh.LibraryResult.html">woosh.LibraryResult</a>
 </li>
 <li><a href="woosh.Result.html">woosh.Result</a>
@@ -54,7 +52,8 @@
 </li>
 <li><a href="woosh.Test.html">woosh.Test</a>
 </li>
-<li><span class="active">woosh.TimeTest</span></li>
+<li><a href="woosh.TimeTest.html">woosh.TimeTest</a>
+</li>
 <li><a href="woosh.views.html">woosh.views</a>
 </li>
 </ol>
@@ -70,7 +69,7 @@
 					
 						<p>Extends <a href="woosh.Test.html">woosh.Test</a></p>
 					
-					<p>		Test instances are created within a call to <a href="woosh.html#.addTests">woosh.addTests</a>.</p>
+					
 				
 				
 				
@@ -82,10 +81,40 @@
 							<div class="summary"></div>
 							<div class="apiItemDetail">
 								<h3>Synopsis</h3>
-								<pre class="signiture prettyprint"><code>var myTimeTest = new woosh.TimeTest(duration, test)</code></pre>
+								<pre class="signiture prettyprint"><code>var myDummyTest = new woosh.DummyTest(testType, loopCount, duration, returnVal, result, unit, highestIsBest)</code></pre>
 								
 									<h3>Parameters</h3>
 									<dl class="params">
+										
+											<dt>testType</dt>
+											<dd>
+												<dl class="attributes">
+													<dt>Type</dt>
+													<dd>number<dd>
+													<dt>Required</dt>
+													<dd>Yes</dd>
+													
+												</dl>
+												<div class="description">
+													<p>The type of test to pretend to be</p>
+													
+												</div>
+											</dd>
+										
+											<dt>loopCount</dt>
+											<dd>
+												<dl class="attributes">
+													<dt>Type</dt>
+													<dd>number<dd>
+													<dt>Required</dt>
+													<dd>Yes</dd>
+													
+												</dl>
+												<div class="description">
+													<p>The loopCount to pretend to have</p>
+													
+												</div>
+											</dd>
 										
 											<dt>duration</dt>
 											<dd>
@@ -97,36 +126,79 @@
 													
 												</dl>
 												<div class="description">
-													<p>Seconds to run the test for
-</p>
-													<p>		Values larger than 0.5 are recommended.</p>
-
-<p>		Your test will complete when a loop is completed and the duration
-		has exceeded. The test will not stop half way through a loop.</p>
+													<p>The duration (in ms) to pretend to take</p>
+													
 												</div>
 											</dd>
 										
-											<dt>test</dt>
+											<dt>returnVal</dt>
 											<dd>
 												<dl class="attributes">
 													<dt>Type</dt>
-													<dd>Function<dd>
+													<dd>number<dd>
 													<dt>Required</dt>
 													<dd>Yes</dd>
 													
 												</dl>
 												<div class="description">
-													<p>The test to run.
+													<p>The return value to pretend to have</p>
+													
+												</div>
+											</dd>
+										
+											<dt>result</dt>
+											<dd>
+												<dl class="attributes">
+													<dt>Type</dt>
+													<dd>number|string<dd>
+													<dt>Required</dt>
+													<dd>No</dd>
+													
+														<dt>Default</dt>
+														<dd></dd>
+													
+												</dl>
+												<div class="description">
+													<p>The result value to give
 </p>
-													<p>		The following params will be passed into the test function:</p>
-
-		<dl>
-			<dt>test</dt>
-			<dd>
-				The instance of <a href="woosh.TimeTest.html">woosh.TimeTest</a>, provided so you can easily
-				call instance methods on it.
-			</dd>
-		</dl>
+													<p>		By default this will be the same as duration. If result is a string is will
+		be treated as an error message.</p>
+												</div>
+											</dd>
+										
+											<dt>unit</dt>
+											<dd>
+												<dl class="attributes">
+													<dt>Type</dt>
+													<dd>string<dd>
+													<dt>Required</dt>
+													<dd>No</dd>
+													
+														<dt>Default</dt>
+														<dd>&#39;ms&#39;</dd>
+													
+												</dl>
+												<div class="description">
+													<p>The unit for the result</p>
+													
+												</div>
+											</dd>
+										
+											<dt>highestIsBest</dt>
+											<dd>
+												<dl class="attributes">
+													<dt>Type</dt>
+													<dd>boolean<dd>
+													<dt>Required</dt>
+													<dd>No</dd>
+													
+														<dt>Default</dt>
+														<dd>false</dd>
+													
+												</dl>
+												<div class="description">
+													<p>Treat high numbers as better than low numbers?</p>
+													
 												</div>
 											</dd>
 										
@@ -136,12 +208,7 @@
 									<h3>Examples</h3>
 									
 										<pre class="example prettyprint"><code>woosh.addTests(&#39;glow-170&#39;, {
-    &#39;Test Name&#39;: new woosh.TimeTest(2, function(test) {
-        // do stuff
-        
-        // return a value (this will be checked against the results of other tests)
-        return returnVal;
-    })
+    &#39;Test Name&#39;: new woosh.DummyTest(&#39;hello&#39;, 123, &#39;apples&#39;, true)
 });</code></pre>
 									
 								
@@ -161,6 +228,36 @@
 					
 						<h2>Instance Properties</h2>
 						<dl class="apiList">
+							
+								
+								
+								
+									<dt id="_dummyData" class="expandable"><span>_dummyData</span></dt>
+								
+								<dd>
+									<p class="summary">Data set when the object was constructed</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+													<dt>Private</dt>
+													<dd>Yes</dd>
+												
+												
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myDummyTest._dummyData</code></pre>
+											
+											
+											
+											
+											
+										</div>
+									
+								</dd>
 							
 								
 								
@@ -323,6 +420,61 @@
 								
 								
 								
+									<dt id="_run" class="expandable"><span>_run</span></dt>
+								
+								<dd>
+									<p class="summary">Runs the test</p>
+									
+										<div class="apiItemDetail">
+											
+											<dl class="attributes">
+												
+													<dt>Private</dt>
+													<dd>Yes</dd>
+												
+												
+												
+											</dl>
+											
+											<h3>Synopsis</h3>
+											<pre class="signiture prettyprint"><code>myDummyTest._run(onComplete)</code></pre>
+											
+											
+											
+												<h3>Parameters</h3>
+												<dl class="params">
+													
+														<dt>onComplete</dt>
+														<dd>
+															<dl class="attributes">
+																<dt>Type</dt>
+																<dd>function<dd>
+																<dt>Required</dt>
+																<dd>No</dd>
+																
+																	<dt>Default</dt>
+																	<dd></dd>
+																
+															</dl>
+															<div class="description">
+																<p>Called then the test is complete.
+</p>
+																<p>			An instance of <a href="woosh.Result.html">woosh.Result</a> is passed as the
+			first parameter.</p>
+															</div>
+														</dd>
+													
+												</dl>
+											
+											
+											
+										</div>
+									
+								</dd>
+							
+								
+								
+								
 									<dt id="setResult" class="expandable"><span>setResult</span></dt>
 								
 								<dd>
@@ -432,61 +584,6 @@ woosh.addTests(&#39;glow-170&#39;, {
     })
 });</code></pre>
 												
-											
-											
-										</div>
-									
-								</dd>
-							
-								
-								
-								
-									<dt id="_run" class="expandable"><span>_run</span></dt>
-								
-								<dd>
-									<p class="summary">Runs the test</p>
-									
-										<div class="apiItemDetail">
-											
-											<dl class="attributes">
-												
-													<dt>Private</dt>
-													<dd>Yes</dd>
-												
-												
-												
-											</dl>
-											
-											<h3>Synopsis</h3>
-											<pre class="signiture prettyprint"><code>myTimeTest._run(onComplete)</code></pre>
-											
-											
-											
-												<h3>Parameters</h3>
-												<dl class="params">
-													
-														<dt>onComplete</dt>
-														<dd>
-															<dl class="attributes">
-																<dt>Type</dt>
-																<dd>function<dd>
-																<dt>Required</dt>
-																<dd>No</dd>
-																
-																	<dt>Default</dt>
-																	<dd></dd>
-																
-															</dl>
-															<div class="description">
-																<p>Called then the test is complete.
-</p>
-																<p>			An instance of <a href="woosh.Result.html">woosh.Result</a> is passed as the
-			first parameter.</p>
-															</div>
-														</dd>
-													
-												</dl>
-											
 											
 											
 										</div>
