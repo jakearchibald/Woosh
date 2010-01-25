@@ -300,6 +300,43 @@ test('Handling errors in a time test', 9, function() {
 	equals(result.type, 'TimeTest', 'Result object has test type');
 });
 
+module('woosh.DummyTest');
+
+test('Creating instances', 3, function() {
+	var func = function() {};
+	
+	equals(typeof woosh.DummyTest, 'function', 'woosh.DummyTest exists');
+	
+	var test = new woosh.DummyTest('DummyTest', 1, 100, 'hello');
+	ok(test instanceof woosh.DummyTest, '(new) is instance of woosh.DummyTest');
+	
+	var test2 = woosh.DummyTest('DummyTest', 1, 100, 'hello');
+	ok(test2 instanceof woosh.DummyTest, '(no new) is instance of woosh.DummyTest');
+});
+
+test('Running a sync test', 9, function() {
+	var onCompleteFiredCount = 0,
+		result;
+	
+	var test = new woosh.DummyTest('FakeTestType', 18, 12345, 'hello', 999, 'apples', true);
+	
+	equals(typeof test._run, 'function', 'woosh.DummyTest#_run exists');
+	
+	test._run(function(r) {
+		result = r;
+		onCompleteFiredCount++;
+	});
+	
+	equals(onCompleteFiredCount, 1, '_onComplete was called correct number of times');
+	equals(test._result.returnVal, 'hello', '_returnVal set');
+	equals(test._result.result, 999, 'result is set');
+	ok(result instanceof woosh.Result, 'Result object provided');
+	equals(result.returnVal, 'hello', 'Result object has returnVal');
+	equals(result.loopCount, 18, 'Result object has loopCount');
+	equals(result.duration, 12345, 'Result object has duration');
+	equals(result.type, 'FakeTestType', 'Result object has type');
+});
+
 module('woosh.AsyncTest');
 
 test('Creating instances', 6, function() {

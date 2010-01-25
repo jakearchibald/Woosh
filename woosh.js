@@ -604,6 +604,87 @@
 	// export
 	woosh.TimeTest = TimeTest;
 })();
+// woosh.DummyTest
+(function() {
+	/**
+	@name woosh.DummyTest
+	@constructor
+	@writingTests
+	@augments woosh.Test
+	@description A test with a static result
+		
+	@param {number} testType The type of test to pretend to be
+	@param {number} loopCount The loopCount to pretend to have
+	@param {number} duration The duration (in ms) to pretend to take
+	@param {number} returnVal The return value to pretend to have
+	@param {number|string} [result] The result value to give
+		By default this will be the same as duration. If result is a string is will
+		be treated as an error message.
+	@param {string} [unit='ms'] The unit for the result
+	@param {boolean} [highestIsBest=false] Treat high numbers as better than low numbers?
+	
+	@example
+		woosh.addTests('glow-170', {
+			'Test Name': new woosh.DummyTest('hello', 123, 'apples', true)
+		});
+	*/
+	function DummyTest(type, loopCount, duration, returnVal, result, unit, highestIsBest) {
+		if ( !(this instanceof DummyTest) ) {
+			return new DummyTest(result, unit, highestIsBest);
+		}
+		
+		var dummyTest = this;
+		
+		this._dummyData = {
+			type: type,
+			loopCount: loopCount,
+			duration: duration,
+			returnVal: returnVal,
+			result: result || duration,
+			unit: unit || 'ms',
+			highestIsBest: !!highestIsBest,
+			error: (typeof result == 'string') && new Error(result)
+		};
+		
+		woosh.Test.call(this, 1, function(test) {
+			test.setResult(dummyTest._dummyData.result, dummyTest._dummyData.unit, dummyTest._dummyData.highestIsBest);
+			return returnVal;
+		});
+	}
+	
+	woosh._utils.extend(DummyTest, woosh.Test);
+	var dummyTestProto = DummyTest.prototype;
+	
+	/**
+		@name woosh.TimeTest#_dummyData
+		@description Data set when the object was constructed
+	*/
+	dummyTestProto._dummyData = undefined;
+	
+	/**
+		@name woosh.TimeTest#_run
+		@function
+		@description Runs the test
+		
+		@param {function} [onComplete] Called then the test is complete.
+			An instance of {@link woosh.Result} is passed as the
+			first parameter.
+	*/
+	dummyTestProto._run = function(onComplete) {
+		this.setResult(this._dummyData.result, this._dummyData.unit, this._dummyData.highestIsBest);
+		this._result.loopCount = this._dummyData.loopCount;
+		this._result.duration = this._dummyData.duration;
+		this._result.returnVal = this._dummyData.returnVal;
+		this._result.type = this._dummyData.type;
+		if (this._dummyData.error) {
+			this._result.error = this._dummyData.error;
+		}
+		onComplete && onComplete(this._result);
+	}
+	
+	// export
+	woosh.DummyTest = DummyTest;
+})();
 // woosh.Result
 (function() {
 	var undefined;
