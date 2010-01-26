@@ -67,7 +67,6 @@ function publish(symbolSet) {
 	
 	// build nav
 	data.nav = new Nav( symbolSet.getSymbol('woosh') )
-	//data.nav.active = symbolSet.getSymbol('woosh.Test');
 	data.modeSwitch = new ModeSwitch();
 	
 	for (var i = 0, len = modes.length; i<len; i++) {
@@ -167,7 +166,7 @@ var Nav = (function(undefined) {
 			listInner;
 		
 		symbols.forEach(function(symbol) {
-			memberSymbols = members[symbol.alias].filter(function(symbol) {
+			memberSymbols = (members[symbol.alias] || []).filter(function(symbol) {
 				return nav._shouldDisplay(symbol);
 			});
 			// don't treat 'woosh' as a parent item
@@ -199,7 +198,7 @@ var Nav = (function(undefined) {
 		}
 		
 		html += '<li><h3>Api</h3>\n';
-		symbols = [this.rootSymbol].concat( members[this.rootSymbol.alias] ).filter(function(symbol) {
+		symbols = [this.rootSymbol].concat( members[this.rootSymbol.alias] || [] ).filter(function(symbol) {
 			return nav._shouldDisplay(symbol);
 		});
 		html += nav._list(symbols);
@@ -277,7 +276,7 @@ function resolveInstanceMembers(symbol) {
 		i, len;
 	
 	do {
-		symbolMembers = members[symbol.alias];
+		symbolMembers = members[symbol.alias] || [];
 		
 		// loop through members
 		for (i = 0, len = symbolMembers.length; i<len; i++) {
@@ -311,7 +310,7 @@ function resolveInstanceMembers(symbol) {
 
 // returns an object of symbol members keyed by their type
 function organiseMembers(symbol, filter) {
-	var symbols = members[symbol.alias].filter(filter),
+	var symbols = ( members[symbol.alias] || [] ).filter(filter),
 		instanceMembers = resolveInstanceMembers(symbol),
 		r = {
 			properties: [],

@@ -516,6 +516,55 @@
 	// export
 	window.woosh.AsyncTest = AsyncTest;
 })();
+// woosh.VisualTest
+(function() {
+	/**
+	@name woosh.VisualTest
+	@constructor
+	@writingTests
+	@augments woosh.AsyncTest
+	@description Like {@link woosh.AsyncTest}, but displays as it runs.
+		Test instances are created within a call to {@link woosh.addTests}.
+		
+		This test allows you to test animations, you can see them as they run.
+	
+	@param {number} loopCount Number of times to run the test.
+		Tests that run longer have less margin of error.
+	
+	@param {Function} test The test to run.
+		The following params will be passed into the test function:
+		
+		<dl>
+			<dt>test</dt>
+			<dd>
+				The instance of {@link woosh.VisualTest}, provided so you can easily
+				call instance methods on it.
+			</dd>
+		</dl>
+		
+	@example
+		woosh.addTests('glow-170', {
+			'Test Name': new woosh.VisualTest(1000, function(test) {
+				// do stuff
+				
+				// return a value (this will be checked against the results of other tests)
+				test.endTest(returnVal);
+			})
+		});
+	*/
+	function VisualTest(loopCount, testFunc) {
+		if ( !(this instanceof VisualTest) ) {
+			return new VisualTest(loopCount, testFunc);
+		}
+		
+		woosh.AsyncTest.apply(this, arguments);
+	}
+	
+	woosh._utils.extend(VisualTest, woosh.AsyncTest);
+	
+	// export
+	woosh.VisualTest = VisualTest;
+})();
 // woosh.TimeTest
 (function() {
 	/**
@@ -1104,6 +1153,14 @@
 	
 	LibraryTest.prototype = {
 		/**
+		@name woosh._LibraryTest#iframe
+		@type Element
+		@description Iframe for this library test
+			This is populated by {@link woosh._TestFrame}, so is only present
+			for LibraryTests in an iframe.
+		*/
+		iframe: undefined,
+		/**
 		@name woosh._LibraryTest#tests
 		@type Object
 		@description Tests keyed by name
@@ -1335,9 +1392,14 @@
 				currentLibName,
 				currentLibraryTest,
 				results = {},
-				testRunner = this;
+				testRunner = this,
+				isVisualTest;
 			
 			function testComplete(testName, result) {
+				// hide iframe if it was shown
+				if (isVisualTest) {
+					currentLibraryTest.iframe.className = currentLibraryTest.iframe.className.replace(' show', '');
+				}
 				results[currentLibName] = result;
 				onTestComplete(currentLibName, result);
 				setTimeout(function() {
@@ -1345,7 +1407,7 @@
 				}, 300);
 			}
 			
-			function runNextTest() {
+			function runNextTest() {				
 				if (libraryResultsIndex < libraryResultsLen) {
 					libraryResult = testRunner.libraryResults[libraryResultsIndex];
 					currentLibName = libraryResult.name;
@@ -1356,8 +1418,14 @@
 					currentLibName = testRunner.libraryNames[ ++libIndex ];
 					currentLibraryTest = testRunner.libraryTest[currentLibName];
 					
+					
 					// if there's none, then we're done!
 					if (currentLibraryTest) {
+						// do we need to show the iframe while the test happens?
+						isVisualTest = woosh._utils.constructorName( currentLibraryTest.tests[testName] ) == 'VisualTest';
+						if (isVisualTest) {
+							currentLibraryTest.iframe.className += ' show';
+						}
 						currentLibraryTest.run(testName, testComplete);
 					} else {
 						onComplete( new woosh.ResultComparison(results) );
@@ -1412,6 +1480,8 @@
 			@description The library tests created in this frame
 			*/
 			testFrame.libraryTest = testFrame.window.woosh._libraryTest;
+			// set the iframe on the LibraryTest
+			testFrame.libraryTest.iframe = iframe;
 			onReady.call(testFrame);
 		}
 		
@@ -2289,6 +2359,7 @@
 		// we need to load a particular library
 		woosh._pageMode = 'testing';
 		woosh._utils.loadAssets.apply( this, woosh.libs[ query.lib[0] ] );
+		document.documentElement.className = 'testing';
 		/**
 		@name woosh._libraryToTest
 		@private
