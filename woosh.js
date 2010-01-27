@@ -1463,6 +1463,11 @@
 			
 		iframe.className = 'wooshCreated';
 		function iframeonload() {
+			// some devices fire onload early, so we need to poll for woosh. Grr.
+			if (!(iframe.contentWindow.woosh && iframe.contentWindow.woosh._libraryTest)) {
+				setTimeout(iframeonload, 30);
+				return;
+			}
 			// NetFront on the PS3 fires onload twice, thanks.
 			if (iframeonload._hasCalled) {
 				return;
@@ -1490,6 +1495,7 @@
 		} else {
 			iframe.onload = iframeonload;
 		}
+		//setTimeout(iframeonload, 6000);
 		
 		iframe.src = window.location.href.replace(window.location.search, '').replace(/#.*$/, '') + '?notest&' + queryString;
 		document.getElementById('wooshOutput').appendChild(iframe);
@@ -2255,7 +2261,8 @@
 		@param {woosh.Conductor} conductor Conductor running the test
 	*/
 	function outputInterface(conductor) {
-		var wooshOutput = document.getElementById('wooshOutput');
+		var wooshOutput = document.getElementById('wooshOutput'),
+			started = false;
 		
 		if (!wooshOutput) {
 			return;
@@ -2279,10 +2286,27 @@
 		a.className = 'wooshButton';
 		a.innerHTML = 'Start';
 		a.onclick = function() {
+			started = true;
 			conductor.start();
 			this.style.visibility = 'hidden';
 			return false;
 		}
+		
+		// special block for Samsung TVs
+		document.onkeydown = function(event) {
+			switch (event.keyCode) {
+				case 29443:
+					if (!started) {
+						started = true;
+						conductor.start();
+						a.style.visibility = 'hidden';
+					}
+					break;
+				case 17: /* tmp for refereshing page */
+					location.reload(true);
+					break;
+			}
+		};
 		
 		conductor.addListener({
 			ready: function() {
