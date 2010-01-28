@@ -1984,9 +1984,9 @@
 					resultText = result.result + result.unit;
 				}
 				infoDefs = {
-					'Loop Count': result.loopCount,
+					'Loop Count': String(result.loopCount),
 					'Duration': result.duration + 'ms',
-					'Return Value': result.returnVal,
+					'Return Value': String(result.returnVal),
 					'Test Type': result.type
 				};
 				infoNode = document.createElement('dl');
@@ -2003,7 +2003,6 @@
 				resultCell.className += ' noTest';
 				resultText = 'No test found';
 			}
-			
 			resultCell.appendChild( document.createTextNode(resultText) );
 			
 			if (infoNode) {
@@ -2232,7 +2231,6 @@
 				this._log('Tests started');
 			},
 			testComplete: function(libraryName, testName, result) {
-				try {
 				if (!result) {
 					this._log(testName + ' - ' + libraryName + ': No test found');
 				}
@@ -2242,7 +2240,6 @@
 				else {
 					this._log(testName + ' - ' + libraryName + ': ' + result.result + result.unit);
 				}
-				} catch (e) { alert((e.lineNumber || '???') + ': ' + e); }
 			},
 			testSetComplete: function(testName, resultComparison) {
 				
@@ -2368,10 +2365,9 @@
 			return false;
 		}
 		
-		// special block for Samsung TVs
 		document.onkeydown = function(event) {
 			switch (event.keyCode) {
-				case 29443:
+				case 29443: // samsung enter key
 					if (!started) {
 						started = true;
 						conductor.start();
@@ -2455,7 +2451,6 @@
 
 	// set this frame / window up
 	var query = woosh._utils.urlDecode( window.location.search.slice(1) );
-	
 	if (query.lib) {
 		// Ok, we're running tests against a library
 		// we need to load a particular library
