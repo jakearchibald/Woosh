@@ -10,71 +10,6 @@
 	
 	window.woosh = woosh;
 })();
-// woosh.libs
-(function(){
-	/**
-	@name woosh.libs
-	@type Object
-	@writingTests
-	@description Libraries available to the system.
-		Libraries available by default:
-		
-		<dl>
-			<dt>dojo-140</dt>
-			<dd>Dojo 1.4.0</dd>
-			<dt>jq-132</dt>
-			<dd>jQuery 1.3.2</dd>
-			<dt>moo-122</dt>
-			<dd>MooTools 1.2.2</dd>
-			<dt>proto-1603</dt>
-			<dd>PrototypeJs 1.6.0.3</dd>
-			<dt>yui-270</dt>
-			<dd>YUI 2.7.0</dd>
-			<dt>yui-300</dt>
-			<dd>YUI 3.0.0</dd>
-			<dt>glow-170</dt>
-			<dd>Glow 1.7.0</dd>
-		</dl>
-		
-	@example
-		<!-- adding your own libraries for a test -->
-		<script src="path/to/woosh.js" type="text/javascript">
-			// Library paths are relative to woosh.js, all files in the array will be loaded in order
-			woosh.libs['myLibrary'] = ['../myLibrary/1.js', '../myLibrary/1.js'];
-		</script>
-	*/
-	var libs = {
-		'dojo-140': ['libs/dojo-140.js'],
-		'jq-132': ['libs/jq-132.js'],
-		'jq-140': ['libs/jq-140.js'],
-		'moo-122': ['libs/moo-122.js'],
-		'proto-1603': ['libs/proto-1603.js'],
-		'yui-270': ['libs/yui-270.js'],
-		'yui-300': ['libs/yui-300.js'],
-		'puredom': ['libs/puredom.js'],
-		'glow-170': ['libs/glow-170/core/core.debug.js']
-	}
-	
-	window.woosh.libs = libs;
-})();
-// woosh._root
-(function(){
-	/**
-	@name woosh._root
-	@type string
-	@private
-	@description Path to woosh repo root
-	*/
-	var scripts = document.getElementsByTagName('script'),
-		lastScript = scripts[scripts.length - 1];
-		
-	// eval any contents of the script
-	try {
-		eval(lastScript.innerHTML);
-	} catch(e) {}
-	
-	window.woosh._root = lastScript.src.replace('woosh.js', '');
-})();
 // woosh._utils
 (function(){
 	/**
@@ -233,6 +168,74 @@
 	}
 	
 	window.woosh._utils = utils;
+})();
+// woosh.libs
+(function(){
+	/**
+	@name woosh.libs
+	@type Object
+	@writingTests
+	@description Libraries available to the system.
+		Libraries available by default:
+		
+		<dl>
+			<dt>dojo-140</dt>
+			<dd>Dojo 1.4.0</dd>
+			<dt>jq-132</dt>
+			<dd>jQuery 1.3.2</dd>
+			<dt>moo-122</dt>
+			<dd>MooTools 1.2.2</dd>
+			<dt>proto-1603</dt>
+			<dd>PrototypeJs 1.6.0.3</dd>
+			<dt>yui-270</dt>
+			<dd>YUI 2.7.0</dd>
+			<dt>yui-300</dt>
+			<dd>YUI 3.0.0</dd>
+			<dt>glow-170</dt>
+			<dd>Glow 1.7.0</dd>
+		</dl>
+		
+	@example
+		<!-- adding your own libraries for a test -->
+		<script src="path/to/woosh.js" type="text/javascript">
+			// Library paths are relative to woosh.js, all files in the array will be loaded in order
+			woosh.libs['myLibrary'] = ['../myLibrary/1.js', '../myLibrary/1.js'];
+		</script>
+	*/
+	var libs = {
+		'dojo-140': ['libs/dojo-140.js'],
+		'jq-132': ['libs/jq-132.js'],
+		'jq-140': ['libs/jq-140.js'],
+		'moo-122': ['libs/moo-122.js'],
+		'proto-1603': ['libs/proto-1603.js'],
+		'yui-270': ['libs/yui-270.js'],
+		'yui-300': ['libs/yui-300.js'],
+		'puredom': ['libs/puredom.js'],
+		'glow-170': ['libs/glow-170/core/core.debug.js']
+	}
+	
+	// take other libraries from window.libs
+	woosh._utils.apply(libs, window.libs);
+	
+	window.woosh.libs = libs;
+})();
+// woosh._root
+(function(){
+	/**
+	@name woosh._root
+	@type string
+	@private
+	@description Path to woosh repo root
+	*/
+	var scripts = document.getElementsByTagName('script'),
+		lastScript = scripts[scripts.length - 1];
+	
+	// eval any contents of the script
+	try {
+		eval(lastScript.innerHTML);
+	} catch(e) {}
+	
+	window.woosh._root = lastScript.src.replace('woosh.js', '');
 })();
 // woosh.Test
 (function() {
