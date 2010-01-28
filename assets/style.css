@@ -177,7 +177,7 @@ body, html {
 			float: right;
 			visibility: hidden;
 		}
-		#selectAll {
+		#wooshTable #selectAll {
 			visibility: visible;
 		}
 /* alerts view */
