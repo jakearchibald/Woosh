@@ -927,7 +927,7 @@
 				resultSerial;
 				
 			pos = serial.indexOf('#');
-			if (i == -1) {
+			if (pos == -1) {
 				throw new Errow('woosh.LibraryResult#unserialize: Invalid serial');
 			}
 			// set name
@@ -1407,7 +1407,8 @@
 				}, 300);
 			}
 			
-			function runNextTest() {				
+			function runNextTest() {
+				// fire complete for saved results first
 				if (libraryResultsIndex < libraryResultsLen) {
 					libraryResult = testRunner.libraryResults[libraryResultsIndex];
 					currentLibName = libraryResult.name;
@@ -1463,8 +1464,8 @@
 			
 		iframe.className = 'wooshCreated';
 		function iframeonload() {
-			// some devices fire onload early, so we need to poll for woosh. Grr.
-			if (!(iframe.contentWindow.woosh && iframe.contentWindow.woosh._libraryTest)) {
+			// poll
+			if ( !(iframe.contentWindow.woosh && iframe.contentWindow.woosh._libraryTest) ) {
 				setTimeout(iframeonload, 30);
 				return;
 			}
@@ -1490,15 +1491,11 @@
 			onReady.call(testFrame);
 		}
 		
-		if (iframe.attachEvent) {
-			iframe.attachEvent('onload', iframeonload);
-		} else {
-			iframe.onload = iframeonload;
-		}
-		//setTimeout(iframeonload, 6000);
-		
 		iframe.src = window.location.href.replace(window.location.search, '').replace(/#.*$/, '') + '?notest&' + queryString;
 		document.getElementById('wooshOutput').appendChild(iframe);
+		
+		// using polling rather than listening for onload - some devices don't fire load on iframes
+		setTimeout(iframeonload, 30);
 	}
 	
 	window.woosh._TestFrame = TestFrame;
@@ -1761,7 +1758,7 @@
 	// builds the skeleton of a results table
 	function createResultsTable(libsLen, testsLen) {
 		var tmpDiv = document.createElement('div'),
-			tableStr = '<table class="wooshTable"><thead>',
+			tableStr = '<table id="wooshTable"><thead>',
 			resultRowStr;
 		
 		// add headers for library names to go in	
@@ -2179,6 +2176,85 @@
 	
 	woosh.views.Table = Table;
 })();
+// woosh.views.Log
+(function() {
+	/**
+	@name woosh.views.Log
+	@constructor
+	@private
+	@description Create a simple text log of results
+	
+	@param {woosh.Conductor} conductor Test conductor to get results from
+	@param {HTMLElement} outputElement Element to output to
+	*/
+	function Log(conductor, outputElement) {
+		this.conductor = conductor;
+		this._element = document.createElement('div');
+		
+		outputElement.appendChild(this._element);
+		conductor.addListener(this._listener, this);
+	}
+	
+	Log.prototype = {
+		/**
+		@name woosh.views.Log#conductor
+		@type woosh.Conductor
+		@description The instance conducting the test
+		*/
+		conductor: undefined,
+		/**
+		@name woosh.views.Log#_element
+		@private
+		@type HTMLElement
+		@description element that is appended to the document
+		*/
+		_element: undefined,
+		/**
+		@name woosh.views.Log#_log
+		@private
+		@function
+		@description Write to the output
+		
+		@param {string} msg Message to add to the log
+		*/
+		_log: function(msg) {
+			this._element.appendChild( document.createTextNode(msg) );
+			this._element.appendChild( document.createElement('br') );
+		},
+		/**
+		@name woosh.views.Log#_listener
+		@type Object
+		@private
+		@description Listener to the conductor
+		*/
+		_listener: {
+			start: function() {
+				this._log('Tests started');
+			},
+			testComplete: function(libraryName, testName, result) {
+				try {
+				if (!result) {
+					this._log(testName + ' - ' + libraryName + ': No test found');
+				}
+				else if (result.error) {
+					this._log(testName + ' - ' + libraryName + ': ERROR - ' + result.error);
+				}
+				else {
+					this._log(testName + ' - ' + libraryName + ': ' + result.result + result.unit);
+				}
+				} catch (e) { alert((e.lineNumber || '???') + ': ' + e); }
+			},
+			testSetComplete: function(testName, resultComparison) {
+				
+			},
+			allTestsComplete: function(libraryResults) {
+				this._log('Tests complete');
+			}
+		}
+	}
+	
+	woosh.views.Log = Log;
+})();
 // woosh.views.alert
 (function() {
 	/**
@@ -2302,7 +2378,9 @@
 						a.style.visibility = 'hidden';
 					}
 					break;
-				case 17: /* tmp for refereshing page */
+				/* tmp for refereshing page */
+				case 17: // 0 on Samsung remote
+				case 48: // 0 on Cello remote
 					location.reload(true);
 					break;
 			}
@@ -2425,7 +2503,23 @@
 			viewOutput.appendChild( woosh.views.alert._container );
 			
 			woosh.ready(function(conductor, outputElement) {
-				new woosh.views.Table(conductor, outputElement);
+				// soem devices have trouble with the table because they're... well, rubbish really
+				var table, log, tableElm;
+				
+				try {
+					table = new woosh.views.Table(conductor, outputElement);
+				} catch (e) {
+					log = new woosh.views.Log(conductor, outputElement);
+					log._log('Unable to create table view (Line ' + (e.lineNumber || '???') + ' ' + e + ')');
+					log._log('Falling back to logger view, extended information about each test will not be available');
+					
+					// attempt to remove table from view
+					tableElm = document.getElementById('wooshTable');
+					
+					if (tableElm && tableElm.parentNode) {
+						tableElm.parentNode.removeChild(tableElm);
+					}
+				}
 			});
 		};
 	}

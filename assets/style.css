@@ -80,8 +80,12 @@ body, html {
 	text-decoration: none;
 	text-shadow: 0px 2px 2px rgba(0,0,0,0.4);
 }
+#wooshCommands a:focus {
+	background: #f00;
+}
+
 /* table view */
-	.wooshTable {
+	#wooshTable {
 		width: 100%;
 		border-collapse: collapse;
 		table-layout: fixed;
@@ -91,72 +95,72 @@ body, html {
 		margin-top: 5px;
 	}
 	
-	.wooshTable td, .wooshTable th {
+	#wooshTable td, #wooshTable th {
 		border: 3px solid #fff;
 		padding: 5px 5px 5px 10px;
 		text-align: left;
 		vertical-align: top;
 	}
-	.wooshTable thead th {
+	#wooshTable thead th {
 		background: #d0c8c8;
 		color: #8b7676;
 	}
-	.wooshTable tbody th {
+	#wooshTable tbody th {
 		background: #d2e0e6;
 		color: #528ce0;
 		cursor: pointer;
 	}
-	.wooshTable tbody th:hover {
+	#wooshTable tbody th:hover {
 		background: #fff;
 	}
-	.wooshTable td.error {
+	#wooshTable td.error {
 		color: #F3F1F1;
 		background: #41464D;
 	}
-	.wooshTable td.noTest {
+	#wooshTable td.noTest {
 		color: #888;
 		background: #ddd;
 	}
-	.wooshTable th.mismatch {
+	#wooshTable th.mismatch {
 		background: #ffec80;
 		color: #786a08;
 	}
-	.wooshTable .info {
+	#wooshTable .info {
 		display: none;
 		font-weight: normal;
 	}
-	.wooshTable .fullInfo .info {
+	#wooshTable .fullInfo .info {
 		display: block;
 	}
-	.wooshTable .info {
+	#wooshTable .info {
 		margin:0; padding:0;
 		margin-top: 1em;
 		font-size: 0.9em;
 	}
-	.wooshTable .info dt, .info dd {
+	#wooshTable .info dt, .info dd {
 		float: left;
 		/* remove the float for IE<=7 */
 		*float: none;
 		margin: 0; padding: 0;
 	}
-	.wooshTable .info dd {
+	#wooshTable .info dd {
 		*margin-left: 20px;
 	}
-	.wooshTable .info dt:after {
+	#wooshTable .info dt:after {
 		content: ':';
 	}
-	.wooshTable .info dt {
+	#wooshTable .info dt {
 		width: 100px;
 		clear: both;
 	}
 	/* Save and delete buttons */
-		.wooshTable thead .save {
+		#wooshTable thead .save {
 			display: none;
 		}
-		.allTestsComplete .wooshTable thead .save {
+		.allTestsComplete #wooshTable thead .save {
 			display: inline;
 		}
-		.wooshTable thead .save, .wooshTable thead .delete {
+		#wooshTable thead .save, #wooshTable thead .delete {
 			background: url(cross.png);
 			text-decoration: none;
 			width: 16px;
@@ -165,11 +169,11 @@ body, html {
 			overflow: hidden;
 			text-indent: -2000px;
 		}
-		.wooshTable thead .save {
+		#wooshTable thead .save {
 			background: url(disk.png);
 		}
 	/* checkboxes */
-		.wooshTable input.checkbox {
+		#wooshTable input.checkbox {
 			float: right;
 			visibility: hidden;
 		}
