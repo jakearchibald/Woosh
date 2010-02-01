@@ -2368,23 +2368,6 @@
 			return false;
 		}
 		
-		document.onkeydown = function(event) {
-			switch (event.keyCode) {
-				case 29443: // samsung enter key
-					if (!started) {
-						started = true;
-						conductor.start();
-						a.style.visibility = 'hidden';
-					}
-					break;
-				/* tmp for refereshing page */
-				case 17: // 0 on Samsung remote
-				case 48: // 0 on Cello remote
-					location.reload(true);
-					break;
-			}
-		};
-		
 		conductor.addListener({
 			ready: function() {
 				document.getElementById('wooshCommands').appendChild(a);
