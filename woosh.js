@@ -206,6 +206,7 @@
 		'dojo-140': ['libs/dojo-140.js'],
 		'jq-132': ['libs/jq-132.js'],
 		'jq-140': ['libs/jq-140.js'],
+		'jq-142': ['libs/jq-142.js'],
 		'moo-122': ['libs/moo-122.js'],
 		'proto-1603': ['libs/proto-1603.js'],
 		'yui-270': ['libs/yui-270.js'],
